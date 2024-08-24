@@ -14,20 +14,20 @@
   },
   "lint-staged": {
     "*.js": [
-      "eslint --fix",
-      "prettier --write"
+      "npm run lint:fix",
+      "npm run prettier"
     ],
     "*.ts": [
-      "eslint --fix",
-      "prettier --write"
+      "npm run lint:fix",
+      "npm run prettier"
     ],
     "*.jsx": [
-      "eslint --fix",
-      "prettier --write"
+      "npm run lint:fix",
+      "npm run prettier"
     ],
     "*.tsx": [
-      "eslint --fix",
-      "prettier --write"
+      "npm run lint:fix",
+      "npm run prettier"
     ]
   },
   "dependencies": {
@@ -38,7 +38,9 @@
     "framer-motion": "^11.3.29",
     "next": "^14.2.6",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-textarea-autosize": "^8.5.3",
+    "sass": "^1.77.8"
   },
   "devDependencies": {
     "@types/node": "22.5.0",
