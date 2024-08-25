@@ -21,6 +21,12 @@ import {
 import TextareaAutosize from 'react-textarea-autosize';
 
 // import styles from "./page.module.scss";
+interface ResponseValue {
+  data?: string;
+  status?: number;
+  // headers?: Headers;
+  headers?: string;
+}
 
 export default function Rest() {
   const router = useRouter();
@@ -44,10 +50,12 @@ export default function Rest() {
   >([]);
   const [bodyTextValue, setBodyTextValue] = useState('');
   const [bodyJsonValue, setBodyJsonValue] = useState('');
+  const [responseValue, setresponseValue] = useState<ResponseValue>({});
+  // const [responseValue, setresponseValue] = useState<string | null>(null);
 
   useEffect(() => {
     const currentMethod = method as string;
-    const currentUrl = url ? url[0] : undefined; //atob(url[0])
+    const currentUrl = url ? atob(decodeURIComponent(url[0])) : undefined; //atob(url[0])
 
     if (currentMethod === undefined) {
       router.push('/auth/rest/GET');
@@ -55,8 +63,6 @@ export default function Rest() {
       router.push('/404');
     } else {
       setSelectedMethod(currentMethod.toLowerCase());
-      console.log(currentUrl);
-
       if (currentUrl === undefined) {
         router.push(`/auth/rest/${currentMethod}`);
       } else {
@@ -84,7 +90,7 @@ export default function Rest() {
   const handleUrlChange = (e: { target: { value: string } }) => {
     const newUrl = e.target.value;
     const encodedNewUrl = btoa(newUrl);
-    console.log(encodedNewUrl);
+    // console.log(encodedNewUrl);
 
     setUrlValue(newUrl);
 
@@ -93,7 +99,7 @@ export default function Rest() {
     const methodIndex = pathArray.findIndex((el) =>
       methods.includes(el.toLowerCase())
     );
-    pathArray[methodIndex + 1] = newUrl; //encodedNewUrl
+    pathArray[methodIndex + 1] = encodedNewUrl; //newUrl;
     const newPath = `${pathArray.join('/')}`;
     router.replace(newPath);
   };
@@ -140,7 +146,55 @@ export default function Rest() {
     }
   };
 
-  const handleSendRequest = () => {};
+  const handleSendRequest = async () => {
+    console.log(headers);
+
+    if (urlValue) {
+      // console.log(urlValue);
+      // https://api.artic.edu/api/v1/artworks
+      try {
+        const response = await fetch(urlValue, {
+          method: selectedMethod,
+        });
+        // const responseText = await response.text();
+        ///saving headers
+        const responseHeaders = headers.reduce((acc, obj) => {
+          acc[obj.key] = obj.value;
+          return acc;
+        }, {});
+
+        if (!response.ok) {
+          console.log(typeof response.headers);
+          const responseObject = {
+            status: response.status,
+            // headers: response.headers
+            headers: JSON.stringify(responseHeaders, null, 2),
+          };
+          setresponseValue(responseObject);
+          console.log(responseObject);
+
+          throw new Error('Response was not ok');
+        }
+        // const result = await response.json();
+        // const result = await response.text();
+        const json = await response.json();
+        const result = JSON.stringify(json, null, 2);
+        // console.log(result);
+        // console.log(response);
+        const responseObject = {
+          status: response.status,
+          // headers: response.headers,
+          headers: JSON.stringify(responseHeaders, null, 2),
+          data: result,
+        };
+
+        setresponseValue(responseObject);
+        // console.log(result);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
   return (
     <>
@@ -284,22 +338,63 @@ export default function Rest() {
           >
             response
           </Heading>
-          <Stack align="center" direction="row">
-            <Heading as="h2" size="sm" noOfLines={1} textTransform="uppercase">
-              status
-            </Heading>
-            <p>Status code</p>
-          </Stack>
-          <VStack spacing={2} align="stretch">
-            <Heading as="h2" size="sm" noOfLines={1} textTransform="uppercase">
-              body
-            </Heading>
-            <Textarea
-              isDisabled
-              placeholder="Here is a readonly response with HTTP response code and the response status."
-              size="sm"
-            />
-          </VStack>
+          <Tabs width="100%">
+            <TabList>
+              <Tab textTransform="uppercase">status</Tab>
+              <Tab textTransform="uppercase">body</Tab>
+              <Tab textTransform="uppercase">headers</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel color="blue.600">
+                <p>
+                  {responseValue.status !== undefined
+                    ? responseValue.status
+                    : ''}
+                </p>
+              </TabPanel>
+              <TabPanel>
+                <Textarea
+                  as={TextareaAutosize}
+                  maxHeight="50vh"
+                  isDisabled
+                  placeholder={
+                    responseValue.data !== undefined ? responseValue.data : ''
+                  }
+                  size="sm"
+                  sx={{
+                    ':disabled': {
+                      opacity: 0.8,
+                    },
+                    '::placeholder': {
+                      color: 'blue.600',
+                    },
+                  }}
+                />
+              </TabPanel>
+              <TabPanel>
+                <Textarea
+                  as={TextareaAutosize}
+                  maxHeight="50vh"
+                  isDisabled
+                  // placeholder={responseValue.headers !== undefined ? JSON.stringify(Object.fromEntries(responseValue.headers.entries()), null, 2) : ''}
+                  placeholder={
+                    responseValue.headers !== undefined
+                      ? responseValue.headers
+                      : ''
+                  }
+                  size="sm"
+                  sx={{
+                    ':disabled': {
+                      opacity: 0.8,
+                    },
+                    '::placeholder': {
+                      color: 'blue.600',
+                    },
+                  }}
+                />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
         </VStack>
       </VStack>
     </>

@@ -16,6 +16,6 @@ a {
 }
 main {
   padding: 6rem;
-  min-height: calc(100vh - 200px);
+  min-height: calc(100vh - 80px - 70px);
   background: beige;
 }

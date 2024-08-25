@@ -9,6 +9,9 @@ import {
   TabList,
   TabPanel,
   TabPanels,
+  Box,
+  Flex,
+  Spacer,
 } from '@chakra-ui/react';
 
 const { Button, Link, Switch, Select, Textarea, Input, Heading, Tabs } =
@@ -32,5 +35,8 @@ export const theme = extendBaseTheme({
     TabPanel,
     TabPanels,
     Tabs,
+    Box,
+    Flex,
+    Spacer,
   },
 });
