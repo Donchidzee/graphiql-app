@@ -1,12 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import {
-  useParams,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import {
   Button,
   Heading,
@@ -30,7 +25,6 @@ import TextareaAutosize from 'react-textarea-autosize';
 export default function Rest() {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { method, url } = useParams();
 
   const methods = useMemo(
@@ -114,38 +108,26 @@ export default function Rest() {
   const handleHeadersChange =
     (index: number, field: 'key' | 'value') =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      // console.log(headers[index]);
-      // console.log(searchParams);
+      const params = new URLSearchParams();
 
-      // const oldHeader = headers[index];
-      // console.log(headers);
-
-      const params = new URLSearchParams(searchParams.toString());
-
-      if (field === 'key') {
-        const oldKey = headers[index].key;
-        if (oldKey) {
-          console.log('old', oldKey);
-
-          params.delete(oldKey);
-        }
-        params.append(e.target.value, headers[index].key);
-      } else if (field === 'value') {
-        // params.set(headers[index].key, e.target.value); // Update value of existing key
-      }
-      // console.log('params', params.get(field));
-      const paramsObject = Object.fromEntries(searchParams.entries());
-      console.log(paramsObject);
-
-      // router.replace(`${window.location.pathname}?${params.toString()}`);
       const newHeaders = [...headers];
+      //add when will be encoding
+      // if(field === "value") {
+      //   newHeaders[index][field] = atob(e.target.value);
+      // } else {
+      //   newHeaders[index][field] = e.target.value;
+      // }
       newHeaders[index][field] = e.target.value;
       setHeaders(newHeaders);
-      // console.log('headers', headers);
+      newHeaders.forEach((header) => {
+        if (header.key.trim() !== '') {
+          params.set(header.key, header.value);
+        }
+      });
+      router.replace(`${pathname}?${params.toString()}`);
     };
 
   const handleBodyTextChange = (e: { target: { value: string } }) => {
-    // setBodyTextValue(e.target.value)
     const text = e.target.value;
     if (text !== '') {
       setBodyJsonValue(JSON.stringify(JSON.parse(text), null, 6));
@@ -251,7 +233,6 @@ export default function Rest() {
           </VStack>
           {/* Variables section that can shown or hidden, specified variables are included in the body */}
 
-          {/* Headers section, value is provided in the url on header add/change */}
           <VStack spacing={2} align="stretch">
             <Stack align="center" direction="row">
               <Heading
