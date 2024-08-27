@@ -1,0 +1,12 @@
+.page {
+  padding: 20px;
+}
+
+.container {
+  margin-top: 10px;
+  display: flex;
+}
+
+.authLink {
+  margin-right: 10px;
+}
