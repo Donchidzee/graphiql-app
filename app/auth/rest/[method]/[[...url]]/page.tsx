@@ -3,6 +3,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
   Button,
   Heading,
   Input,
@@ -23,7 +29,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 // import styles from "./page.module.scss";
 interface ResponseValue {
   data?: string;
-  status?: number;
+  status?: string;
   // headers?: Headers;
   headers?: string;
 }
@@ -52,11 +58,12 @@ export default function Rest() {
   const [bodyJsonValue, setBodyJsonValue] = useState('');
   const [responseValue, setresponseValue] = useState<ResponseValue>({});
   // const [responseValue, setresponseValue] = useState<string | null>(null);
+  const [bodyError, setBodyError] = useState(false);
 
   useEffect(() => {
-    const currentMethod = method as string;
-    const currentUrl = url ? atob(decodeURIComponent(url[0])) : undefined; //atob(url[0])
-
+    const currentMethod = method as string;    
+    const currentUrl = url ? decodeURIComponent(atob(decodeURIComponent(url[0]))) : undefined; //atob(url[0])
+    
     if (currentMethod === undefined) {
       router.push('/auth/rest/GET');
     } else if (!methods.includes(currentMethod.toLowerCase())) {
@@ -89,9 +96,7 @@ export default function Rest() {
 
   const handleUrlChange = (e: { target: { value: string } }) => {
     const newUrl = e.target.value;
-    const encodedNewUrl = btoa(newUrl);
-    // console.log(encodedNewUrl);
-
+    const encodedNewUrl = btoa(encodeURIComponent(newUrl));
     setUrlValue(newUrl);
 
     const pathArray = pathname.split('/');
@@ -99,7 +104,7 @@ export default function Rest() {
     const methodIndex = pathArray.findIndex((el) =>
       methods.includes(el.toLowerCase())
     );
-    pathArray[methodIndex + 1] = encodedNewUrl; //newUrl;
+    pathArray[methodIndex + 1] = encodedNewUrl;
     const newPath = `${pathArray.join('/')}`;
     router.replace(newPath);
   };
@@ -133,24 +138,48 @@ export default function Rest() {
       router.replace(`${pathname}?${params.toString()}`);
     };
 
-  const handleBodyTextChange = (e: { target: { value: string } }) => {
+  const changeBodyText = (e: { target: { value: string } }) => {
     const text = e.target.value;
+    setBodyTextValue(text);
     if (text !== '') {
-      setBodyJsonValue(JSON.stringify(JSON.parse(text), null, 6));
+      try {        
+        setBodyJsonValue(JSON.stringify(JSON.parse(text), null, 6));
+        setBodyError(false);
+
+      } catch {        
+        setBodyJsonValue(text);
+        setBodyError(true);
+      }
     }
   };
-  const handleBodyJsonChange = (e: { target: { value: string } }) => {
+    
+  const changeBodyJson = (e: { target: { value: string } }) => {
     const text = e.target.value;
+    setBodyJsonValue(text);
     if (text !== '') {
-      setBodyTextValue(JSON.stringify(JSON.parse(text)));
+      try {        
+        setBodyTextValue(JSON.stringify(JSON.parse(text)));
+        setBodyJsonValue(JSON.stringify(JSON.parse(text), null, 6));
+        setBodyError(false);
+      } catch {        
+        setBodyJsonValue(text);
+        setBodyTextValue(text);
+        setBodyError(true);
+      }
+     
     }
+  };
+  const handleBodyTextChange = (e: { target: { value: string } }) => {
+    console.log('write body into url in base 64')
+  };
+  const handleBodyJsonChange = (e: { target: { value: string } }) => {
+    console.log('write body into url in base 64')
   };
 
   const handleSendRequest = async () => {
-    console.log(headers);
+    // console.log(headers);
 
     if (urlValue) {
-      // console.log(urlValue);
       // https://api.artic.edu/api/v1/artworks
       try {
         const response = await fetch(urlValue, {
@@ -164,9 +193,9 @@ export default function Rest() {
         }, {});
 
         if (!response.ok) {
-          console.log(typeof response.headers);
+          console.log("response headers", typeof response.headers);
           const responseObject = {
-            status: response.status,
+            status: response.status.toString(),
             // headers: response.headers
             headers: JSON.stringify(responseHeaders, null, 2),
           };
@@ -182,7 +211,7 @@ export default function Rest() {
         // console.log(result);
         // console.log(response);
         const responseObject = {
-          status: response.status,
+          status: response.status.toString(),
           // headers: response.headers,
           headers: JSON.stringify(responseHeaders, null, 2),
           data: result,
@@ -191,6 +220,13 @@ export default function Rest() {
         setresponseValue(responseObject);
         // console.log(result);
       } catch (error) {
+        const responseObject = {
+          status: 'Could not send request',
+          // headers: response.headers
+          // headers: JSON.stringify(responseHeaders, null, 2),
+        };
+        setresponseValue(responseObject);
+        // console.log(responseObject);
         console.log(error);
       }
     }
@@ -267,7 +303,7 @@ export default function Rest() {
                     height="auto"
                     value={bodyTextValue}
                     placeholder="body text"
-                    onChange={(e) => setBodyTextValue(e.target.value)}
+                    onChange={changeBodyText}
                     onBlur={handleBodyTextChange}
                   />
                 </TabPanel>
@@ -278,8 +314,11 @@ export default function Rest() {
                     height="100%"
                     value={bodyJsonValue}
                     placeholder="body json"
-                    onChange={(e) => setBodyJsonValue(e.target.value)}
+                    onChange={changeBodyJson}
                     onBlur={handleBodyJsonChange}
+                    sx={{
+                      'textDecoration': bodyError ? '#E53E3E wavy underline' : 'none'
+                    }}
                   />
                 </TabPanel>
               </TabPanels>
@@ -327,6 +366,41 @@ export default function Rest() {
               </Stack>
             ))}
           </VStack>
+          <Accordion defaultIndex={[0]} allowMultiple>
+            <AccordionItem>
+              <h2>
+                <AccordionButton>
+                  <Box as='span' flex='1' textAlign='left'>
+                    Section 1 title
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                commodo consequat.
+              </AccordionPanel>
+            </AccordionItem>
+
+            <AccordionItem>
+              <h2>
+                <AccordionButton>
+                  <Box as='span' flex='1' textAlign='left'>
+                    Section 2 title
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                commodo consequat.
+              </AccordionPanel>
+            </AccordionItem>
+          </Accordion>
         </VStack>
         <VStack spacing={25} align="stretch">
           <Heading

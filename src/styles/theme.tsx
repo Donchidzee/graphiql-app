@@ -12,6 +12,10 @@ import {
   Box,
   Flex,
   Spacer,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel, Accordion
 } from '@chakra-ui/react';
 
 const { Button, Link, Switch, Select, Textarea, Input, Heading, Tabs } =
@@ -38,5 +42,10 @@ export const theme = extendBaseTheme({
     Box,
     Flex,
     Spacer,
+    Accordion,
+    AccordionButton,
+    AccordionIcon,
+    AccordionItem,
+    AccordionPanel
   },
 });

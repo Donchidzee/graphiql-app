@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './footer.module.scss';
 import { Link, Stack } from '@chakra-ui/react';
+import Image from 'next/image';
 
 const Footer: React.FC = () => {
   return (
@@ -14,7 +15,12 @@ const Footer: React.FC = () => {
           GithubLink
         </Link>
         <p>2024</p>
-        <p>LOGO</p>
+        <Image
+          src="/images/alien.png"
+          alt="alien"
+          width={30}
+          height={30}
+        />
       </Stack>
     </div>
   );
