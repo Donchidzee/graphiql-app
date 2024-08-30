@@ -26,10 +26,15 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import TextareaAutosize from 'react-textarea-autosize';
-import { changeUrl, changeUrlError } from '@/store/slices/restInputsSlice';
+import {
+  changeBody,
+  changeUrl,
+  changeUrlError,
+} from '@/store/slices/restInputsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import UrlInput from '@/components/rest/urlInput/UrlInput';
+import BodyInput from '@/components/rest/bodyInput.tsx/BodyInput';
 
 // import styles from "./page.module.scss";
 interface ResponseValue {
@@ -41,6 +46,7 @@ interface ResponseValue {
 export default function Rest() {
   const dispatch = useDispatch();
   const stateUrl = useSelector((state: RootState) => state.restInputs.url);
+  const stateBody = useSelector((state: RootState) => state.restInputs.body);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -63,11 +69,11 @@ export default function Rest() {
   const [variables, setVariables] = useState<
     { headerIndex: number; key: string; value: string }[]
   >([]);
-  const [bodyTextValue, setBodyTextValue] = useState('');
-  const [bodyJsonValue, setBodyJsonValue] = useState('');
+  // const [bodyTextValue, setBodyTextValue] = useState('');
+  // const [bodyJsonValue, setBodyJsonValue] = useState('');
   const [responseValue, setResponseValue] = useState<ResponseValue>({});
   // const [responseValue, setresponseValue] = useState<string | null>(null);
-  const [bodyError, setBodyError] = useState(false);
+  // const [bodyError, setBodyError] = useState(false);
   const [headerInputErrors, setHeaderInputErrors] = useState(
     headers.map(() => ({ key: false, value: false }))
   );
@@ -80,6 +86,11 @@ export default function Rest() {
     const currentUrl = url
       ? decodeURIComponent(atob(decodeURIComponent(url[0])))
       : undefined;
+    const currentBody =
+      url && url[1]
+        ? decodeURIComponent(atob(decodeURIComponent(url[1])))
+        : undefined;
+    // console.log(currentBody);
 
     if (currentMethod === undefined) {
       router.push('/auth/rest/GET');
@@ -91,12 +102,14 @@ export default function Rest() {
         router.push(`/auth/rest/${currentMethod}`);
       } else {
         dispatch(changeUrl(currentUrl));
+        if (currentBody) {
+          dispatch(changeBody(currentBody));
+        }
       }
     }
   }, [method, router, url, methods, dispatch]);
 
   useEffect(() => {
-    console.log(stateUrl);
     const encodedNewUrl = btoa(encodeURIComponent(stateUrl));
 
     const pathArray = pathname.split('/');
@@ -108,6 +121,18 @@ export default function Rest() {
     const newPath = `${pathArray.join('/')}`;
     router.replace(newPath);
   }, [stateUrl, methods, router, pathname]);
+
+  useEffect(() => {
+    const encodedNewBody = btoa(encodeURIComponent(stateBody));
+
+    const pathArray = pathname.split('/');
+    const methodIndex = pathArray.findIndex((el) =>
+      methods.includes(el.toLowerCase())
+    );
+    pathArray[methodIndex + 2] = encodedNewBody;
+    const newPath = `${pathArray.join('/')}`;
+    router.replace(newPath);
+  }, [stateBody, methods, router, pathname]);
 
   const changeMethod = (e: { target: { value: string } }) => {
     const newMethod = e.target.value.toUpperCase();
@@ -160,79 +185,79 @@ export default function Rest() {
       setHeaderInputErrors(newHeaderInputErrors);
     };
 
-  const replaceVariable = (str) => {
-    const LSVariables = JSON.parse(localStorage.getItem('localVariables'));
+  // const replaceVariable = (str) => {
+  //   const LSVariables = JSON.parse(localStorage.getItem('localVariables'));
 
-    return str.replace(
-      /"{{(.*?)}}"|{{(.*?)}}/g,
-      (_, quotedKey, unquotedKey) => {
-        const key = quotedKey || unquotedKey;
-        const variable = LSVariables.find((el) => el.key === key);
-        return variable ? `"{{${key}}}"` : key;
-      }
-    );
-  };
+  //   return str.replace(
+  //     /"{{(.*?)}}"|{{(.*?)}}/g,
+  //     (_, quotedKey, unquotedKey) => {
+  //       const key = quotedKey || unquotedKey;
+  //       const variable = LSVariables.find((el) => el.key === key);
+  //       return variable ? `"{{${key}}}"` : key;
+  //     }
+  //   );
+  // };
 
-  const changeBodyText = (e: { target: { value: string } }) => {
-    const text = e.target.value;
-    setBodyTextValue(text);
+  // const changeBodyText = (e: { target: { value: string } }) => {
+  //   const text = e.target.value;
+  //   setBodyTextValue(text);
 
-    if (text !== '') {
-      try {
-        const replacedVariablesText = replaceVariable(text);
-        setBodyJsonValue(
-          JSON.stringify(JSON.parse(replacedVariablesText), null, 6)
-        );
-        setBodyError(false);
-      } catch {
-        setBodyJsonValue(text);
-        setBodyError(true);
-      }
-    }
-  };
+  //   if (text !== '') {
+  //     try {
+  //       const replacedVariablesText = replaceVariable(text);
+  //       setBodyJsonValue(
+  //         JSON.stringify(JSON.parse(replacedVariablesText), null, 6)
+  //       );
+  //       setBodyError(false);
+  //     } catch {
+  //       setBodyJsonValue(text);
+  //       setBodyError(true);
+  //     }
+  //   }
+  // };
 
-  const changeBodyJson = (e: { target: { value: string } }) => {
-    const text = e.target.value;
-    setBodyJsonValue(text);
-    if (text !== '') {
-      try {
-        const replacedVariablesText = replaceVariable(text);
-        setBodyTextValue(text);
-        setBodyJsonValue(
-          JSON.stringify(JSON.parse(replacedVariablesText), null, 6)
-        );
-        setBodyError(false);
-      } catch {
-        setBodyJsonValue(text);
-        setBodyTextValue(text);
-        setBodyError(true);
-      }
-    }
-  };
-  const handleBodyTextChange = (e: { target: { value: string } }) => {
-    const text = e.target.value;
+  // const changeBodyJson = (e: { target: { value: string } }) => {
+  //   const text = e.target.value;
+  //   setBodyJsonValue(text);
+  //   if (text !== '') {
+  //     try {
+  //       const replacedVariablesText = replaceVariable(text);
+  //       setBodyTextValue(text);
+  //       setBodyJsonValue(
+  //         JSON.stringify(JSON.parse(replacedVariablesText), null, 6)
+  //       );
+  //       setBodyError(false);
+  //     } catch {
+  //       setBodyJsonValue(text);
+  //       setBodyTextValue(text);
+  //       setBodyError(true);
+  //     }
+  //   }
+  // };
+  // const handleBodyTextChange = (e: { target: { value: string } }) => {
+  //   const text = e.target.value;
 
-    console.log('write body into url in base 64');
+  //   console.log('write body into url in base 64');
 
-    if (stateUrl === '') {
-      dispatch(changeUrlError(true));
-    } else {
-      dispatch(changeUrlError(false));
+  //   if (stateUrl === '') {
+  //     dispatch(changeUrlError(true));
+  //   } else {
+  //     dispatch(changeUrlError(false));
 
-      const encodedNewBody = btoa(encodeURIComponent(text));
+  //     const encodedNewBody = btoa(encodeURIComponent(text));
 
-      const pathArray = pathname.split('/');
-      const methodIndex = pathArray.findIndex((el) =>
-        methods.includes(el.toLowerCase())
-      );
-      pathArray[methodIndex + 2] = encodedNewBody;
-      const newPath = `${pathArray.join('/')}`;
-      router.replace(newPath);
-    }
-  };
-  const handleBodyJsonChange = (e: { target: { value: string } }) => {
-    console.log('write body into url in base 64', e);
-  };
+  //     const pathArray = pathname.split('/');
+  //     const methodIndex = pathArray.findIndex((el) =>
+  //       methods.includes(el.toLowerCase())
+  //     );
+  //     pathArray[methodIndex + 2] = encodedNewBody;
+  //     const newPath = `${pathArray.join('/')}`;
+  //     router.replace(newPath);
+  //   }
+  // };
+  // const handleBodyJsonChange = (e: { target: { value: string } }) => {
+  //   console.log('write body into url in base 64', e);
+  // };
 
   const handleSendRequest = async () => {
     if (stateUrl) {
@@ -351,7 +376,8 @@ export default function Rest() {
             <Heading as="h2" size="sm" noOfLines={1} textTransform="uppercase">
               body
             </Heading>
-            <Tabs width="100%">
+            <BodyInput />
+            {/* <Tabs width="100%">
               <TabList>
                 <Tab>Text</Tab>
                 <Tab>JSON</Tab>
@@ -386,7 +412,7 @@ export default function Rest() {
                   />
                 </TabPanel>
               </TabPanels>
-            </Tabs>
+            </Tabs> */}
           </VStack>
           <Accordion allowMultiple>
             <AccordionItem>

@@ -22,9 +22,13 @@ export const restInputsSlice = createSlice({
     changeUrlError: (state, action: PayloadAction<boolean>) => {
       state.urlError = action.payload;
     },
+    changeBody: (state, action: PayloadAction<string>) => {
+      state.body = action.payload;
+    },
   },
 });
 
-export const { changeUrl, changeUrlError } = restInputsSlice.actions;
+export const { changeUrl, changeUrlError, changeBody } =
+  restInputsSlice.actions;
 
 export default restInputsSlice.reducer;
