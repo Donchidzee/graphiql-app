@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import {
   Accordion,
@@ -26,6 +26,10 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import TextareaAutosize from 'react-textarea-autosize';
+import { changeUrl, changeUrlError } from '@/store/slices/restInputsSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import UrlInput from '@/components/rest/urlInput/UrlInput';
 
 // import styles from "./page.module.scss";
 interface ResponseValue {
@@ -35,6 +39,9 @@ interface ResponseValue {
 }
 
 export default function Rest() {
+  const dispatch = useDispatch();
+  const stateUrl = useSelector((state: RootState) => state.restInputs.url);
+
   const router = useRouter();
   const pathname = usePathname();
   const { method, url } = useParams();
@@ -49,29 +56,31 @@ export default function Rest() {
     </option>
   ));
 
-  const [urlValue, setUrlValue] = useState('');
   const [selectedMethod, setSelectedMethod] = useState('get');
   const [headers, setHeaders] = useState<
     { headerIndex: number; key: string; value: string }[]
   >([]);
   const [variables, setVariables] = useState<
-  { headerIndex: number; key: string; value: string }[]
->([]);
+    { headerIndex: number; key: string; value: string }[]
+  >([]);
   const [bodyTextValue, setBodyTextValue] = useState('');
   const [bodyJsonValue, setBodyJsonValue] = useState('');
   const [responseValue, setResponseValue] = useState<ResponseValue>({});
   // const [responseValue, setresponseValue] = useState<string | null>(null);
   const [bodyError, setBodyError] = useState(false);
-  const [headerInputErrors, setHeaderInputErrors] = useState(  headers.map(() => ({ key: false, value: false })));
-  const [urlInputError, setUrlInputError] = useState(false);
+  const [headerInputErrors, setHeaderInputErrors] = useState(
+    headers.map(() => ({ key: false, value: false }))
+  );
 
   useEffect(() => {
     localStorage.setItem('localVariables', JSON.stringify(variables));
-  }, []);
+  }, [variables]);
   useEffect(() => {
-    const currentMethod = method as string;    
-    const currentUrl = url ? decodeURIComponent(atob(decodeURIComponent(url[0]))) : undefined;
-    
+    const currentMethod = method as string;
+    const currentUrl = url
+      ? decodeURIComponent(atob(decodeURIComponent(url[0])))
+      : undefined;
+
     if (currentMethod === undefined) {
       router.push('/auth/rest/GET');
     } else if (!methods.includes(currentMethod.toLowerCase())) {
@@ -81,10 +90,24 @@ export default function Rest() {
       if (currentUrl === undefined) {
         router.push(`/auth/rest/${currentMethod}`);
       } else {
-        setUrlValue(currentUrl);
+        dispatch(changeUrl(currentUrl));
       }
     }
-  }, [method, router, url, methods]);
+  }, [method, router, url, methods, dispatch]);
+
+  useEffect(() => {
+    console.log(stateUrl);
+    const encodedNewUrl = btoa(encodeURIComponent(stateUrl));
+
+    const pathArray = pathname.split('/');
+
+    const methodIndex = pathArray.findIndex((el) =>
+      methods.includes(el.toLowerCase())
+    );
+    pathArray[methodIndex + 1] = encodedNewUrl;
+    const newPath = `${pathArray.join('/')}`;
+    router.replace(newPath);
+  }, [stateUrl, methods, router, pathname]);
 
   const changeMethod = (e: { target: { value: string } }) => {
     const newMethod = e.target.value.toUpperCase();
@@ -102,31 +125,15 @@ export default function Rest() {
     router.replace(newPath);
   };
 
-  const handleUrlChange = (e: { target: { value: string } }) => {
-    setUrlInputError(false);
-    const newUrl = e.target.value;
-    const encodedNewUrl = btoa(encodeURIComponent(newUrl));
-    setUrlValue(newUrl);
-
-    const pathArray = pathname.split('/');
-
-    const methodIndex = pathArray.findIndex((el) =>
-      methods.includes(el.toLowerCase())
-    );
-    pathArray[methodIndex + 1] = encodedNewUrl;
-    const newPath = `${pathArray.join('/')}`;
-    router.replace(newPath);
-  };
-
   const addHeader = () => {
     setHeaders([
       ...headers,
       { headerIndex: headers.length, key: '', value: '' },
     ]);
     setHeaderInputErrors([...headerInputErrors, { key: false, value: false }]);
-
   };
   const isValidHeaderInput = (str) => {
+    /* eslint-disable no-control-regex */
     return /^[\x00-\xFF]*$/.test(str);
   };
   const handleHeadersChange =
@@ -139,12 +146,11 @@ export default function Rest() {
       setHeaders(newHeaders);
       newHeaders.forEach((header) => {
         if (header.key.trim() !== '') {
-          const encodedHeaderValue = btoa(encodeURIComponent(header.value))
+          const encodedHeaderValue = btoa(encodeURIComponent(header.value));
           params.set(header.key, encodedHeaderValue);
         }
       });
       router.replace(`${pathname}?${params.toString()}`);
-
 
       const newHeaderInputErrors = [...headerInputErrors];
       if (!newHeaderInputErrors[index]) {
@@ -157,72 +163,96 @@ export default function Rest() {
   const replaceVariable = (str) => {
     const LSVariables = JSON.parse(localStorage.getItem('localVariables'));
 
-    return str.replace(/"{{(.*?)}}"|{{(.*?)}}/g, (_, quotedKey, unquotedKey) => {
-      const key = quotedKey || unquotedKey;
-      const variable = LSVariables.find(el => el.key === key);
-          return variable ? `"{{${key}}}"` : key;
-    });
-  }
+    return str.replace(
+      /"{{(.*?)}}"|{{(.*?)}}/g,
+      (_, quotedKey, unquotedKey) => {
+        const key = quotedKey || unquotedKey;
+        const variable = LSVariables.find((el) => el.key === key);
+        return variable ? `"{{${key}}}"` : key;
+      }
+    );
+  };
 
   const changeBodyText = (e: { target: { value: string } }) => {
     const text = e.target.value;
     setBodyTextValue(text);
 
     if (text !== '') {
-      try {       
+      try {
         const replacedVariablesText = replaceVariable(text);
-        setBodyJsonValue(JSON.stringify(JSON.parse(replacedVariablesText), null, 6));
+        setBodyJsonValue(
+          JSON.stringify(JSON.parse(replacedVariablesText), null, 6)
+        );
         setBodyError(false);
-      } catch {        
+      } catch {
         setBodyJsonValue(text);
         setBodyError(true);
       }
     }
   };
-    
+
   const changeBodyJson = (e: { target: { value: string } }) => {
     const text = e.target.value;
     setBodyJsonValue(text);
     if (text !== '') {
       try {
         const replacedVariablesText = replaceVariable(text);
-        setBodyTextValue(text)
-        setBodyJsonValue(JSON.stringify(JSON.parse(replacedVariablesText), null, 6));
+        setBodyTextValue(text);
+        setBodyJsonValue(
+          JSON.stringify(JSON.parse(replacedVariablesText), null, 6)
+        );
         setBodyError(false);
-      } catch {        
+      } catch {
         setBodyJsonValue(text);
         setBodyTextValue(text);
         setBodyError(true);
       }
-     
     }
   };
   const handleBodyTextChange = (e: { target: { value: string } }) => {
-    console.log('write body into url in base 64')
+    const text = e.target.value;
+
+    console.log('write body into url in base 64');
+
+    if (stateUrl === '') {
+      dispatch(changeUrlError(true));
+    } else {
+      dispatch(changeUrlError(false));
+
+      const encodedNewBody = btoa(encodeURIComponent(text));
+
+      const pathArray = pathname.split('/');
+      const methodIndex = pathArray.findIndex((el) =>
+        methods.includes(el.toLowerCase())
+      );
+      pathArray[methodIndex + 2] = encodedNewBody;
+      const newPath = `${pathArray.join('/')}`;
+      router.replace(newPath);
+    }
   };
   const handleBodyJsonChange = (e: { target: { value: string } }) => {
-    console.log('write body into url in base 64')
+    console.log('write body into url in base 64', e);
   };
 
   const handleSendRequest = async () => {
-    if (urlValue) {
+    if (stateUrl) {
       // https://api.artic.edu/api/v1/artworks
-          ///saving headers
+      ///saving headers
       const responseHeaders = headers.reduce((acc, obj) => {
         acc[obj.key] = obj.value;
         return acc;
       }, {});
 
       try {
-        const response = await fetch(urlValue, {
+        const response = await fetch(stateUrl, {
           method: selectedMethod,
-          headers: responseHeaders
-        });    
+          headers: responseHeaders,
+        });
 
         if (!response.ok) {
           const responseObject = {
             status: response.status.toString(),
-            headers: response.headers
+            headers: response.headers,
           };
           setResponseValue(responseObject);
 
@@ -240,7 +270,7 @@ export default function Rest() {
         setResponseValue(responseObject);
       } catch (error) {
         let responseObject;
-        if(error.name === 'TypeError') {
+        if (error.name === 'TypeError') {
           responseObject = {
             status: 'Error in headers',
           };
@@ -248,14 +278,13 @@ export default function Rest() {
           responseObject = {
             status: 'Could not send request',
           };
-        }  
+        }
         setResponseValue(responseObject);
       }
     } else {
-      setUrlInputError(true);
+      dispatch(changeUrlError(true));
     }
   };
-
 
   const addVariable = () => {
     setVariables([
@@ -265,14 +294,13 @@ export default function Rest() {
   };
 
   const handleVariablesChange =
-  (index: number, field: 'key' | 'value') =>
-  (e: React.ChangeEvent<HTMLInputElement>) => {
-
-    const newVariables = [...variables];
-    newVariables[index][field] = e.target.value;
-    setVariables(newVariables);
-    localStorage.setItem('localVariables', JSON.stringify(variables));
-  };
+    (index: number, field: 'key' | 'value') =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newVariables = [...variables];
+      newVariables[index][field] = e.target.value;
+      setVariables(newVariables);
+      localStorage.setItem('localVariables', JSON.stringify(variables));
+    };
   return (
     <>
       <VStack spacing={50} align="stretch">
@@ -317,17 +345,7 @@ export default function Rest() {
             >
               {methodOptions}
             </Select>
-            <FormControl isInvalid={urlInputError} width="100%">
-
-              <InputGroup size="md">
-                <InputLeftAddon>url</InputLeftAddon>
-                <Input
-                  value={urlValue}
-                  onChange={(e) => setUrlValue(e.target.value)}
-                  onBlur={handleUrlChange}
-                />
-              </InputGroup>
-            </FormControl>
+            <UrlInput />
           </Stack>
           <VStack spacing={2} align="stretch">
             <Heading as="h2" size="sm" noOfLines={1} textTransform="uppercase">
@@ -361,7 +379,9 @@ export default function Rest() {
                     onChange={changeBodyJson}
                     onBlur={handleBodyJsonChange}
                     sx={{
-                      'textDecoration': bodyError ? '#E53E3E wavy underline' : 'none'
+                      textDecoration: bodyError
+                        ? '#E53E3E wavy underline'
+                        : 'none',
                     }}
                   />
                 </TabPanel>
@@ -372,7 +392,7 @@ export default function Rest() {
             <AccordionItem>
               <h2>
                 <AccordionButton>
-                  <Box as='span' flex='1' textAlign='left'>
+                  <Box as="span" flex="1" textAlign="left">
                     <Heading
                       as="h2"
                       size="sm"
@@ -408,14 +428,13 @@ export default function Rest() {
                         </InputGroup>
                       </FormControl>
                       <FormControl isInvalid={headerInputErrors[index]?.value}>
-
-                      <InputGroup size="md">
-                        <InputLeftAddon>value</InputLeftAddon>
-                        <Input
-                          value={header.value}
-                          onChange={handleHeadersChange(index, 'value')}
-                        />
-                      </InputGroup>
+                        <InputGroup size="md">
+                          <InputLeftAddon>value</InputLeftAddon>
+                          <Input
+                            value={header.value}
+                            onChange={handleHeadersChange(index, 'value')}
+                          />
+                        </InputGroup>
                       </FormControl>
                     </Stack>
                   ))}
@@ -426,7 +445,7 @@ export default function Rest() {
             <AccordionItem>
               <h2>
                 <AccordionButton>
-                  <Box as='span' flex='1' textAlign='left'>
+                  <Box as="span" flex="1" textAlign="left">
                     <Heading
                       as="h2"
                       size="sm"
@@ -452,13 +471,13 @@ export default function Rest() {
                   </Button>
                   {variables.map((variable, index) => (
                     <Stack key={index} align="center" direction="row">
-                        <InputGroup size="md">
-                          <InputLeftAddon>key</InputLeftAddon>
-                          <Input
-                            value={variable.key}
-                            onChange={handleVariablesChange(index, 'key')}
-                          />
-                        </InputGroup>
+                      <InputGroup size="md">
+                        <InputLeftAddon>key</InputLeftAddon>
+                        <Input
+                          value={variable.key}
+                          onChange={handleVariablesChange(index, 'key')}
+                        />
+                      </InputGroup>
                       <InputGroup size="md">
                         <InputLeftAddon>value</InputLeftAddon>
                         <Input
@@ -521,7 +540,15 @@ export default function Rest() {
                   as={TextareaAutosize}
                   maxHeight="50vh"
                   isDisabled
-                  placeholder={responseValue.headers !== undefined ? JSON.stringify(Object.fromEntries(responseValue.headers.entries()), null, 2) : ''}
+                  placeholder={
+                    responseValue.headers !== undefined
+                      ? JSON.stringify(
+                          Object.fromEntries(responseValue.headers.entries()),
+                          null,
+                          2
+                        )
+                      : ''
+                  }
                   size="sm"
                   sx={{
                     ':disabled': {
@@ -537,9 +564,6 @@ export default function Rest() {
           </Tabs>
         </VStack>
       </VStack>
-
-
-
     </>
   );
 }

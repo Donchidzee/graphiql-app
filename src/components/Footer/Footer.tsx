@@ -15,12 +15,7 @@ const Footer: React.FC = () => {
           GithubLink
         </Link>
         <p>2024</p>
-        <Image
-          src="/images/alien.png"
-          alt="alien"
-          width={30}
-          height={30}
-        />
+        <Image src="/images/alien.png" alt="alien" width={30} height={30} />
       </Stack>
     </div>
   );
