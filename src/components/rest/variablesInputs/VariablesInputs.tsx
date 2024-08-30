@@ -17,9 +17,15 @@ import {
 } from '@chakra-ui/react';
 
 const VariablesInputs: React.FC = () => {
-  const [variables, setVariables] = useState<
-    { variableIndex: number; key: string; value: string }[]
-  >([]);
+  const lsStoredVariables = localStorage.getItem('localVariables');
+  const storedVariables = lsStoredVariables
+    ? JSON.parse(lsStoredVariables)
+    : [];
+
+  const [variables, setVariables] =
+    useState<{ variableIndex: number; key: string; value: string }[]>(
+      storedVariables
+    );
 
   useEffect(() => {
     localStorage.setItem('localVariables', JSON.stringify(variables));
@@ -32,8 +38,10 @@ const VariablesInputs: React.FC = () => {
     ]);
   };
 
-  const deleteVariable = () => {
-    console.log('deleting');
+  const deleteVariable = (index) => {
+    const newVariables = variables.filter((el, i) => i !== index);
+    setVariables(newVariables);
+    localStorage.setItem('localVariables', JSON.stringify(newVariables));
   };
 
   const handleVariablesChange =
@@ -93,8 +101,10 @@ const VariablesInputs: React.FC = () => {
                 <Button
                   colorScheme="teal"
                   size="sm"
+                  width="max-content"
+                  flex="none"
                   textTransform="uppercase"
-                  onClick={deleteVariable}
+                  onClick={() => deleteVariable(index)}
                 >
                   delete
                 </Button>
