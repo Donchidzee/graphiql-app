@@ -1,15 +1,16 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import {
   Accordion,
-  AccordionButton,
-  AccordionIcon,
   AccordionItem,
+  AccordionButton,
   AccordionPanel,
+  AccordionIcon,
   Box,
   Button,
+  FormControl,
   Heading,
   Input,
   InputGroup,
@@ -30,8 +31,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 interface ResponseValue {
   data?: string;
   status?: string;
-  // headers?: Headers;
-  headers?: string;
+  headers?: Headers;
 }
 
 export default function Rest() {
@@ -54,15 +54,23 @@ export default function Rest() {
   const [headers, setHeaders] = useState<
     { headerIndex: number; key: string; value: string }[]
   >([]);
+  const [variables, setVariables] = useState<
+  { headerIndex: number; key: string; value: string }[]
+>([]);
   const [bodyTextValue, setBodyTextValue] = useState('');
   const [bodyJsonValue, setBodyJsonValue] = useState('');
-  const [responseValue, setresponseValue] = useState<ResponseValue>({});
+  const [responseValue, setResponseValue] = useState<ResponseValue>({});
   // const [responseValue, setresponseValue] = useState<string | null>(null);
   const [bodyError, setBodyError] = useState(false);
+  const [headerInputErrors, setHeaderInputErrors] = useState(  headers.map(() => ({ key: false, value: false })));
+  const [urlInputError, setUrlInputError] = useState(false);
 
   useEffect(() => {
+    localStorage.setItem('localVariables', JSON.stringify(variables));
+  }, []);
+  useEffect(() => {
     const currentMethod = method as string;    
-    const currentUrl = url ? decodeURIComponent(atob(decodeURIComponent(url[0]))) : undefined; //atob(url[0])
+    const currentUrl = url ? decodeURIComponent(atob(decodeURIComponent(url[0]))) : undefined;
     
     if (currentMethod === undefined) {
       router.push('/auth/rest/GET');
@@ -95,6 +103,7 @@ export default function Rest() {
   };
 
   const handleUrlChange = (e: { target: { value: string } }) => {
+    setUrlInputError(false);
     const newUrl = e.target.value;
     const encodedNewUrl = btoa(encodeURIComponent(newUrl));
     setUrlValue(newUrl);
@@ -114,38 +123,56 @@ export default function Rest() {
       ...headers,
       { headerIndex: headers.length, key: '', value: '' },
     ]);
-  };
+    setHeaderInputErrors([...headerInputErrors, { key: false, value: false }]);
 
+  };
+  const isValidHeaderInput = (str) => {
+    return /^[\x00-\xFF]*$/.test(str);
+  };
   const handleHeadersChange =
     (index: number, field: 'key' | 'value') =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const params = new URLSearchParams();
 
       const newHeaders = [...headers];
-      //add when will be encoding
-      // if(field === "value") {
-      //   newHeaders[index][field] = atob(e.target.value);
-      // } else {
-      //   newHeaders[index][field] = e.target.value;
-      // }
       newHeaders[index][field] = e.target.value;
       setHeaders(newHeaders);
       newHeaders.forEach((header) => {
         if (header.key.trim() !== '') {
-          params.set(header.key, header.value);
+          const encodedHeaderValue = btoa(encodeURIComponent(header.value))
+          params.set(header.key, encodedHeaderValue);
         }
       });
       router.replace(`${pathname}?${params.toString()}`);
+
+
+      const newHeaderInputErrors = [...headerInputErrors];
+      if (!newHeaderInputErrors[index]) {
+        newHeaderInputErrors[index] = { key: false, value: false };
+      }
+      newHeaderInputErrors[index][field] = !isValidHeaderInput(e.target.value);
+      setHeaderInputErrors(newHeaderInputErrors);
     };
+
+  const replaceVariable = (str) => {
+    const LSVariables = JSON.parse(localStorage.getItem('localVariables'));
+
+    return str.replace(/"{{(.*?)}}"|{{(.*?)}}/g, (_, quotedKey, unquotedKey) => {
+      const key = quotedKey || unquotedKey;
+      const variable = LSVariables.find(el => el.key === key);
+          return variable ? `"{{${key}}}"` : key;
+    });
+  }
 
   const changeBodyText = (e: { target: { value: string } }) => {
     const text = e.target.value;
     setBodyTextValue(text);
-    if (text !== '') {
-      try {        
-        setBodyJsonValue(JSON.stringify(JSON.parse(text), null, 6));
-        setBodyError(false);
 
+    if (text !== '') {
+      try {       
+        const replacedVariablesText = replaceVariable(text);
+        setBodyJsonValue(JSON.stringify(JSON.parse(replacedVariablesText), null, 6));
+        setBodyError(false);
       } catch {        
         setBodyJsonValue(text);
         setBodyError(true);
@@ -157,9 +184,10 @@ export default function Rest() {
     const text = e.target.value;
     setBodyJsonValue(text);
     if (text !== '') {
-      try {        
-        setBodyTextValue(JSON.stringify(JSON.parse(text)));
-        setBodyJsonValue(JSON.stringify(JSON.parse(text), null, 6));
+      try {
+        const replacedVariablesText = replaceVariable(text);
+        setBodyTextValue(text)
+        setBodyJsonValue(JSON.stringify(JSON.parse(replacedVariablesText), null, 6));
         setBodyError(false);
       } catch {        
         setBodyJsonValue(text);
@@ -177,61 +205,74 @@ export default function Rest() {
   };
 
   const handleSendRequest = async () => {
-    // console.log(headers);
-
     if (urlValue) {
       // https://api.artic.edu/api/v1/artworks
+          ///saving headers
+      const responseHeaders = headers.reduce((acc, obj) => {
+        acc[obj.key] = obj.value;
+        return acc;
+      }, {});
+
       try {
         const response = await fetch(urlValue, {
           method: selectedMethod,
-        });
-        // const responseText = await response.text();
-        ///saving headers
-        const responseHeaders = headers.reduce((acc, obj) => {
-          acc[obj.key] = obj.value;
-          return acc;
-        }, {});
+          headers: responseHeaders
+        });    
 
         if (!response.ok) {
-          console.log("response headers", typeof response.headers);
           const responseObject = {
             status: response.status.toString(),
-            // headers: response.headers
-            headers: JSON.stringify(responseHeaders, null, 2),
+            headers: response.headers
           };
-          setresponseValue(responseObject);
-          console.log(responseObject);
+          setResponseValue(responseObject);
 
           throw new Error('Response was not ok');
         }
-        // const result = await response.json();
-        // const result = await response.text();
+
         const json = await response.json();
         const result = JSON.stringify(json, null, 2);
-        // console.log(result);
-        // console.log(response);
         const responseObject = {
           status: response.status.toString(),
-          // headers: response.headers,
-          headers: JSON.stringify(responseHeaders, null, 2),
+          headers: response.headers,
           data: result,
         };
 
-        setresponseValue(responseObject);
-        // console.log(result);
+        setResponseValue(responseObject);
       } catch (error) {
-        const responseObject = {
-          status: 'Could not send request',
-          // headers: response.headers
-          // headers: JSON.stringify(responseHeaders, null, 2),
-        };
-        setresponseValue(responseObject);
-        // console.log(responseObject);
-        console.log(error);
+        let responseObject;
+        if(error.name === 'TypeError') {
+          responseObject = {
+            status: 'Error in headers',
+          };
+        } else {
+          responseObject = {
+            status: 'Could not send request',
+          };
+        }  
+        setResponseValue(responseObject);
       }
+    } else {
+      setUrlInputError(true);
     }
   };
 
+
+  const addVariable = () => {
+    setVariables([
+      ...variables,
+      { headerIndex: variables.length, key: '', value: '' },
+    ]);
+  };
+
+  const handleVariablesChange =
+  (index: number, field: 'key' | 'value') =>
+  (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    const newVariables = [...variables];
+    newVariables[index][field] = e.target.value;
+    setVariables(newVariables);
+    localStorage.setItem('localVariables', JSON.stringify(variables));
+  };
   return (
     <>
       <VStack spacing={50} align="stretch">
@@ -276,14 +317,17 @@ export default function Rest() {
             >
               {methodOptions}
             </Select>
-            <InputGroup size="md">
-              <InputLeftAddon>url</InputLeftAddon>
-              <Input
-                value={urlValue}
-                onChange={(e) => setUrlValue(e.target.value)}
-                onBlur={handleUrlChange}
-              />
-            </InputGroup>
+            <FormControl isInvalid={urlInputError} width="100%">
+
+              <InputGroup size="md">
+                <InputLeftAddon>url</InputLeftAddon>
+                <Input
+                  value={urlValue}
+                  onChange={(e) => setUrlValue(e.target.value)}
+                  onBlur={handleUrlChange}
+                />
+              </InputGroup>
+            </FormControl>
           </Stack>
           <VStack spacing={2} align="stretch">
             <Heading as="h2" size="sm" noOfLines={1} textTransform="uppercase">
@@ -324,63 +368,58 @@ export default function Rest() {
               </TabPanels>
             </Tabs>
           </VStack>
-          {/* Variables section that can shown or hidden, specified variables are included in the body */}
-
-          <VStack spacing={2} align="stretch">
-            <Stack align="center" direction="row">
-              <Heading
-                as="h2"
-                size="sm"
-                noOfLines={1}
-                textTransform="uppercase"
-              >
-                headers
-              </Heading>
-              <Button
-                colorScheme="teal"
-                size="sm"
-                textTransform="uppercase"
-                width="100px"
-                onClick={addHeader}
-              >
-                new header
-              </Button>
-            </Stack>
-            {headers.map((header, index) => (
-              <Stack key={index} align="center" direction="row">
-                <InputGroup size="md">
-                  <InputLeftAddon>key</InputLeftAddon>
-                  <Input
-                    value={header.key}
-                    onChange={handleHeadersChange(index, 'key')}
-                  />
-                </InputGroup>
-                <InputGroup size="md">
-                  <InputLeftAddon>value</InputLeftAddon>
-                  <Input
-                    value={header.value}
-                    onChange={handleHeadersChange(index, 'value')}
-                  />
-                </InputGroup>
-                {/* <Button colorScheme='teal' size='sm' textTransform="uppercase">add</Button> */}
-              </Stack>
-            ))}
-          </VStack>
-          <Accordion defaultIndex={[0]} allowMultiple>
+          <Accordion allowMultiple>
             <AccordionItem>
               <h2>
                 <AccordionButton>
                   <Box as='span' flex='1' textAlign='left'>
-                    Section 1 title
+                    <Heading
+                      as="h2"
+                      size="sm"
+                      noOfLines={1}
+                      textTransform="uppercase"
+                    >
+                      headers
+                    </Heading>
                   </Box>
                   <AccordionIcon />
                 </AccordionButton>
               </h2>
-              <AccordionPanel pb={4}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-                veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                commodo consequat.
+              <AccordionPanel pb={8}>
+                <VStack spacing={2} align="stretch">
+                  <Button
+                    colorScheme="teal"
+                    size="sm"
+                    textTransform="uppercase"
+                    width="100px"
+                    onClick={addHeader}
+                  >
+                    new header
+                  </Button>
+                  {headers.map((header, index) => (
+                    <Stack key={index} align="center" direction="row">
+                      <FormControl isInvalid={headerInputErrors[index]?.key}>
+                        <InputGroup size="md">
+                          <InputLeftAddon>key</InputLeftAddon>
+                          <Input
+                            value={header.key}
+                            onChange={handleHeadersChange(index, 'key')}
+                          />
+                        </InputGroup>
+                      </FormControl>
+                      <FormControl isInvalid={headerInputErrors[index]?.value}>
+
+                      <InputGroup size="md">
+                        <InputLeftAddon>value</InputLeftAddon>
+                        <Input
+                          value={header.value}
+                          onChange={handleHeadersChange(index, 'value')}
+                        />
+                      </InputGroup>
+                      </FormControl>
+                    </Stack>
+                  ))}
+                </VStack>
               </AccordionPanel>
             </AccordionItem>
 
@@ -388,16 +427,48 @@ export default function Rest() {
               <h2>
                 <AccordionButton>
                   <Box as='span' flex='1' textAlign='left'>
-                    Section 2 title
+                    <Heading
+                      as="h2"
+                      size="sm"
+                      noOfLines={1}
+                      textTransform="uppercase"
+                    >
+                      variables
+                    </Heading>
                   </Box>
                   <AccordionIcon />
                 </AccordionButton>
               </h2>
-              <AccordionPanel pb={4}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-                veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                commodo consequat.
+              <AccordionPanel pb={8}>
+                <VStack spacing={2} align="stretch">
+                  <Button
+                    colorScheme="teal"
+                    size="sm"
+                    textTransform="uppercase"
+                    width="100px"
+                    onClick={addVariable}
+                  >
+                    new variable
+                  </Button>
+                  {variables.map((variable, index) => (
+                    <Stack key={index} align="center" direction="row">
+                        <InputGroup size="md">
+                          <InputLeftAddon>key</InputLeftAddon>
+                          <Input
+                            value={variable.key}
+                            onChange={handleVariablesChange(index, 'key')}
+                          />
+                        </InputGroup>
+                      <InputGroup size="md">
+                        <InputLeftAddon>value</InputLeftAddon>
+                        <Input
+                          value={variable.value}
+                          onChange={handleVariablesChange(index, 'value')}
+                        />
+                      </InputGroup>
+                    </Stack>
+                  ))}
+                </VStack>
               </AccordionPanel>
             </AccordionItem>
           </Accordion>
@@ -450,12 +521,7 @@ export default function Rest() {
                   as={TextareaAutosize}
                   maxHeight="50vh"
                   isDisabled
-                  // placeholder={responseValue.headers !== undefined ? JSON.stringify(Object.fromEntries(responseValue.headers.entries()), null, 2) : ''}
-                  placeholder={
-                    responseValue.headers !== undefined
-                      ? responseValue.headers
-                      : ''
-                  }
+                  placeholder={responseValue.headers !== undefined ? JSON.stringify(Object.fromEntries(responseValue.headers.entries()), null, 2) : ''}
                   size="sm"
                   sx={{
                     ':disabled': {
@@ -471,6 +537,9 @@ export default function Rest() {
           </Tabs>
         </VStack>
       </VStack>
+
+
+
     </>
   );
 }

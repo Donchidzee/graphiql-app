@@ -1,24 +1,9 @@
 import {
   extendBaseTheme,
   theme as chakraTheme,
-  InputGroup,
-  InputLeftAddon,
-  InputRightAddon,
-  VStack,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Box,
-  Flex,
-  Spacer,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel, Accordion
 } from '@chakra-ui/react';
 
-const { Button, Link, Switch, Select, Textarea, Input, Heading, Tabs } =
+const { Button, Link, Switch, Select, Textarea, Input, Heading, Tabs, Accordion } =
   chakraTheme.components;
 
 export const theme = extendBaseTheme({
@@ -28,24 +13,9 @@ export const theme = extendBaseTheme({
     Switch,
     Select,
     Input,
-    InputGroup,
-    InputLeftAddon,
-    InputRightAddon,
     Textarea,
-    VStack,
     Heading,
-    Tab,
-    TabList,
-    TabPanel,
-    TabPanels,
     Tabs,
-    Box,
-    Flex,
-    Spacer,
-    Accordion,
-    AccordionButton,
-    AccordionIcon,
-    AccordionItem,
-    AccordionPanel
+    Accordion
   },
 });
