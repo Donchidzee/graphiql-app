@@ -7,15 +7,8 @@ import {
   Heading,
   Select,
   Stack,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Textarea,
   VStack,
 } from '@chakra-ui/react';
-import TextareaAutosize from 'react-textarea-autosize';
 import {
   changeBody,
   changeUrl,
@@ -27,6 +20,7 @@ import UrlInput from '@/components/rest/urlInput/UrlInput';
 import BodyInput from '@/components/rest/bodyInput.tsx/BodyInput';
 import VariablesInputs from '@/components/rest/variablesInputs/VariablesInputs';
 import HeadersInputs from '@/components/rest/headersInputs/HeadersInputs';
+import ResponseArea from '@/components/responseArea/ResponseArea';
 
 // import styles from "./page.module.scss";
 interface ResponseValue {
@@ -166,15 +160,9 @@ export default function Rest() {
         setResponseValue(responseObject);
       } catch (error) {
         let responseObject;
-        if (error.name === 'TypeError') {
-          responseObject = {
-            status: 'Error in headers',
-          };
-        } else {
-          responseObject = {
-            status: 'Could not send request',
-          };
-        }
+        responseObject = {
+          status: 'Could not send request',
+        };
         setResponseValue(responseObject);
       }
     } else {
@@ -247,66 +235,7 @@ export default function Rest() {
           >
             response
           </Heading>
-          <Tabs width="100%">
-            <TabList>
-              <Tab textTransform="uppercase">status</Tab>
-              <Tab textTransform="uppercase">body</Tab>
-              <Tab textTransform="uppercase">headers</Tab>
-            </TabList>
-            <TabPanels>
-              <TabPanel color="blue.600">
-                <p>
-                  {responseValue.status !== undefined
-                    ? responseValue.status
-                    : ''}
-                </p>
-              </TabPanel>
-              <TabPanel>
-                <Textarea
-                  as={TextareaAutosize}
-                  maxHeight="50vh"
-                  isDisabled
-                  placeholder={
-                    responseValue.data !== undefined ? responseValue.data : ''
-                  }
-                  size="sm"
-                  sx={{
-                    ':disabled': {
-                      opacity: 0.8,
-                    },
-                    '::placeholder': {
-                      color: 'blue.600',
-                    },
-                  }}
-                />
-              </TabPanel>
-              <TabPanel>
-                <Textarea
-                  as={TextareaAutosize}
-                  maxHeight="50vh"
-                  isDisabled
-                  placeholder={
-                    responseValue.headers !== undefined
-                      ? JSON.stringify(
-                          Object.fromEntries(responseValue.headers.entries()),
-                          null,
-                          2
-                        )
-                      : ''
-                  }
-                  size="sm"
-                  sx={{
-                    ':disabled': {
-                      opacity: 0.8,
-                    },
-                    '::placeholder': {
-                      color: 'blue.600',
-                    },
-                  }}
-                />
-              </TabPanel>
-            </TabPanels>
-          </Tabs>
+          <ResponseArea responseValue={responseValue} />
         </VStack>
       </VStack>
     </>
