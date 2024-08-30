@@ -35,6 +35,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import UrlInput from '@/components/rest/urlInput/UrlInput';
 import BodyInput from '@/components/rest/bodyInput.tsx/BodyInput';
+import VariablesInputs from '@/components/rest/variablesInputs/VariablesInputs';
 
 // import styles from "./page.module.scss";
 interface ResponseValue {
@@ -66,21 +67,12 @@ export default function Rest() {
   const [headers, setHeaders] = useState<
     { headerIndex: number; key: string; value: string }[]
   >([]);
-  const [variables, setVariables] = useState<
-    { headerIndex: number; key: string; value: string }[]
-  >([]);
-  // const [bodyTextValue, setBodyTextValue] = useState('');
-  // const [bodyJsonValue, setBodyJsonValue] = useState('');
   const [responseValue, setResponseValue] = useState<ResponseValue>({});
   // const [responseValue, setresponseValue] = useState<string | null>(null);
-  // const [bodyError, setBodyError] = useState(false);
   const [headerInputErrors, setHeaderInputErrors] = useState(
     headers.map(() => ({ key: false, value: false }))
   );
 
-  useEffect(() => {
-    localStorage.setItem('localVariables', JSON.stringify(variables));
-  }, [variables]);
   useEffect(() => {
     const currentMethod = method as string;
     const currentUrl = url
@@ -90,7 +82,6 @@ export default function Rest() {
       url && url[1]
         ? decodeURIComponent(atob(decodeURIComponent(url[1])))
         : undefined;
-    // console.log(currentBody);
 
     if (currentMethod === undefined) {
       router.push('/auth/rest/GET');
@@ -185,81 +176,9 @@ export default function Rest() {
       setHeaderInputErrors(newHeaderInputErrors);
     };
 
-  // const replaceVariable = (str) => {
-  //   const LSVariables = JSON.parse(localStorage.getItem('localVariables'));
-
-  //   return str.replace(
-  //     /"{{(.*?)}}"|{{(.*?)}}/g,
-  //     (_, quotedKey, unquotedKey) => {
-  //       const key = quotedKey || unquotedKey;
-  //       const variable = LSVariables.find((el) => el.key === key);
-  //       return variable ? `"{{${key}}}"` : key;
-  //     }
-  //   );
-  // };
-
-  // const changeBodyText = (e: { target: { value: string } }) => {
-  //   const text = e.target.value;
-  //   setBodyTextValue(text);
-
-  //   if (text !== '') {
-  //     try {
-  //       const replacedVariablesText = replaceVariable(text);
-  //       setBodyJsonValue(
-  //         JSON.stringify(JSON.parse(replacedVariablesText), null, 6)
-  //       );
-  //       setBodyError(false);
-  //     } catch {
-  //       setBodyJsonValue(text);
-  //       setBodyError(true);
-  //     }
-  //   }
-  // };
-
-  // const changeBodyJson = (e: { target: { value: string } }) => {
-  //   const text = e.target.value;
-  //   setBodyJsonValue(text);
-  //   if (text !== '') {
-  //     try {
-  //       const replacedVariablesText = replaceVariable(text);
-  //       setBodyTextValue(text);
-  //       setBodyJsonValue(
-  //         JSON.stringify(JSON.parse(replacedVariablesText), null, 6)
-  //       );
-  //       setBodyError(false);
-  //     } catch {
-  //       setBodyJsonValue(text);
-  //       setBodyTextValue(text);
-  //       setBodyError(true);
-  //     }
-  //   }
-  // };
-  // const handleBodyTextChange = (e: { target: { value: string } }) => {
-  //   const text = e.target.value;
-
-  //   console.log('write body into url in base 64');
-
-  //   if (stateUrl === '') {
-  //     dispatch(changeUrlError(true));
-  //   } else {
-  //     dispatch(changeUrlError(false));
-
-  //     const encodedNewBody = btoa(encodeURIComponent(text));
-
-  //     const pathArray = pathname.split('/');
-  //     const methodIndex = pathArray.findIndex((el) =>
-  //       methods.includes(el.toLowerCase())
-  //     );
-  //     pathArray[methodIndex + 2] = encodedNewBody;
-  //     const newPath = `${pathArray.join('/')}`;
-  //     router.replace(newPath);
-  //   }
-  // };
-  // const handleBodyJsonChange = (e: { target: { value: string } }) => {
-  //   console.log('write body into url in base 64', e);
-  // };
-
   const handleSendRequest = async () => {
+    console.log(stateUrl);
+
     if (stateUrl) {
       // https://api.artic.edu/api/v1/artworks
       ///saving headers
@@ -311,21 +230,6 @@ export default function Rest() {
     }
   };
 
-  const addVariable = () => {
-    setVariables([
-      ...variables,
-      { headerIndex: variables.length, key: '', value: '' },
-    ]);
-  };
-
-  const handleVariablesChange =
-    (index: number, field: 'key' | 'value') =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newVariables = [...variables];
-      newVariables[index][field] = e.target.value;
-      setVariables(newVariables);
-      localStorage.setItem('localVariables', JSON.stringify(variables));
-    };
   return (
     <>
       <VStack spacing={50} align="stretch">
@@ -377,44 +281,8 @@ export default function Rest() {
               body
             </Heading>
             <BodyInput />
-            {/* <Tabs width="100%">
-              <TabList>
-                <Tab>Text</Tab>
-                <Tab>JSON</Tab>
-              </TabList>
-
-              <TabPanels>
-                <TabPanel>
-                  <Textarea
-                    as={TextareaAutosize}
-                    minHeight="120px"
-                    height="auto"
-                    value={bodyTextValue}
-                    placeholder="body text"
-                    onChange={changeBodyText}
-                    onBlur={handleBodyTextChange}
-                  />
-                </TabPanel>
-                <TabPanel>
-                  <Textarea
-                    as={TextareaAutosize}
-                    minHeight="120px"
-                    height="100%"
-                    value={bodyJsonValue}
-                    placeholder="body json"
-                    onChange={changeBodyJson}
-                    onBlur={handleBodyJsonChange}
-                    sx={{
-                      textDecoration: bodyError
-                        ? '#E53E3E wavy underline'
-                        : 'none',
-                    }}
-                  />
-                </TabPanel>
-              </TabPanels>
-            </Tabs> */}
           </VStack>
-          <Accordion allowMultiple>
+          <Accordion allowToggle>
             <AccordionItem>
               <h2>
                 <AccordionButton>
@@ -467,56 +335,8 @@ export default function Rest() {
                 </VStack>
               </AccordionPanel>
             </AccordionItem>
-
-            <AccordionItem>
-              <h2>
-                <AccordionButton>
-                  <Box as="span" flex="1" textAlign="left">
-                    <Heading
-                      as="h2"
-                      size="sm"
-                      noOfLines={1}
-                      textTransform="uppercase"
-                    >
-                      variables
-                    </Heading>
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-              </h2>
-              <AccordionPanel pb={8}>
-                <VStack spacing={2} align="stretch">
-                  <Button
-                    colorScheme="teal"
-                    size="sm"
-                    textTransform="uppercase"
-                    width="100px"
-                    onClick={addVariable}
-                  >
-                    new variable
-                  </Button>
-                  {variables.map((variable, index) => (
-                    <Stack key={index} align="center" direction="row">
-                      <InputGroup size="md">
-                        <InputLeftAddon>key</InputLeftAddon>
-                        <Input
-                          value={variable.key}
-                          onChange={handleVariablesChange(index, 'key')}
-                        />
-                      </InputGroup>
-                      <InputGroup size="md">
-                        <InputLeftAddon>value</InputLeftAddon>
-                        <Input
-                          value={variable.value}
-                          onChange={handleVariablesChange(index, 'value')}
-                        />
-                      </InputGroup>
-                    </Stack>
-                  ))}
-                </VStack>
-              </AccordionPanel>
-            </AccordionItem>
           </Accordion>
+          <VariablesInputs />
         </VStack>
         <VStack spacing={25} align="stretch">
           <Heading

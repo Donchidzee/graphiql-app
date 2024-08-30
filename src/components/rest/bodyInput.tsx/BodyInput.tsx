@@ -42,7 +42,6 @@ const BodyInput: React.FC = () => {
         setBodyError(true);
       }
     }
-
   }, [stateBody]);
 
   const replaceVariable = (str) => {
@@ -89,7 +88,7 @@ const BodyInput: React.FC = () => {
     }
   };
   const handleBodyJsonChange = (e: { target: { value: string } }) => {
-    const text = e.target.value.replace(/\s+/g, ' ').trim();    
+    const text = e.target.value.replace(/\s+/g, ' ').trim();
     if (stateUrl === '') {
       dispatch(changeUrlError(true));
     } else {
@@ -132,14 +131,12 @@ const BodyInput: React.FC = () => {
             onChange={changeBodyJson}
             onBlur={handleBodyJsonChange}
             sx={{
-              textDecoration: bodyError
-                ? '#E53E3E wavy underline'
-                : 'none',
+              textDecoration: bodyError ? '#E53E3E wavy underline' : 'none',
             }}
           />
         </TabPanel>
       </TabPanels>
-  </Tabs>
+    </Tabs>
   );
 };
 
