@@ -1,17 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-type Header = {
-  headerIndex: number;
-  key: string;
-  value: string;
-};
-
-type inputsState = {
-  url: string;
-  urlError: boolean;
-  body: string;
-  headers: Header[];
-};
+import { Header, inputsState } from '@/types/restTypes';
 
 const initialState: inputsState = {
   url: '',

@@ -8,6 +8,7 @@ import {
   Select,
   Stack,
   VStack,
+  Text
 } from '@chakra-ui/react';
 import {
   changeBody,
@@ -21,13 +22,9 @@ import BodyInput from '@/components/rest/bodyInput.tsx/BodyInput';
 import VariablesInputs from '@/components/rest/variablesInputs/VariablesInputs';
 import HeadersInputs from '@/components/rest/headersInputs/HeadersInputs';
 import ResponseArea from '@/components/responseArea/ResponseArea';
+import { ResponseValue } from '@/types/restTypes';
 
 // import styles from "./page.module.scss";
-interface ResponseValue {
-  data?: string;
-  status?: string;
-  headers?: Headers;
-}
 
 export default function Rest() {
   const dispatch = useDispatch();
@@ -53,7 +50,8 @@ export default function Rest() {
 
   const [selectedMethod, setSelectedMethod] = useState('get');
   const [responseValue, setResponseValue] = useState<ResponseValue>({});
-  // const [responseValue, setresponseValue] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
     const currentMethod = method as string;
@@ -124,9 +122,8 @@ export default function Rest() {
   };
 
   const handleSendRequest = async () => {
-    console.log(stateUrl);
-
     if (stateUrl) {
+      setLoading(true);
       // https://api.artic.edu/api/v1/artworks
       const responseHeaders = stateHeaders.reduce((acc, obj) => {
         acc[obj.key] = obj.value;
@@ -164,6 +161,8 @@ export default function Rest() {
           status: 'Could not send request',
         };
         setResponseValue(responseObject);
+      }  finally {
+        setLoading(false);
       }
     } else {
       dispatch(changeUrlError(true));
@@ -234,6 +233,11 @@ export default function Rest() {
             bg="teal.400"
           >
             response
+            {loading && (
+              <Text as="span" ml={40} fontSize="md">
+                Waiting for response...
+              </Text>
+             )}
           </Heading>
           <ResponseArea responseValue={responseValue} />
         </VStack>

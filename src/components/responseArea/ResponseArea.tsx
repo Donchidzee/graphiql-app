@@ -9,19 +9,10 @@ import {
   Textarea,
 } from '@chakra-ui/react';
 import TextareaAutosize from 'react-textarea-autosize';
+import { ResponseAreaProps } from '@/types/restTypes';
 
-interface ResponseValue {
-  data?: string;
-  status?: string;
-  headers?: Headers;
-}
-
-interface ResponseAreaProps {
-  responseValue: ResponseValue;
-}
 
 const ResponseArea: React.FC<ResponseAreaProps> = ({responseValue}) => {
-
 
   return (
     <Tabs width="100%">
