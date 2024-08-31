@@ -31,10 +31,9 @@ import {
   changeUrl,
   changeUrlError,
 } from '@/store/slices/restInputsSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
 import UrlInput from '@/components/rest/urlInput/UrlInput';
 import BodyInput from '@/components/rest/bodyInput.tsx/BodyInput';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 // import styles from "./page.module.scss";
 interface ResponseValue {
@@ -44,9 +43,9 @@ interface ResponseValue {
 }
 
 export default function Rest() {
-  const dispatch = useDispatch();
-  const stateUrl = useSelector((state: RootState) => state.restInputs.url);
-  const stateBody = useSelector((state: RootState) => state.restInputs.body);
+  const dispatch = useAppDispatch();
+  const stateUrl = useAppSelector((state) => state.restInputs.url);
+  const stateBody = useAppSelector((state) => state.restInputs.body);
 
   const router = useRouter();
   const pathname = usePathname();
