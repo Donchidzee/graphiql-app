@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { usePathname, useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   Accordion,
@@ -19,11 +18,13 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { changeHeaders } from '@/store/slices/restInputsSlice';
+import { RootState } from '@/store/store';
 
 const HeadersInputs: React.FC = () => {
-  const router = useRouter();
-  const pathname = usePathname();
   const dispatch = useDispatch();
+  const stateHeaders = useSelector(
+    (state: RootState) => state.restInputs.headers
+  );
 
   const [headers, setHeaders] = useState<
     { headerIndex: number; key: string; value: string }[]
@@ -31,6 +32,10 @@ const HeadersInputs: React.FC = () => {
   const [headerInputErrors, setHeaderInputErrors] = useState(
     headers.map(() => ({ key: false, value: false }))
   );
+
+  useEffect(() => {
+    setHeaders(stateHeaders);
+  }, [stateHeaders]);
 
   const addHeader = () => {
     setHeaders([
@@ -46,26 +51,14 @@ const HeadersInputs: React.FC = () => {
   const handleHeadersChange =
     (index: number, field: 'key' | 'value') =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const params = new URLSearchParams();
-
-      const newHeaders = [...headers];
+      const newHeaders = headers.map((header, i) =>
+        i === index ? { ...header, [field]: e.target.value } : header
+      );
       newHeaders[index][field] = e.target.value;
       setHeaders(newHeaders);
-      const saveToStoreHeaders = [];
-      newHeaders.forEach((header) => {
-        if (header.key.trim() !== '') {
-          const encodedHeaderValue = btoa(encodeURIComponent(header.value));
-          params.set(header.key, encodedHeaderValue);
-          saveToStoreHeaders.push({
-            headerIndex: header.headerIndex,
-            key: header.key,
-            value: header.value,
-          });
-        }
-      });
-      dispatch(changeHeaders(saveToStoreHeaders));
+      console.log(newHeaders);
 
-      router.replace(`${pathname}?${params.toString()}`);
+      dispatch(changeHeaders(newHeaders));
 
       const newHeaderInputErrors = [...headerInputErrors];
       if (!newHeaderInputErrors[index]) {
@@ -76,7 +69,7 @@ const HeadersInputs: React.FC = () => {
     };
 
   return (
-    <Accordion allowToggle>
+    <Accordion defaultIndex={[0]} allowToggle>
       <AccordionItem>
         <h2>
           <AccordionButton>

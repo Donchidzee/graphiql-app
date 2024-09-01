@@ -54,7 +54,7 @@ const VariablesInputs: React.FC = () => {
     };
 
   return (
-    <Accordion allowToggle>
+    <Accordion defaultIndex={[0]} allowToggle>
       <AccordionItem>
         <h2>
           <AccordionButton>

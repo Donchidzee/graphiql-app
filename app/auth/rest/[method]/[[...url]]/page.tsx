@@ -1,10 +1,16 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { useParams, usePathname, useRouter } from 'next/navigation';
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from 'next/navigation';
 import { Button, Heading, Select, Stack, VStack, Text } from '@chakra-ui/react';
 import {
   changeBody,
+  changeHeaders,
   changeUrl,
   changeUrlError,
 } from '@/store/slices/restInputsSlice';
@@ -30,6 +36,7 @@ export default function Rest() {
   const router = useRouter();
   const pathname = usePathname();
   const { method, url } = useParams();
+  const searchParams = useSearchParams();
 
   const methods = useMemo(
     () => ['get', 'post', 'delete', 'put', 'patch', 'head', 'options'],
@@ -81,9 +88,9 @@ export default function Rest() {
       methods.includes(el.toLowerCase())
     );
     pathArray[methodIndex + 1] = encodedNewUrl;
-    const newPath = `${pathArray.join('/')}`;
+    const newPath = `${pathArray.join('/')}?${searchParams.toString()}`;
     router.replace(newPath);
-  }, [stateUrl, methods, router, pathname]);
+  }, [stateUrl, methods, router, pathname, searchParams]);
 
   useEffect(() => {
     const encodedNewBody = btoa(encodeURIComponent(stateBody));
@@ -93,9 +100,33 @@ export default function Rest() {
       methods.includes(el.toLowerCase())
     );
     pathArray[methodIndex + 2] = encodedNewBody;
-    const newPath = `${pathArray.join('/')}`;
+    const newPath = `${pathArray.join('/')}?${searchParams.toString()}`;
     router.replace(newPath);
-  }, [stateBody, methods, router, pathname]);
+  }, [stateBody, methods, router, pathname, searchParams]);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+
+    stateHeaders.forEach((header) => {
+      const encodedHeaderValue = btoa(encodeURIComponent(header.value));
+      params.set(header.key, encodedHeaderValue);
+    });
+    router.replace(`${pathname}?${params.toString()}`);
+  }, [stateHeaders, pathname, router]);
+
+  useEffect(() => {
+    if (searchParams) {
+      const searchParamsArray = Array.from(searchParams.entries());
+      const headersFromEndpoint = searchParamsArray.map((param, index) => {
+        return {
+          headerIndex: index,
+          key: param[0],
+          value: decodeURIComponent(atob(decodeURIComponent(param[1]))),
+        };
+      });
+      dispatch(changeHeaders(headersFromEndpoint));
+    }
+  }, [searchParams, dispatch]);
 
   const changeMethod = (e: { target: { value: string } }) => {
     const newMethod = e.target.value.toUpperCase();
@@ -109,7 +140,7 @@ export default function Rest() {
     } else {
       pathArray.push(newMethod);
     }
-    const newPath = `${pathArray.join('/')}`;
+    const newPath = `${pathArray.join('/')}?${searchParams.toString()}`;
     router.replace(newPath);
   };
 
