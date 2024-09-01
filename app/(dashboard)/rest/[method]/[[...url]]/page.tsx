@@ -30,10 +30,10 @@ import {
   changeBody,
   changeUrl,
   changeUrlError,
-} from '@/store/slices/restInputsSlice';
-import UrlInput from '@/components/rest/urlInput/UrlInput';
-import BodyInput from '@/components/rest/bodyInput.tsx/BodyInput';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+} from '../../../../store/slices/restInputsSlice';
+import UrlInput from '../../../../components/rest/urlInput/UrlInput';
+import BodyInput from '../../../../components/rest/bodyInput.tsx/BodyInput';
+import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 
 // import styles from "./page.module.scss";
 interface ResponseValue {

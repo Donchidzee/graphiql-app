@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
+import { RootState } from '../../../store/store';
 
 import {
   FormControl,
@@ -8,7 +8,10 @@ import {
   InputGroup,
   InputLeftAddon,
 } from '@chakra-ui/react';
-import { changeUrl, changeUrlError } from '@/store/slices/restInputsSlice';
+import {
+  changeUrl,
+  changeUrlError,
+} from '../../../store/slices/restInputsSlice';
 
 const UrlInput: React.FC = () => {
   const [urlValue, setUrlValue] = useState('');

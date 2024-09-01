@@ -1,11 +1,11 @@
 'use client';
 
-import BodyInput from '@/components/graphql/BodyInput';
-import Documentation from '@/components/graphql/Documentation';
-import { Schema } from '@/components/graphql/Documentation/Documentation';
-import VariablesEditor from '@/components/graphql/VariablesEditor';
-import UrlInput from '@/components/rest/urlInput/UrlInput';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import BodyInput from '../../../../components/graphql/BodyInput';
+import Documentation from '../../../../components/graphql/Documentation';
+import { Schema } from '../../../../components/graphql/Documentation/Documentation';
+import VariablesEditor from '../../../../components/graphql/VariablesEditor';
+import UrlInput from '../../../../components/rest/urlInput/UrlInput';
+import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import {
   Flex,
   Box,

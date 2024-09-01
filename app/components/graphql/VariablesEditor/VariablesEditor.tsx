@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TabPanel } from '@chakra-ui/react';
-import JsonEditor from '@/components/JsonEditor';
+import JsonEditor from '../../JsonEditor/JsonEditor';
 
 interface VariablesEditorProps {
   variablesJson: object;

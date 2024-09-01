@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FormControl, Textarea } from '@chakra-ui/react';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { changeBody } from '@/store/slices/restInputsSlice';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { changeBody } from '../../../store/slices/restInputsSlice';
 import gqlPrettier from 'graphql-prettier';
 
 const BodyInput: React.FC = () => {

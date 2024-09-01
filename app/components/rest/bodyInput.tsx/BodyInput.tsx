@@ -11,8 +11,11 @@ import {
 } from '@chakra-ui/react';
 import TextareaAutosize from 'react-textarea-autosize';
 
-import { changeBody, changeUrlError } from '@/store/slices/restInputsSlice';
-import { RootState } from '@/store/store';
+import {
+  changeBody,
+  changeUrlError,
+} from '../../../store/slices/restInputsSlice';
+import { RootState } from '../../../store/store';
 
 const BodyInput: React.FC = () => {
   const storedTabIndex = localStorage.getItem('activeBodyTab');
@@ -42,7 +45,6 @@ const BodyInput: React.FC = () => {
         setBodyError(true);
       }
     }
-
   }, [stateBody]);
 
   const replaceVariable = (str) => {
@@ -89,7 +91,7 @@ const BodyInput: React.FC = () => {
     }
   };
   const handleBodyJsonChange = (e: { target: { value: string } }) => {
-    const text = e.target.value.replace(/\s+/g, ' ').trim();    
+    const text = e.target.value.replace(/\s+/g, ' ').trim();
     if (stateUrl === '') {
       dispatch(changeUrlError(true));
     } else {
@@ -132,14 +134,12 @@ const BodyInput: React.FC = () => {
             onChange={changeBodyJson}
             onBlur={handleBodyJsonChange}
             sx={{
-              textDecoration: bodyError
-                ? '#E53E3E wavy underline'
-                : 'none',
+              textDecoration: bodyError ? '#E53E3E wavy underline' : 'none',
             }}
           />
         </TabPanel>
       </TabPanels>
-  </Tabs>
+    </Tabs>
   );
 };
 
