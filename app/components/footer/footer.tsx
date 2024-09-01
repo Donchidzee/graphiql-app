@@ -7,7 +7,13 @@ export function Footer() {
     <>
       <div className={styles.footer}>
         <Link href="https://rs.school/courses/reactjs" isExternal>
-          <Image src={'/rss-logo.svg'} alt="rss-logo" width="34" height="34" />
+          <Image
+            src={'/rss-logo.svg'}
+            alt="rss-logo"
+            width="34"
+            height="34"
+            priority
+          />
         </Link>
         <div className={styles.year}>2024</div>
         <div className={styles.authors}>

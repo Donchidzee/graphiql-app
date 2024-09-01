@@ -1,0 +1,9 @@
+.authLayout {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.formWrapper {
+  width: 400px;
+}
