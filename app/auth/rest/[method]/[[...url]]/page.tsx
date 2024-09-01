@@ -2,14 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, usePathname, useRouter } from 'next/navigation';
-import {
-  Button,
-  Heading,
-  Select,
-  Stack,
-  VStack,
-  Text
-} from '@chakra-ui/react';
+import { Button, Heading, Select, Stack, VStack, Text } from '@chakra-ui/react';
 import {
   changeBody,
   changeUrl,
@@ -51,7 +44,6 @@ export default function Rest() {
   const [selectedMethod, setSelectedMethod] = useState('get');
   const [responseValue, setResponseValue] = useState<ResponseValue>({});
   const [loading, setLoading] = useState(false);
-
 
   useEffect(() => {
     const currentMethod = method as string;
@@ -155,13 +147,12 @@ export default function Rest() {
         };
 
         setResponseValue(responseObject);
-      } catch (error) {
-        let responseObject;
-        responseObject = {
+      } catch {
+        const responseObject = {
           status: 'Could not send request',
         };
         setResponseValue(responseObject);
-      }  finally {
+      } finally {
         setLoading(false);
       }
     } else {
@@ -237,7 +228,7 @@ export default function Rest() {
               <Text as="span" ml={40} fontSize="md">
                 Waiting for response...
               </Text>
-             )}
+            )}
           </Heading>
           <ResponseArea responseValue={responseValue} />
         </VStack>
