@@ -2,7 +2,8 @@
 
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useForm } from 'react-hook-form';
-import { CircularProgress } from '@chakra-ui/react';
+import NextLink from 'next/link';
+import { CircularProgress, Link } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth, sendPasswordReset } from '../../../firebase';
@@ -84,6 +85,18 @@ export default function HookForm() {
         >
           Send password reset email
         </Button>
+        <Box mt={3}>
+          Don't have an account?{' '}
+          <Link
+            as={NextLink}
+            color="blue.400"
+            _hover={{ color: 'blue.500' }}
+            href="/register"
+          >
+            Register
+          </Link>{' '}
+          now.
+        </Box>
       </form>
     </>
   );
