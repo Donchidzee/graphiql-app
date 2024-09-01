@@ -11,6 +11,7 @@ import { Button, Heading, Select, Stack, VStack, Text } from '@chakra-ui/react';
 import {
   changeBody,
   changeHeaders,
+  changeRequestHistory,
   changeUrl,
   changeUrlError,
 } from '@/store/slices/restInputsSlice';
@@ -22,6 +23,7 @@ import VariablesInputs from '@/components/rest/variablesInputs/VariablesInputs';
 import HeadersInputs from '@/components/rest/headersInputs/HeadersInputs';
 import ResponseArea from '@/components/responseArea/ResponseArea';
 import { ResponseValue } from '@/types/restTypes';
+import { saveEndpointToLS } from '@/helpers/helpers';
 
 // import styles from "./page.module.scss";
 
@@ -146,6 +148,7 @@ export default function Rest() {
 
   const handleSendRequest = async () => {
     if (stateUrl) {
+      saveEndpointToLS(pathname, searchParams, dispatch);
       setLoading(true);
       // https://api.artic.edu/api/v1/artworks
       const responseHeaders = stateHeaders.reduce((acc, obj) => {

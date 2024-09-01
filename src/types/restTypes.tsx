@@ -19,4 +19,10 @@ export type inputsState = {
   urlError: boolean;
   body: string;
   headers: Header[];
+  RequestHistory: RequestHistory[];
 };
+
+export type RequestHistory = {
+  endpoint: string;
+  variables: string;
+}

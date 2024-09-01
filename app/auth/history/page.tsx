@@ -1,10 +1,11 @@
-import { Heading, Link, Stack } from '@chakra-ui/react';
+'use client';
 
-export default function Home() {
-  const lsStoredRequestHistory = localStorage.getItem('requestHistory');
-  const storedRequests = lsStoredRequestHistory
-    ? JSON.parse(lsStoredRequestHistory)
-    : [];
+import { RootState } from '@/store/store';
+import { Box, Heading, Link, Stack, Text } from '@chakra-ui/react';
+import { useSelector } from 'react-redux';
+
+export default function History() {
+  const requestHistory = useSelector((state: RootState) => state.restInputs.RequestHistory);
 
   return (
     <>
@@ -17,37 +18,40 @@ export default function Home() {
       >
         History page
       </Heading>
-      {!storedRequests && (
-        <>
-          <Heading as="h2" size="md" noOfLines={1} textAlign="center">
-            You have not executed any requests yet
-          </Heading>
-          <Stack align="center" direction="row">
+      <>
+        {requestHistory.length===0 && <Heading as="h2" size="md" noOfLines={1} textAlign="center">
+          You have not executed any requests yet
+        </Heading>}
+        <Stack align="center" direction="row">
+          <Link
+            href="/auth/rest/GET"
+            color="blue.400"
+            _hover={{ color: 'blue.500' }}
+          >
+            REST
+          </Link>
+          <Link href="/auth/graph">GRAPHGL</Link>
+        </Stack>
+      </>
+      {requestHistory.length>0 &&
+        requestHistory.map((request, index) => (
+          <Stack key={index} align="center" direction="row">
             <Link
-              href="/auth/rest/GET"
-              color="blue.400"
-              _hover={{ color: 'blue.500' }}
-            >
-              REST
-            </Link>
-            <Link href="/auth/graph">GRAPHGL</Link>
-          </Stack>
-        </>
-      )}
-      {storedRequests &&
-        storedRequests.map((request, index) => {
-          if (request.type === 'rest') {
-            <Link
-              href="/auth/rest/"
+              isExternal
+              href={request.endpoint}
               color="blue.400"
               _hover={{ color: 'blue.500' }}
             >
               reuest #{index + 1}
-            </Link>;
-          } else {
-            ///link to graphql
-          }
-        })}
+            </Link>
+            <Box maxWidth="500px">
+              <Text isTruncated>
+                {request.endpoint}
+              </Text>
+            </Box>
+         </Stack>
+        ))
+      }
     </>
   );
 }
