@@ -1,11 +1,8 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
-import Header from '@/components/Header/Header';
-import Footer from '@/components/Footer/Footer';
 import { Providers } from './providers';
-
-const inter = Inter({ subsets: ['latin'] });
+import { Header } from './components/header/header';
+import { Footer } from './components/footer/footer';
+import './global.css';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -17,15 +14,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <head>
-        <link
-          rel="icon"
-          href="/images/alien.png"
-          sizes="any"
-          type="image/png"
-        />
-      </head>
-      <body className={inter.className}>
+      <body>
         <Providers>
           <Header />
           <main>{children}</main>
