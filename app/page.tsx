@@ -1,4 +1,3 @@
-// import styles from './page.module.css';
 import { Heading, Link, Stack } from '@chakra-ui/react';
 
 export default function Home() {
@@ -18,11 +17,17 @@ export default function Home() {
         <Link
           href="/auth/rest/GET"
           color="blue.400"
-          _hover={{ color: 'blue.500' }}
+          _hover={{ color: 'blue.600' }}
         >
           REST
         </Link>
-        <Link href="/auth/graph">GRAPHGL</Link>
+        <Link
+          href="/auth/graph/GRAPHQL"
+          color="blue.400"
+          _hover={{ color: 'blue.600' }}
+        >
+          GRAPHQL
+        </Link>
       </Stack>
     </>
   );

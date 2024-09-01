@@ -314,7 +314,7 @@ export default function Graphql() {
               bg="gray.800" // Dark background
               color="white" // Light text color
               fontFamily="'Source Code Pro', monospace" // Monospace font for code
-              fontSize="sm" // Adjust font size for code readability
+              fontSize="16px" // Adjust font size for code readability
               p={4} // Padding for better spacing
               borderRadius="md" // Rounded corners
               borderColor="gray.600" // Border color
