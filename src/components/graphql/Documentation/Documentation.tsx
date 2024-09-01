@@ -12,13 +12,20 @@ import {
 interface Field {
   name: string;
   description?: string;
+  type: TypeRef;
+}
+
+interface TypeRef {
+  kind: string;
+  name?: string;
+  ofType?: TypeRef;
 }
 
 interface Type {
   kind: string;
   name: string;
   description?: string;
-  fields: Field[];
+  fields?: Field[];
 }
 
 export interface Schema {
@@ -26,84 +33,239 @@ export interface Schema {
 }
 
 interface DocumentationProps {
-  schema: Schema;
+  schema: Schema | null;
 }
 
-const Documentation: React.FC<DocumentationProps> = ({ schema }) => {
-  const [expandedType, setExpandedType] = useState<string | null>(null);
+const getTypeName = (type: TypeRef): string => {
+  if (type.name) return type.name;
+  if (type.ofType) return getTypeName(type.ofType);
+  return '';
+};
 
-  const handleToggle = (typeName: string) => {
+const Documentation: React.FC<DocumentationProps> = ({ schema }) => {
+  const [expandedField, setExpandedField] = useState<string | null>(null);
+  const [expandedType, setExpandedType] = useState<string | null>(null);
+  const [currentView, setCurrentView] = useState<'query' | 'mutation' | 'none'>(
+    'none'
+  );
+
+  const handleFieldToggle = (fieldName: string) => {
+    setExpandedField((prev) => (prev === fieldName ? null : fieldName));
+  };
+
+  const handleTypeToggle = (typeName: string) => {
     setExpandedType((prev) => (prev === typeName ? null : typeName));
   };
 
-  const filteredTypes =
-    schema &&
-    schema.types?.filter(
-      (type) => type.kind === 'OBJECT' && type.name.startsWith('__') === false
+  const handleViewChange = (view: 'query' | 'mutation') => {
+    setCurrentView(view);
+    setExpandedField(null);
+    setExpandedType(null);
+  };
+
+  if (!schema) {
+    return (
+      <Text>No schema available. Please provide a valid GraphQL schema.</Text>
     );
+  }
+
+  const queryType = schema.types.find((type) => type.name === 'Query');
+  const mutationType = schema.types.find((type) => type.name === 'Mutation');
+
+  const renderTypeFields = (type: Type | undefined) => {
+    if (!type || !type.fields || type.fields.length === 0) {
+      return <Text>No fields available for this type.</Text>;
+    }
+
+    return (
+      <VStack spacing={3} align="stretch">
+        {type.fields.map((typeField) => (
+          <Box
+            key={typeField.name}
+            p={3}
+            borderWidth="1px"
+            borderRadius="md"
+            borderColor="gray.300"
+            bg="white"
+            shadow="sm"
+          >
+            <Text fontSize="md" fontWeight="bold">
+              {typeField.name}
+              <Badge ml={2} colorScheme="blue" variant="outline">
+                {getTypeName(typeField.type)}
+              </Badge>
+            </Text>
+            {typeField.description && (
+              <Text mt={1} fontSize="sm" color="gray.600">
+                {typeField.description}
+              </Text>
+            )}
+          </Box>
+        ))}
+      </VStack>
+    );
+  };
 
   return (
     <Stack spacing={4} p={4} borderWidth="1px" borderRadius="md" boxShadow="md">
-      {filteredTypes && filteredTypes.length > 0 ? (
-        filteredTypes.map((type) => (
-          <Box
-            key={type.name}
-            borderWidth="1px"
-            borderRadius="md"
-            overflow="hidden"
-          >
+      {currentView === 'none' && (
+        <Stack spacing={4}>
+          {queryType && (
             <Button
               w="full"
-              textAlign="left"
-              variant="solid"
               colorScheme="teal"
-              onClick={() => handleToggle(type.name)}
-              fontWeight="bold"
+              onClick={() => handleViewChange('query')}
             >
-              {type.name}
+              Query
             </Button>
-            <Collapse in={expandedType === type.name}>
-              <Box p={4} bg="gray.50">
-                {type.description && (
-                  <Text mb={4} fontSize="sm" color="gray.600">
-                    <strong>Description:</strong> {type.description}
-                  </Text>
-                )}
-                {type.fields && type.fields.length > 0 && (
-                  <VStack spacing={3} align="stretch">
-                    {type.fields.map((field) => (
-                      <Box
-                        key={field.name}
-                        p={3}
-                        borderWidth="1px"
-                        borderRadius="md"
-                        borderColor="gray.300"
-                        bg="white"
-                        shadow="sm"
-                      >
-                        <Text fontSize="md" fontWeight="bold">
-                          {field.name}
-                          <Badge ml={2} colorScheme="blue" variant="outline">
-                            Field
-                          </Badge>
-                        </Text>
+          )}
+          {mutationType && (
+            <Button
+              w="full"
+              colorScheme="purple"
+              onClick={() => handleViewChange('mutation')}
+            >
+              Mutation
+            </Button>
+          )}
+          {!queryType && !mutationType && (
+            <Text>No Query or Mutation types available in the schema.</Text>
+          )}
+        </Stack>
+      )}
+
+      {(currentView === 'query' || currentView === 'mutation') && (
+        <Stack spacing={4}>
+          <Button
+            w="full"
+            variant="outline"
+            onClick={() => setCurrentView('none')}
+          >
+            ← Back
+          </Button>
+
+          {currentView === 'query' && queryType && (
+            <Stack spacing={4}>
+              {queryType.fields && queryType.fields.length > 0 ? (
+                queryType.fields.map((field) => (
+                  <Box
+                    key={field.name}
+                    borderWidth="1px"
+                    borderRadius="md"
+                    overflow="hidden"
+                  >
+                    <Button
+                      w="full"
+                      textAlign="left"
+                      variant="solid"
+                      colorScheme="teal"
+                      onClick={() => handleFieldToggle(field.name)}
+                      fontWeight="bold"
+                    >
+                      {field.name}
+                    </Button>
+                    <Collapse in={expandedField === field.name}>
+                      <Box p={4} bg="gray.50">
                         {field.description && (
-                          <Text mt={1} fontSize="sm" color="gray.600">
-                            {field.description}
+                          <Text mb={4} fontSize="sm" color="gray.600">
+                            <strong>Description:</strong> {field.description}
                           </Text>
                         )}
+                        <Text fontSize="md">
+                          <strong>Type:</strong> {getTypeName(field.type)}
+                        </Text>
+                        <Button
+                          mt={4}
+                          w="full"
+                          textAlign="left"
+                          variant="outline"
+                          colorScheme="blue"
+                          onClick={() =>
+                            handleTypeToggle(getTypeName(field.type))
+                          }
+                        >
+                          View {getTypeName(field.type)} Details
+                        </Button>
+                        <Collapse in={expandedType === getTypeName(field.type)}>
+                          <Box mt={4} p={4} bg="gray.100">
+                            {renderTypeFields(
+                              schema.types.find(
+                                (type) => type.name === getTypeName(field.type)
+                              )
+                            )}
+                          </Box>
+                        </Collapse>
                       </Box>
-                    ))}
-                  </VStack>
-                )}
-              </Box>
-            </Collapse>
-          </Box>
-        ))
-      ) : (
-        <Text fontSize="md" color="gray.500" textAlign="center">
-          Documentation will be visible after a successful request.
-        </Text>
+                    </Collapse>
+                  </Box>
+                ))
+              ) : (
+                <Text>No fields available for the Query type.</Text>
+              )}
+            </Stack>
+          )}
+
+          {currentView === 'mutation' && mutationType && (
+            <Stack spacing={4}>
+              {mutationType.fields && mutationType.fields.length > 0 ? (
+                mutationType.fields.map((field) => (
+                  <Box
+                    key={field.name}
+                    borderWidth="1px"
+                    borderRadius="md"
+                    overflow="hidden"
+                  >
+                    <Button
+                      w="full"
+                      textAlign="left"
+                      variant="solid"
+                      colorScheme="purple"
+                      onClick={() => handleFieldToggle(field.name)}
+                      fontWeight="bold"
+                    >
+                      {field.name}
+                    </Button>
+                    <Collapse in={expandedField === field.name}>
+                      <Box p={4} bg="gray.50">
+                        {field.description && (
+                          <Text mb={4} fontSize="sm" color="gray.600">
+                            <strong>Description:</strong> {field.description}
+                          </Text>
+                        )}
+                        <Text fontSize="md">
+                          <strong>Type:</strong> {getTypeName(field.type)}
+                        </Text>
+                        <Button
+                          mt={4}
+                          w="full"
+                          textAlign="left"
+                          variant="outline"
+                          colorScheme="blue"
+                          onClick={() =>
+                            handleTypeToggle(getTypeName(field.type))
+                          }
+                        >
+                          View {getTypeName(field.type)} Details
+                        </Button>
+                        <Collapse in={expandedType === getTypeName(field.type)}>
+                          <Box mt={4} p={4} bg="gray.100">
+                            {renderTypeFields(
+                              schema.types.find(
+                                (type) => type.name === getTypeName(field.type)
+                              )
+                            )}
+                          </Box>
+                        </Collapse>
+                      </Box>
+                    </Collapse>
+                  </Box>
+                ))
+              ) : (
+                <Text>No fields available for the Mutation type.</Text>
+              )}
+            </Stack>
+          )}
+        </Stack>
       )}
     </Stack>
   );

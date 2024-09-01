@@ -19,7 +19,9 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  IconButton,
 } from '@chakra-ui/react';
+import { CloseIcon } from '@chakra-ui/icons';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -30,6 +32,8 @@ export default function Graphql() {
   const dispatch = useAppDispatch();
   const stateUrl = useAppSelector((state) => state.restInputs.url);
   const stateBody = useAppSelector((state) => state.restInputs.body);
+  const [headers, setHeaders] = useState([{ key: '', value: '' }]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   //response content
   const [statusCode, setStatusCode] = useState<number>(0);
@@ -59,12 +63,37 @@ export default function Graphql() {
     console.log(variablesJson);
   }, [variablesJson]);
 
+  const addHeader = () => {
+    setHeaders([...headers, { key: '', value: '' }]);
+  };
+
+  const updateHeader = (index, type, value) => {
+    const newHeaders = headers.map((header, i) =>
+      i === index ? { ...header, [type]: value } : header
+    );
+    setHeaders(newHeaders);
+  };
+
+  const removeHeader = (index) => {
+    const newHeaders = headers.filter((_, i) => i !== index);
+    setHeaders(newHeaders);
+  };
+
   const handleSubmit = async () => {
+    const formattedHeaders = headers.reduce((acc, header) => {
+      if (header.key && header.value) {
+        acc[header.key] = header.value;
+      }
+      return acc;
+    }, {});
+
     try {
+      setIsLoading(true);
       const queryResponse = await fetch(stateUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...formattedHeaders,
         },
         body: JSON.stringify({
           query: stateBody,
@@ -169,6 +198,8 @@ export default function Graphql() {
       setDocumentation(schemaResult.data.__schema);
     } catch (error) {
       console.error('Error during fetch:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -180,7 +211,7 @@ export default function Graphql() {
     <Flex direction="column" align="center" p={5}>
       <Box
         w="full"
-        maxW="1200px"
+        maxW="1400px"
         borderWidth="1px"
         borderRadius="lg"
         borderColor={'gray.500'}
@@ -203,28 +234,33 @@ export default function Graphql() {
       <Flex
         direction={['column', 'row']}
         justify="space-between"
-        align={'flex-start'}
+        align="flex-start"
         w="full"
-        h="full"
-        maxW="1200px"
+        h="500px" // Fixed height for the parent container
+        maxW="1400px"
         mt={5}
+        boxSizing="border-box" // Ensure padding is included in the height
       >
         <Box
           w={['full', '50%']}
           h="100%"
           borderWidth="1px"
           borderRadius="lg"
-          borderColor={'gray.500'}
+          borderColor="gray.500"
           overflow="hidden"
-          p={5}
           boxShadow="md"
           mr={[0, 2]} // margin between boxes
           mb={[5, 0]} // margin bottom for mobile view
+          p={5}
+          display="flex" // Use flexbox for children
+          flexDirection="column" // Make children stack vertically
         >
           <Heading size="md" mb={4}>
             Query
           </Heading>
-          <BodyInput />
+          <Box flex="1">
+            <BodyInput />
+          </Box>
         </Box>
 
         <Flex justify="center">
@@ -234,19 +270,22 @@ export default function Graphql() {
             onClick={handleSubmit}
             boxShadow="lg"
           >
-            Run Query
+            {isLoading ? 'Loading...' : 'Run Query'}
           </Button>
         </Flex>
 
         <Box
           w={['full', '50%']}
+          h="100%"
           borderWidth="1px"
           borderRadius="lg"
-          borderColor={'gray.500'}
+          borderColor="gray.500"
           overflow="hidden"
-          p={5}
           boxShadow="md"
           ml={[0, 2]} // margin between boxes
+          p={5}
+          display="flex" // Use flexbox for children
+          flexDirection="column" // Make children stack vertically
         >
           <Heading size="md" mb={4}>
             Response
@@ -256,20 +295,41 @@ export default function Graphql() {
             readOnly
             value={!!statusCode ? statusCode : ''}
             mb={4}
+            bg={'gray.800'}
+            color={'white'}
+            fontFamily="'Source Code Pro', monospace"
+            fontSize="sm"
+            p={4}
+            borderRadius="md"
+            borderColor="gray.600"
+            borderWidth="1px"
+            _focus={{ borderColor: 'blue.500' }}
           />
-          <Textarea
-            placeholder="Response Body (Read-Only)"
-            readOnly
-            value={!!responseBody ? responseBody : ''}
-            rows={10}
-          />
+          <Box flex="1">
+            <Textarea
+              placeholder="Response Body (Read-Only)"
+              readOnly
+              height="100%"
+              value={!!responseBody ? responseBody : ''}
+              bg="gray.800" // Dark background
+              color="white" // Light text color
+              fontFamily="'Source Code Pro', monospace" // Monospace font for code
+              fontSize="sm" // Adjust font size for code readability
+              p={4} // Padding for better spacing
+              borderRadius="md" // Rounded corners
+              borderColor="gray.600" // Border color
+              borderWidth="1px" // Border width
+              _focus={{ borderColor: 'blue.500' }} // Border color on focus
+              resize="none"
+            />
+          </Box>
         </Box>
       </Flex>
 
       {/* Tabs for Headers and Variables */}
       <Box
         w="full"
-        maxW="1200px"
+        maxW="1400px"
         borderWidth="1px"
         borderRadius="lg"
         borderColor={'gray.500'}
@@ -296,19 +356,49 @@ export default function Graphql() {
                 size="sm"
                 textTransform="uppercase"
                 width="100px"
+                onClick={addHeader}
               >
                 + Add Header
               </Button>
-              <Box borderWidth="1px" borderRadius="md" p={2} width="full">
-                <Flex justify="space-between" gap={2}>
-                  <Box w="50%">
-                    <Input placeholder="Header Key" />
-                  </Box>
-                  <Box w="50%">
-                    <Input placeholder="Header Value" />
-                  </Box>
-                </Flex>
-              </Box>
+              {headers.map((header, index) => (
+                <Box
+                  key={index}
+                  borderWidth="1px"
+                  borderRadius="md"
+                  p={2}
+                  width="full"
+                  mt={2}
+                  borderColor={index % 2 === 0 ? 'teal.500' : 'blue.500'} // Example: alternate between teal and blue
+                >
+                  <Flex justify="space-between" gap={2} alignItems="center">
+                    <Box w="full">
+                      <Input
+                        placeholder="Header Key"
+                        value={header.key}
+                        onChange={(e) =>
+                          updateHeader(index, 'key', e.target.value)
+                        }
+                      />
+                    </Box>
+                    <Box w="full">
+                      <Input
+                        placeholder="Header Value"
+                        value={header.value}
+                        onChange={(e) =>
+                          updateHeader(index, 'value', e.target.value)
+                        }
+                      />
+                    </Box>
+                    <IconButton
+                      aria-label="Remove header"
+                      icon={<CloseIcon />}
+                      size="sm"
+                      colorScheme="red"
+                      onClick={() => removeHeader(index)}
+                    />
+                  </Flex>
+                </Box>
+              ))}
             </TabPanel>
           </TabPanels>
         </Tabs>
@@ -316,7 +406,7 @@ export default function Graphql() {
 
       <Box
         w="full"
-        maxW="1200px"
+        maxW="1400px"
         borderWidth="1px"
         borderRadius="lg"
         borderColor={'gray.500'}

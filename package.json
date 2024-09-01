@@ -31,6 +31,7 @@
     ]
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/next-js": "^2.2.0",
     "@chakra-ui/react": "^2.8.2",
     "@codemirror/basic-setup": "^0.20.0",
@@ -44,6 +45,7 @@
     "@emotion/styled": "^11.13.0",
     "@reduxjs/toolkit": "^2.2.7",
     "@uiw/codemirror-themes": "^4.23.0",
+    "@uiw/codemirror-themes-all": "^4.23.0",
     "@uiw/react-codemirror": "^4.23.0",
     "@uiw/react-json-view": "^2.0.0-alpha.26",
     "codemirror": "^5.65.17",

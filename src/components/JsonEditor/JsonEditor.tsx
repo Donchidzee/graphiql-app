@@ -3,6 +3,7 @@ import CodeMirror from '@uiw/react-codemirror';
 import { json } from '@codemirror/lang-json';
 import { linter, lintGutter } from '@codemirror/lint';
 import { EditorView } from '@codemirror/view';
+import { tokyoNight } from '@uiw/codemirror-themes-all';
 
 interface JsonEditorProps {
   code: string;
@@ -46,6 +47,7 @@ const JsonEditor: React.FC<JsonEditorProps> = ({ code, onChange }) => {
 
   return (
     <CodeMirror
+      theme={tokyoNight}
       value={localCode}
       minHeight="300px"
       extensions={[json(), linter(jsonLinter), lintGutter()]}
