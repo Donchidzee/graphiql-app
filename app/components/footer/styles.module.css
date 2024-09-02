@@ -1,8 +1,8 @@
 .footer {
-  height: 150px;
+  height: 70px;
   padding: 20px;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   background-color: #f5f4ee;
 }
 
@@ -12,12 +12,13 @@
   margin-left: 10px;
 }
 
-.authorsTitle {
-  font-size: 24px;
-  font-weight: 500;
-}
-
 .authorsList {
   display: flex;
-  flex-direction: column;
+}
+
+.authorLinkWrapper {
+  margin-right: 15px;
+  padding: 6px 15px;
+  border: 1px solid rgb(58, 58, 58);
+  border-radius: 10px;
 }
