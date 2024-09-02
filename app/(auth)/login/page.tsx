@@ -86,12 +86,6 @@ export default function HookForm() {
             autoComplete="on"
             {...register('password', {
               required: 'This is required',
-              pattern: {
-                value:
-                  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&\u00C0-\u017F\u0400-\u04FF\u1E00-\u1EFF]{8,}$/,
-                message:
-                  'Password must contain at least one letter, one number, and one special character',
-              },
             })}
           />
           <Box height="1.5rem">

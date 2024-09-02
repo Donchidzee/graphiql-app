@@ -32,7 +32,7 @@ export default function HookForm() {
     if (user && !loading) {
       router.push('/');
     }
-  }, [user, loading]);
+  }, [user, loading, router]);
 
   function onSubmit(values) {
     registerWithEmailAndPassword(
@@ -113,7 +113,7 @@ export default function HookForm() {
               required: 'This is required',
               pattern: {
                 value:
-                  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&\u00C0-\u017F\u0400-\u04FF\u1E00-\u1EFF]{8,}$/,
+                  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#\u00C0-\u017F\u0400-\u04FF\u1E00-\u1EFF]{8,}$/,
                 message:
                   'Password must contain at least one letter, one number, and one special character',
               },
