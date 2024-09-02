@@ -26,13 +26,13 @@ export default function HookForm() {
 
   const router = useRouter();
 
-  const [user, loading, error] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
 
   useEffect(() => {
     if (user && !loading) {
       router.push('/');
     }
-  }, [user, loading]);
+  }, [user, loading, router]);
 
   function onSubmit(values) {
     logInWithEmailAndPassword(values.email, values.password);
@@ -120,7 +120,7 @@ export default function HookForm() {
           </Link>
         </Box>
         <div>
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link
             as={NextLink}
             color="blue.400"

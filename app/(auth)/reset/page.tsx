@@ -26,13 +26,13 @@ export default function HookForm() {
 
   const router = useRouter();
 
-  const [user, loading, error] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
 
   useEffect(() => {
     if (user && !loading) {
       router.push('/');
     }
-  }, [user, loading]);
+  }, [user, loading, router]);
 
   function onSubmit(values) {
     sendPasswordReset(values.email);
@@ -86,7 +86,7 @@ export default function HookForm() {
           Send password reset email
         </Button>
         <Box mt={3}>
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link
             as={NextLink}
             color="blue.400"

@@ -2,7 +2,7 @@
 
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Link, CircularProgress, Box } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import NextLink from 'next/link';
 import styles from './styles.module.css';
 import { auth, db } from '../firebase';
@@ -12,7 +12,7 @@ export default function Page() {
   const [user, loading] = useAuthState(auth);
   const [name, setName] = useState('');
 
-  const fetchUserName = async () => {
+  const fetchUserName = useCallback(async () => {
     if (!user) return;
     try {
       const q = query(collection(db, 'users'), where('uid', '==', user?.uid));
@@ -21,15 +21,15 @@ export default function Page() {
       setName(data.name);
     } catch (err) {
       console.error(err);
-      alert('An error occured while fetching user data');
+      alert('An error occurred while fetching user data');
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     if (user && !loading) {
       fetchUserName();
     }
-  }, [user, loading]);
+  }, [user, loading, fetchUserName]);
 
   if (loading) {
     return (

@@ -26,7 +26,7 @@ export default function HookForm() {
 
   const router = useRouter();
 
-  const [user, loading, error] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
 
   useEffect(() => {
     if (user && !loading) {

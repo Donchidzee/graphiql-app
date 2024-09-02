@@ -1,6 +1,9 @@
+'use client';
+
 import { Link } from '@chakra-ui/react';
 import Image from 'next/image';
 import styles from './styles.module.css';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
 
 export function Footer() {
   return (
@@ -21,12 +24,15 @@ export function Footer() {
           <div className={styles.authorsList}>
             <Link href="https://github.com/AigerimR" isExternal>
               aigerimr
+              <ExternalLinkIcon />
             </Link>
             <Link href="https://github.com/samekeekz" isExternal>
               samekeekz
+              <ExternalLinkIcon />
             </Link>
             <Link href="https://github.com/Donchidzee" isExternal>
               donchidzee
+              <ExternalLinkIcon />
             </Link>
           </div>
         </div>
