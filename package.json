@@ -6,7 +6,7 @@
     "lint": "next lint",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --write",
-    "prepare": "husky install"
+    "prepare": "husky install && chmod +x .husky/*"
   },
   "husky": {
     "hooks": {
