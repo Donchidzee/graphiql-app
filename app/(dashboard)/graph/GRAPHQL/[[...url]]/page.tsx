@@ -5,7 +5,7 @@ import Documentation from '../../../../components/graphql/Documentation';
 import { Schema } from '../../../../components/graphql/Documentation/Documentation';
 import VariablesEditor from '../../../../components/graphql/VariablesEditor';
 import UrlInput from '../../../../components/rest/urlInput/UrlInput';
-import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
+import { useAppSelector } from '../../../../store/hooks';
 import {
   Flex,
   Box,
@@ -22,14 +22,12 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
-import { useParams, usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function Graphql() {
-  const { url } = useParams();
   const pathname = usePathname();
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const stateUrl = useAppSelector((state) => state.restInputs.url);
   const stateBody = useAppSelector((state) => state.restInputs.body);
   const [headers, setHeaders] = useState([{ key: '', value: '' }]);
@@ -40,8 +38,7 @@ export default function Graphql() {
   const [responseBody, setResponseBody] = useState<string>('');
   const [documentation, setDocumentation] = useState<Schema>();
   const [variablesJson, setVariablesJson] = useState({});
-  const [documentationLoading, setDocumentationLoading] =
-    useState<boolean>(false);
+  const [documentationLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const encodedNewUrl = btoa(encodeURIComponent(stateUrl));

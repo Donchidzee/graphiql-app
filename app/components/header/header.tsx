@@ -1,14 +1,14 @@
 'use client';
 
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth, db, logout } from '../../../firebase';
+import { auth, logout } from '../../../firebase';
 import { Button, Select } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { Link } from '@chakra-ui/react';
 import styles from './styles.module.css';
 
 export function Header() {
-  const [user, loading, error] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
 
   return (
     <>
