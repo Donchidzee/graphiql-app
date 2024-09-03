@@ -293,7 +293,7 @@ export default function Graphql() {
           <Input
             placeholder="HTTP Status Code"
             readOnly
-            value={!!statusCode ? statusCode : ''}
+            value={statusCode ? statusCode : ''}
             mb={4}
             bg={'gray.800'}
             color={'white'}
@@ -310,7 +310,7 @@ export default function Graphql() {
               placeholder="Response Body (Read-Only)"
               readOnly
               height="100%"
-              value={!!responseBody ? responseBody : ''}
+              value={responseBody ? responseBody : ''}
               bg="gray.800" // Dark background
               color="white" // Light text color
               fontFamily="'Source Code Pro', monospace" // Monospace font for code

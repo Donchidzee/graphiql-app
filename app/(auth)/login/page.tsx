@@ -38,6 +38,10 @@ export default function HookForm() {
     logInWithEmailAndPassword(values.email, values.password);
   }
 
+  function check(x: any) {
+    console.log(x);
+  }
+
   if (loading) {
     return (
       <Box
