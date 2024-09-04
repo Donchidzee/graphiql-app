@@ -20,7 +20,7 @@ import UrlInput from '@/components/rest/urlInput/UrlInput';
 import BodyInput from '@/components/rest/bodyInput.tsx/BodyInput';
 import VariablesInputs from '@/components/rest/variablesInputs/VariablesInputs';
 import HeadersInputs from '@/components/rest/headersInputs/HeadersInputs';
-import ResponseArea from '@/components/responseArea/ResponseArea';
+import ResponseArea from '@/components/rest/responseArea/ResponseArea';
 import { ResponseValue } from '@/types/restTypes';
 import { saveEndpointToLS } from '@/helpers/helpers';
 

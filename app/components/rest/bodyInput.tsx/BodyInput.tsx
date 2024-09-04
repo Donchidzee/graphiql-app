@@ -18,17 +18,22 @@ import {
 import { RootState } from '../../../store/store';
 
 const BodyInput: React.FC = () => {
-  const storedTabIndex = localStorage.getItem('activeBodyTab');
-  const initialTabIndex = storedTabIndex ? parseInt(storedTabIndex, 10) : 0;
-
   const [bodyError, setBodyError] = useState(false);
   const [bodyTextValue, setBodyTextValue] = useState('');
   const [bodyJsonValue, setBodyJsonValue] = useState('');
-  const [activeTab, setActiveTab] = useState<number>(initialTabIndex);
+  const [activeTab, setActiveTab] = useState<number>(0);
 
   const dispatch = useDispatch();
   const stateUrl = useSelector((state: RootState) => state.restInputs.url);
   const stateBody = useSelector((state: RootState) => state.restInputs.body);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedTabIndex = localStorage.getItem('activeBodyTab');
+      const initialTabIndex = storedTabIndex ? parseInt(storedTabIndex, 10) : 0;
+      setActiveTab(initialTabIndex);
+    }
+  }, []);
 
   useEffect(() => {
     setBodyTextValue(stateBody);

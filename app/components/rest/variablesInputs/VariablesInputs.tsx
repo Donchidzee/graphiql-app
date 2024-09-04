@@ -17,15 +17,16 @@ import {
 } from '@chakra-ui/react';
 
 const VariablesInputs: React.FC = () => {
-  const lsStoredVariables = localStorage.getItem('localVariables');
-  const storedVariables = lsStoredVariables
-    ? JSON.parse(lsStoredVariables)
-    : [];
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const lsStoredVariables = localStorage.getItem('localVariables');
+      const storedVariables = lsStoredVariables ? JSON.parse(lsStoredVariables) : [];
+      setVariables(storedVariables);
+    }
+  }, []); 
 
   const [variables, setVariables] =
-    useState<{ variableIndex: number; key: string; value: string }[]>(
-      storedVariables
-    );
+    useState<{ variableIndex: number; key: string; value: string }[]>([]);
 
   useEffect(() => {
     localStorage.setItem('localVariables', JSON.stringify(variables));

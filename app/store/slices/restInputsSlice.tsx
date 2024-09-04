@@ -1,14 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Header, inputsState, RequestHistory } from '@/types/restTypes';
+const isBrowser = typeof window !== 'undefined';
 
 const initialState: inputsState = {
   url: '',
   urlError: false,
   body: '',
   headers: [],
-  RequestHistory: localStorage.getItem('requestHistory')
-    ? JSON.parse(localStorage.getItem('requestHistory'))
-    : [],
+  RequestHistory: isBrowser
+  ? localStorage.getItem('requestHistory')
+    ? JSON.parse(localStorage.getItem('requestHistory')!)
+    : []
+  : [],
 };
 
 export const restInputsSlice = createSlice({
