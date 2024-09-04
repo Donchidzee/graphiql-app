@@ -9,13 +9,13 @@ import {
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyDcpGXNbNufvyOwA6-oj6YHNKVGhGAkoFE',
-  authDomain: 'graphiql-app-a3830.firebaseapp.com',
-  projectId: 'graphiql-app-a3830',
-  storageBucket: 'graphiql-app-a3830.appspot.com',
-  messagingSenderId: '1006722910400',
-  appId: '1:1006722910400:web:432b440b06c0848c9b0525',
-  measurementId: 'G-6C371541ZP',
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
 const app = initializeApp(firebaseConfig);
@@ -57,8 +57,13 @@ const sendPasswordReset = async (email) => {
   }
 };
 
-const logout = () => {
-  signOut(auth);
+const logout = async () => {
+  try {
+    await signOut(auth);
+  } catch (err) {
+    console.error('Error signing out:', err);
+    alert('Error signing out. Please try again.');
+  }
 };
 
 export {
