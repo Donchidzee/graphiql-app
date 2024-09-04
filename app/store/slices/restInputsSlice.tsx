@@ -1,15 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-type inputsState = {
-  url: string;
-  urlError: boolean;
-  body: string;
-};
+import { Header, inputsState, RequestHistory } from '@/types/restTypes';
 
 const initialState: inputsState = {
   url: '',
   urlError: false,
   body: '',
+  headers: [],
+  RequestHistory: localStorage.getItem('requestHistory')
+    ? JSON.parse(localStorage.getItem('requestHistory'))
+    : [],
 };
 
 export const restInputsSlice = createSlice({
@@ -25,10 +24,21 @@ export const restInputsSlice = createSlice({
     changeBody: (state, action: PayloadAction<string>) => {
       state.body = action.payload;
     },
+    changeHeaders: (state, action: PayloadAction<Header[]>) => {
+      state.headers = action.payload;
+    },
+    changeRequestHistory: (state, action: PayloadAction<RequestHistory[]>) => {
+      state.RequestHistory = [...action.payload];
+    },
   },
 });
 
-export const { changeUrl, changeUrlError, changeBody } =
-  restInputsSlice.actions;
+export const {
+  changeUrl,
+  changeUrlError,
+  changeBody,
+  changeHeaders,
+  changeRequestHistory,
+} = restInputsSlice.actions;
 
 export default restInputsSlice.reducer;
