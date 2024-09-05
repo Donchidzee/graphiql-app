@@ -54,7 +54,7 @@ export default function Page() {
             <div className={styles.container}>
               <Link
                 as={NextLink}
-                href="/rest/GET"
+                href="/api/rest/GET"
                 color="blue.400"
                 _hover={{ color: 'blue.500' }}
                 mr={10}
@@ -63,7 +63,7 @@ export default function Page() {
               </Link>
               <Link
                 as={NextLink}
-                href="/graph/GRAPHQL"
+                href="/api/graph/GRAPHQL"
                 color="blue.400"
                 _hover={{ color: 'blue.500' }}
               >

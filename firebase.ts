@@ -22,37 +22,64 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const logInWithEmailAndPassword = async (email, password) => {
+const setCookie = (name: string, value: string, days: number) => {
+  let expires = '';
+  if (days) {
+    const date = new Date();
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+    expires = `; expires=${date.toUTCString()}`;
+  }
+  document.cookie = `${name}=${value || ''}${expires}; path=/`;
+};
+
+const eraseCookie = (name: string) => {
+  document.cookie = `${name}=; Max-Age=-99999999; path=/`;
+};
+
+const logInWithEmailAndPassword = async (email: string, password: string) => {
   try {
-    await signInWithEmailAndPassword(auth, email, password);
+    const res = await signInWithEmailAndPassword(auth, email, password);
+    const user = res.user;
+
+    const token = await user.getIdToken();
+
+    setCookie('authToken', token, 1);
   } catch (err) {
-    console.error(err);
+    console.error('Error during login:', err);
     alert(err.message);
   }
 };
 
-const registerWithEmailAndPassword = async (name, email, password) => {
+const registerWithEmailAndPassword = async (
+  name: string,
+  email: string,
+  password: string
+) => {
   try {
     const res = await createUserWithEmailAndPassword(auth, email, password);
     const user = res.user;
+
     await addDoc(collection(db, 'users'), {
       uid: user.uid,
       name,
       authProvider: 'local',
       email,
     });
+
+    const token = await user.getIdToken();
+    setCookie('authToken', token, 1);
   } catch (err) {
-    console.error(err);
+    console.error('Error during registration:', err);
     alert(err.message);
   }
 };
 
-const sendPasswordReset = async (email) => {
+const sendPasswordReset = async (email: string) => {
   try {
     await sendPasswordResetEmail(auth, email);
     alert('Password reset link sent!');
   } catch (err) {
-    console.error(err);
+    console.error('Error sending password reset email:', err);
     alert(err.message);
   }
 };
@@ -60,6 +87,7 @@ const sendPasswordReset = async (email) => {
 const logout = async () => {
   try {
     await signOut(auth);
+    eraseCookie('authToken');
   } catch (err) {
     console.error('Error signing out:', err);
     alert('Error signing out. Please try again.');
