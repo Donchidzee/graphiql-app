@@ -8,10 +8,10 @@ const initialState: inputsState = {
   body: '',
   headers: [],
   RequestHistory: isBrowser
-  ? localStorage.getItem('requestHistory')
-    ? JSON.parse(localStorage.getItem('requestHistory')!)
-    : []
-  : [],
+    ? localStorage.getItem('requestHistory')
+      ? JSON.parse(localStorage.getItem('requestHistory')!)
+      : []
+    : [],
 };
 
 export const restInputsSlice = createSlice({

@@ -20,13 +20,16 @@ const VariablesInputs: React.FC = () => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const lsStoredVariables = localStorage.getItem('localVariables');
-      const storedVariables = lsStoredVariables ? JSON.parse(lsStoredVariables) : [];
+      const storedVariables = lsStoredVariables
+        ? JSON.parse(lsStoredVariables)
+        : [];
       setVariables(storedVariables);
     }
-  }, []); 
+  }, []);
 
-  const [variables, setVariables] =
-    useState<{ variableIndex: number; key: string; value: string }[]>([]);
+  const [variables, setVariables] = useState<
+    { variableIndex: number; key: string; value: string }[]
+  >([]);
 
   useEffect(() => {
     localStorage.setItem('localVariables', JSON.stringify(variables));
