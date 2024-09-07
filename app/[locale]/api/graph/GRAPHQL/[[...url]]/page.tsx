@@ -5,16 +5,10 @@ import {
   Button,
   Flex,
   Heading,
-  IconButton,
   Input,
   Stack,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
   Textarea,
 } from '@chakra-ui/react';
-import { CloseIcon } from '@chakra-ui/icons';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import BodyInput from '@/components/graphql/BodyInput';
@@ -23,8 +17,8 @@ import Documentation, {
   Schema,
 } from '@/components/graphql/Documentation/Documentation';
 import UrlInput from '@/components/rest/urlInput/UrlInput';
-import VariablesEditor from '@/components/graphql/VariablesEditor';
 import { useTranslations } from 'next-intl';
+import StyledTabs from '@/components/StyledTabs';
 
 export default function Graphql() {
   const pathname = usePathname();
@@ -334,71 +328,14 @@ export default function Graphql() {
         boxShadow="md"
         mt={5}
       >
-        <Tabs variant="enclosed">
-          <TabList>
-            {t('variables')}
-            {t('headers')}
-          </TabList>
-          <TabPanels>
-            <TabPanel>
-              <VariablesEditor
-                variablesJson={variablesJson}
-                setVariablesJson={handleVariablesChange}
-              />
-            </TabPanel>
-            <TabPanel>
-              <Button
-                colorScheme="teal"
-                size="sm"
-                textTransform="uppercase"
-                onClick={addHeader}
-              >
-                + Add Header
-              </Button>
-              {headers.map((header, index) => (
-                <Box
-                  key={index}
-                  borderWidth="1px"
-                  borderRadius="md"
-                  p={2}
-                  width="full"
-                  mt={2}
-                  borderColor={index % 2 === 0 ? 'teal.500' : 'blue.500'} // Example: alternate between teal and blue
-                >
-                  <Flex justify="space-between" gap={2} alignItems="center">
-                    <Box w="full">
-                      <Input
-                        placeholder="Header Key"
-                        value={header.key}
-                        onChange={(e) =>
-                          updateHeader(index, 'key', e.target.value)
-                        }
-                        borderColor={'gray.600'}
-                      />
-                    </Box>
-                    <Box w="full">
-                      <Input
-                        placeholder="Header Value"
-                        value={header.value}
-                        onChange={(e) =>
-                          updateHeader(index, 'value', e.target.value)
-                        }
-                        borderColor={'gray.600'}
-                      />
-                    </Box>
-                    <IconButton
-                      aria-label="Remove header"
-                      icon={<CloseIcon />}
-                      size="sm"
-                      colorScheme="red"
-                      onClick={() => removeHeader(index)}
-                    />
-                  </Flex>
-                </Box>
-              ))}
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
+        <StyledTabs
+          variablesJson={variablesJson}
+          handleVariablesChange={handleVariablesChange}
+          headers={headers}
+          updateHeader={updateHeader}
+          removeHeader={removeHeader}
+          addHeader={addHeader}
+        />
       </Box>
 
       <Box

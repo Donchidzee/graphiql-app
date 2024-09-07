@@ -2,11 +2,12 @@ import { Select } from '@chakra-ui/react';
 import styles from './styles.module.css';
 import { useLocale } from 'next-intl';
 import { usePathname, useRouter } from '../../../routing';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useTransition } from 'react';
 
 const LanguagePicker = () => {
   const activeLocale = useLocale();
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const pathname = usePathname();
 
   const handleLanguageChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -16,6 +17,8 @@ const LanguagePicker = () => {
       router.replace(pathname, { locale: nextLocale });
     });
   };
+
+  console.log(isPending);
 
   return (
     <div className={styles.languageSelectWrapper}>
