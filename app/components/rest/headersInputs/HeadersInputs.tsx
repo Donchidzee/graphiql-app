@@ -17,7 +17,6 @@ import {
   Stack,
   VStack,
 } from '@chakra-ui/react';
-// import { changeHeaders } from '../../../../app/store/slices/restInputsSlice';
 import { RootState } from '@/store/store';
 import { changeHeaders } from '@/store/slices/restInputsSlice';
 
@@ -57,8 +56,6 @@ const HeadersInputs: React.FC = () => {
       );
       newHeaders[index][field] = e.target.value;
       setHeaders(newHeaders);
-      console.log(newHeaders);
-
       dispatch(changeHeaders(newHeaders));
 
       const newHeaderInputErrors = [...headerInputErrors];
@@ -98,28 +95,31 @@ const HeadersInputs: React.FC = () => {
             >
               new header
             </Button>
-            {headers.map((header, index) => (
-              <Stack key={index} align="center" direction="row">
-                <FormControl isInvalid={headerInputErrors[index]?.key}>
-                  <InputGroup size="md">
-                    <InputLeftAddon>key</InputLeftAddon>
-                    <Input
-                      value={header.key}
-                      onChange={handleHeadersChange(index, 'key')}
-                    />
-                  </InputGroup>
-                </FormControl>
-                <FormControl isInvalid={headerInputErrors[index]?.value}>
-                  <InputGroup size="md">
-                    <InputLeftAddon>value</InputLeftAddon>
-                    <Input
-                      value={header.value}
-                      onChange={handleHeadersChange(index, 'value')}
-                    />
-                  </InputGroup>
-                </FormControl>
-              </Stack>
-            ))}
+            {headers.map(
+              (header, index) =>
+                header.key !== 'variables' && (
+                  <Stack key={index} align="center" direction="row">
+                    <FormControl isInvalid={headerInputErrors[index]?.key}>
+                      <InputGroup size="md">
+                        <InputLeftAddon>key</InputLeftAddon>
+                        <Input
+                          value={header.key}
+                          onChange={handleHeadersChange(index, 'key')}
+                        />
+                      </InputGroup>
+                    </FormControl>
+                    <FormControl isInvalid={headerInputErrors[index]?.value}>
+                      <InputGroup size="md">
+                        <InputLeftAddon>value</InputLeftAddon>
+                        <Input
+                          value={header.value}
+                          onChange={handleHeadersChange(index, 'value')}
+                        />
+                      </InputGroup>
+                    </FormControl>
+                  </Stack>
+                )
+            )}
           </VStack>
         </AccordionPanel>
       </AccordionItem>

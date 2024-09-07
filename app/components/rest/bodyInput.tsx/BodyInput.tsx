@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -26,6 +26,19 @@ const BodyInput: React.FC = () => {
   const dispatch = useDispatch();
   const stateUrl = useSelector((state: RootState) => state.restInputs.url);
   const stateBody = useSelector((state: RootState) => state.restInputs.body);
+  const [variables, setVariables] = useState<
+    { variableIndex: number; key: string; value: string }[]
+  >([]);
+  const stateHeaders = useSelector(
+    (state: RootState) => state.restInputs.headers
+  );
+
+  useEffect(() => {
+    const stateVariables = stateHeaders.filter((el) => el.key === 'variables');
+    const storedVariables =
+      stateVariables.length !== 0 ? JSON.parse(stateVariables[0].value) : [];
+    setVariables(storedVariables);
+  }, [stateHeaders]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -34,6 +47,20 @@ const BodyInput: React.FC = () => {
       setActiveTab(initialTabIndex);
     }
   }, []);
+
+  const replaceVariable = useCallback(
+    (str) => {
+      return str.replace(
+        /"{{(.*?)}}"|{{(.*?)}}/g,
+        (_, quotedKey, unquotedKey) => {
+          const key = quotedKey || unquotedKey;
+          const variable = variables.find((el) => el.key === key);
+          return variable ? `"{{${key}}}"` : key;
+        }
+      );
+    },
+    [variables]
+  );
 
   useEffect(() => {
     setBodyTextValue(stateBody);
@@ -50,20 +77,8 @@ const BodyInput: React.FC = () => {
         setBodyError(true);
       }
     }
-  }, [stateBody]);
+  }, [stateBody, replaceVariable]);
 
-  const replaceVariable = (str) => {
-    const LSVariables = JSON.parse(localStorage.getItem('localVariables'));
-
-    return str.replace(
-      /"{{(.*?)}}"|{{(.*?)}}/g,
-      (_, quotedKey, unquotedKey) => {
-        const key = quotedKey || unquotedKey;
-        const variable = LSVariables.find((el) => el.key === key);
-        return variable ? `"{{${key}}}"` : key;
-      }
-    );
-  };
   const changeBodyText = (e: { target: { value: string } }) => {
     const text = e.target.value;
     setBodyTextValue(text);

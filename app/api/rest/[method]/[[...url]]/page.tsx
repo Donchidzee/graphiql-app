@@ -149,9 +149,10 @@ export default function Rest() {
     if (stateUrl) {
       saveEndpointToLS(pathname, searchParams, dispatch);
       setLoading(true);
-      // https://api.artic.edu/api/v1/artworks
       const responseHeaders = stateHeaders.reduce((acc, obj) => {
-        acc[obj.key] = obj.value;
+        if (obj.key !== 'variables') {
+          acc[obj.key] = obj.value;
+        }
         return acc;
       }, {});
 

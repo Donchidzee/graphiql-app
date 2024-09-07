@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   Accordion,
@@ -15,25 +16,30 @@ import {
   Stack,
   VStack,
 } from '@chakra-ui/react';
+import { RootState } from '@/store/store';
+import { changeHeaders } from '@/store/slices/restInputsSlice';
 
 const VariablesInputs: React.FC = () => {
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const lsStoredVariables = localStorage.getItem('localVariables');
-      const storedVariables = lsStoredVariables
-        ? JSON.parse(lsStoredVariables)
-        : [];
-      setVariables(storedVariables);
-    }
-  }, []);
-
   const [variables, setVariables] = useState<
     { variableIndex: number; key: string; value: string }[]
   >([]);
 
+  const dispatch = useDispatch();
+  const stateHeaders = useSelector(
+    (state: RootState) => state.restInputs.headers
+  );
+
+  const [headers, setHeaders] = useState<
+    { headerIndex: number; key: string; value: string }[]
+  >([]);
+
   useEffect(() => {
-    localStorage.setItem('localVariables', JSON.stringify(variables));
-  }, [variables]);
+    setHeaders(stateHeaders);
+    const stateVariables = stateHeaders.filter((el) => el.key === 'variables');
+    const storedVariables =
+      stateVariables.length !== 0 ? JSON.parse(stateVariables[0].value) : [];
+    setVariables(storedVariables);
+  }, [stateHeaders]);
 
   const addVariable = () => {
     setVariables([
@@ -42,10 +48,35 @@ const VariablesInputs: React.FC = () => {
     ]);
   };
 
+  const saveVariables = (newVariables) => {
+    let newHeaders = [];
+    if (headers.some((header) => header.key === 'variables')) {
+      if (newVariables.length !== 0) {
+        newHeaders = headers.map((header) =>
+          header.key === 'variables'
+            ? { ...header, value: JSON.stringify(newVariables) }
+            : header
+        );
+      } else {
+        newHeaders = headers.filter((header) => header.key !== 'variables');
+      }
+    } else {
+      newHeaders = [
+        ...headers,
+        {
+          headerIndex: headers.length,
+          key: 'variables',
+          value: JSON.stringify(newVariables),
+        },
+      ];
+    }
+    dispatch(changeHeaders(newHeaders));
+  };
+
   const deleteVariable = (index) => {
     const newVariables = variables.filter((el, i) => i !== index);
     setVariables(newVariables);
-    localStorage.setItem('localVariables', JSON.stringify(newVariables));
+    saveVariables(newVariables);
   };
 
   const handleVariablesChange =
@@ -54,7 +85,7 @@ const VariablesInputs: React.FC = () => {
       const newVariables = [...variables];
       newVariables[index][field] = e.target.value;
       setVariables(newVariables);
-      localStorage.setItem('localVariables', JSON.stringify(variables));
+      saveVariables(newVariables);
     };
 
   return (
