@@ -1,0 +1,10 @@
+.languageSelectWrapper {
+    margin-right: 10px;
+}
+
+.languageSelectWrapper select {
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    padding: 2px 8px;
+    font-size: 0.875rem;
+}
