@@ -1,29 +1,30 @@
 'use client';
 
-import BodyInput from '../../../../components/graphql/BodyInput';
-import Documentation from '../../../../components/graphql/Documentation';
-import { Schema } from '../../../../components/graphql/Documentation/Documentation';
-import VariablesEditor from '../../../../components/graphql/VariablesEditor';
-import UrlInput from '../../../../components/rest/urlInput/UrlInput';
-import { useAppSelector } from '../../../../store/hooks';
 import {
-  Flex,
   Box,
-  Heading,
-  Stack,
-  Input,
   Button,
-  Textarea,
-  Tab,
+  Flex,
+  Heading,
+  IconButton,
+  Input,
+  Stack,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
-  IconButton,
+  Textarea,
 } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import BodyInput from '@/components/graphql/BodyInput';
+import { useAppSelector } from '@/store/hooks';
+import Documentation, {
+  Schema,
+} from '@/components/graphql/Documentation/Documentation';
+import UrlInput from '@/components/rest/urlInput/UrlInput';
+import VariablesEditor from '@/components/graphql/VariablesEditor';
+import { useTranslations } from 'next-intl';
 
 export default function Graphql() {
   const pathname = usePathname();
@@ -32,7 +33,7 @@ export default function Graphql() {
   const stateBody = useAppSelector((state) => state.restInputs.body);
   const [headers, setHeaders] = useState([{ key: '', value: '' }]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
+  const t = useTranslations();
   //response content
   const [statusCode, setStatusCode] = useState<number>(0);
   const [responseBody, setResponseBody] = useState<string>('');
@@ -43,7 +44,7 @@ export default function Graphql() {
   useEffect(() => {
     const encodedNewUrl = btoa(encodeURIComponent(stateUrl));
     const pathArray = pathname.split('/');
-    pathArray[4] = encodedNewUrl;
+    pathArray[5] = encodedNewUrl;
     const newPath = `${pathArray.join('/')}`;
     router.replace(newPath);
   }, [stateUrl, router, pathname]);
@@ -51,7 +52,7 @@ export default function Graphql() {
   useEffect(() => {
     const encodedNewBody = btoa(encodeURIComponent(stateBody));
     const pathArray = pathname.split('/');
-    pathArray[5] = encodedNewBody;
+    pathArray[6] = encodedNewBody;
     const newPath = `${pathArray.join('/')}`;
     router.replace(newPath);
   }, [stateBody, router, pathname]);
@@ -227,16 +228,15 @@ export default function Graphql() {
         </Stack>
       </Box>
 
-      {/* Flex container for Query Editor and Response */}
       <Flex
         direction={['column', 'row']}
         justify="space-between"
         align="flex-start"
         w="full"
-        h="500px" // Fixed height for the parent container
+        h="500px"
         maxW="1400px"
         mt={5}
-        boxSizing="border-box" // Ensure padding is included in the height
+        boxSizing="border-box"
       >
         <Box
           w={['full', '50%']}
@@ -246,14 +246,14 @@ export default function Graphql() {
           borderColor="gray.500"
           overflow="hidden"
           boxShadow="md"
-          mr={[0, 2]} // margin between boxes
-          mb={[5, 0]} // margin bottom for mobile view
+          mr={[0, 2]}
+          mb={[5, 0]}
           p={5}
-          display="flex" // Use flexbox for children
-          flexDirection="column" // Make children stack vertically
+          display="flex"
+          flexDirection="column"
         >
           <Heading size="md" mb={4}>
-            Query
+            {t('query')}
           </Heading>
           <Box flex="1">
             <BodyInput />
@@ -267,7 +267,7 @@ export default function Graphql() {
             onClick={handleSubmit}
             boxShadow="lg"
           >
-            {isLoading ? 'Loading...' : 'Run Query'}
+            {isLoading ? t('loading') : t('run')}
           </Button>
         </Flex>
 
@@ -279,13 +279,13 @@ export default function Graphql() {
           borderColor="gray.500"
           overflow="hidden"
           boxShadow="md"
-          ml={[0, 2]} // margin between boxes
+          ml={[0, 2]}
           p={5}
-          display="flex" // Use flexbox for children
-          flexDirection="column" // Make children stack vertically
+          display="flex"
+          flexDirection="column"
         >
           <Heading size="md" mb={4}>
-            Response
+            {t('response')}
           </Heading>
           <Input
             placeholder="HTTP Status Code"
@@ -311,7 +311,7 @@ export default function Graphql() {
               bg="gray.800" // Dark background
               color="white" // Light text color
               fontFamily="'Source Code Pro', monospace" // Monospace font for code
-              fontSize="16px" // Adjust font size for code readability
+              fontSize="14px" // Adjust font size for code readability
               p={4} // Padding for better spacing
               borderRadius="md" // Rounded corners
               borderColor="gray.600" // Border color
@@ -323,7 +323,6 @@ export default function Graphql() {
         </Box>
       </Flex>
 
-      {/* Tabs for Headers and Variables */}
       <Box
         w="full"
         maxW="1400px"
@@ -337,8 +336,8 @@ export default function Graphql() {
       >
         <Tabs variant="enclosed">
           <TabList>
-            <Tab>Variables</Tab>
-            <Tab>Headers</Tab>
+            {t('variables')}
+            {t('headers')}
           </TabList>
           <TabPanels>
             <TabPanel>
@@ -352,7 +351,6 @@ export default function Graphql() {
                 colorScheme="teal"
                 size="sm"
                 textTransform="uppercase"
-                width="100px"
                 onClick={addHeader}
               >
                 + Add Header
@@ -375,6 +373,7 @@ export default function Graphql() {
                         onChange={(e) =>
                           updateHeader(index, 'key', e.target.value)
                         }
+                        borderColor={'gray.600'}
                       />
                     </Box>
                     <Box w="full">
@@ -384,6 +383,7 @@ export default function Graphql() {
                         onChange={(e) =>
                           updateHeader(index, 'value', e.target.value)
                         }
+                        borderColor={'gray.600'}
                       />
                     </Box>
                     <IconButton
@@ -412,7 +412,7 @@ export default function Graphql() {
         boxShadow="md"
         mt={5}
       >
-        <Heading size="md">Documentation</Heading>
+        <Heading size="md"> {t('documentation')}</Heading>
         {documentationLoading ? (
           <p>Loading documentation...</p>
         ) : (

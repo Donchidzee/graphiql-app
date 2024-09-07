@@ -1,16 +1,18 @@
 'use client';
 
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { Link, CircularProgress, Box } from '@chakra-ui/react';
+import { Box, CircularProgress, Link } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
-import NextLink from 'next/link';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import styles from './styles.module.css';
-import { auth, db } from '../firebase';
-import { query, collection, getDocs, where } from 'firebase/firestore';
+import { auth, db } from '../../firebase';
+import { useTranslations } from 'next-intl';
+import { LinkInter } from '../../routing';
 
 export default function Page() {
   const [user, loading] = useAuthState(auth);
   const [name, setName] = useState('');
+  const t = useTranslations();
 
   const fetchUserName = useCallback(async () => {
     if (!user) return;
@@ -53,8 +55,8 @@ export default function Page() {
             <h1>{`Welcome back, ${name}!`}</h1>
             <div className={styles.container}>
               <Link
-                as={NextLink}
-                href="/api/rest/GET"
+                as={LinkInter}
+                href={`/api/rest/GET`}
                 color="blue.400"
                 _hover={{ color: 'blue.500' }}
                 mr={10}
@@ -62,8 +64,8 @@ export default function Page() {
                 Rest
               </Link>
               <Link
-                as={NextLink}
-                href="/api/graph/GRAPHQL"
+                as={LinkInter}
+                href={`/api/graph/GRAPHQL`}
                 color="blue.400"
                 _hover={{ color: 'blue.500' }}
               >
@@ -76,21 +78,21 @@ export default function Page() {
             <h1>Welcome!</h1>
             <div className={styles.container}>
               <Link
-                as={NextLink}
-                href="/login"
+                as={LinkInter}
+                href={`/login`}
                 color="blue.400"
                 _hover={{ color: 'blue.500' }}
                 mr={10}
               >
-                Sign in
+                {t('login')}
               </Link>
               <Link
-                as={NextLink}
-                href="/register"
+                as={LinkInter}
+                href={`/register`}
                 color="blue.400"
                 _hover={{ color: 'blue.500' }}
               >
-                Sign up
+                {t('register')}
               </Link>
             </div>
           </>

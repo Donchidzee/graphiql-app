@@ -2,77 +2,62 @@
 
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, logout } from '../../../firebase';
-import { Button, Select } from '@chakra-ui/react';
-import NextLink from 'next/link';
-import { Link } from '@chakra-ui/react';
+import { Button, Link } from '@chakra-ui/react';
 import styles from './styles.module.css';
-import { useEffect, useState } from 'react';
 import LanguagePicker from '@/components/LanguagesPicker';
-import { useRouter } from 'next/router';
+import { useTranslations } from 'next-intl';
+import { LinkInter } from '../../../routing';
 
 export function Header() {
   const [user, loading] = useAuthState(auth);
-  const [language, setLanguage] = useState('ru');
-  const router = useRouter();
-  const { pathname, asPath, query } = router;
-
-  const handleLanguageChange = (newLanguage: string) => {
-    setLanguage(newLanguage);
-  };
-
-  useEffect(() => {
-    router.push({ pathname, query }, asPath, { locale: language });
-  }, [language]);
+  const t = useTranslations();
 
   return (
     <div className={styles.header}>
       <div className={styles.navContainer}>
         <div className={styles.nav}>
           <Link
-            as={NextLink}
+            as={LinkInter}
             color="blue.400"
             _hover={{ color: 'blue.500' }}
-            href="/"
+            href={`/`}
           >
             Home
           </Link>
           <Link
-            as={NextLink}
+            as={LinkInter}
             color="blue.400"
             _hover={{ color: 'blue.500' }}
-            href="/api/rest/GET"
+            href={`/api/rest/GET`}
           >
             Rest
           </Link>
           <Link
-            as={NextLink}
+            as={LinkInter}
             color="blue.400"
             _hover={{ color: 'blue.500' }}
-            href="/api/graph/GRAPHQL"
+            href={`/api/graph/GRAPHQL`}
           >
-            Graphql
+            GraphQL
           </Link>
         </div>
       </div>
       <div className={styles.rightContainer}>
-        <LanguagePicker
-          selectedLanguage={language}
-          onLanguageChange={handleLanguageChange}
-        />
+        <LanguagePicker />
         {loading ? (
           <span>Loading...</span>
         ) : user ? (
           <Button onClick={logout} colorScheme="teal" size="sm">
-            Sign out
+            {t('exit')}
           </Button>
         ) : (
           <Link
-            as={NextLink}
+            as={LinkInter}
             color="blue.400"
             _hover={{ color: 'blue.500' }}
-            href="/login"
+            href={`/login`}
           >
-            Sign in
+            {t('login')}
           </Link>
         )}
       </div>

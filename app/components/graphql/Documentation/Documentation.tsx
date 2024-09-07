@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import {
-  Box,
-  Collapse,
-  Text,
-  Stack,
-  Button,
   Badge,
+  Box,
+  Button,
+  Collapse,
+  Stack,
+  Text,
   VStack,
 } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 
 interface Field {
   name: string;
@@ -48,6 +49,7 @@ const Documentation: React.FC<DocumentationProps> = ({ schema }) => {
   const [currentView, setCurrentView] = useState<'query' | 'mutation' | 'none'>(
     'none'
   );
+  const t = useTranslations();
 
   const handleFieldToggle = (fieldName: string) => {
     setExpandedField((prev) => (prev === fieldName ? null : fieldName));
@@ -128,9 +130,7 @@ const Documentation: React.FC<DocumentationProps> = ({ schema }) => {
               Mutation
             </Button>
           )}
-          {!queryType && !mutationType && (
-            <Text>No Query or Mutation types available in the schema.</Text>
-          )}
+          {!queryType && !mutationType && <Text> {t('noSchema')}</Text>}
         </Stack>
       )}
 
