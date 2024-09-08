@@ -4,6 +4,7 @@ import { Box, Link } from '@chakra-ui/react';
 import Image from 'next/image';
 import styles from './styles.module.css';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
+import NextLink from 'next/link';
 
 export function Footer() {
   return (
@@ -23,17 +24,25 @@ export function Footer() {
         <div className={styles.authors}>
           <div className={styles.authorsList}>
             <div className={styles.authorLinkWrapper}>
-              <Link href="https://github.com/AigerimR" isExternal>
+              <Link as={NextLink} href="https://github.com/AigerimR" isExternal>
                 aigerimr <ExternalLinkIcon boxSize={3.5} mb={0.5} />
               </Link>
             </div>
             <div className={styles.authorLinkWrapper}>
-              <Link href="https://github.com/samekeekz" isExternal>
+              <Link
+                as={NextLink}
+                href="https://github.com/samekeekz"
+                isExternal
+              >
                 samekeekz <ExternalLinkIcon boxSize={3.5} mb={0.5} />
               </Link>
             </div>
             <div className={styles.authorLinkWrapper}>
-              <Link href="https://github.com/Donchidzee" isExternal>
+              <Link
+                as={NextLink}
+                href="https://github.com/Donchidzee"
+                isExternal
+              >
                 donchidzee <ExternalLinkIcon boxSize={3.5} mb={0.5} />
               </Link>
             </div>

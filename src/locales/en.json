@@ -1,0 +1,23 @@
+{
+  "test": "This is a test",
+  "register": "Sign up",
+  "login": "Sign in",
+  "forgot": "Forgot password",
+  "exit": "Sign out",
+  "run": "Run Query",
+  "loading": "Loading...",
+  "status": "Status",
+  "method": "Method",
+  "url": "URL",
+  "response": "Response",
+  "variables": "Variables",
+  "headers": "Headers",
+  "query": "Query",
+  "body": "Body",
+  "send": "Send",
+  "clear": "Clear",
+  "copy": "Copy",
+  "save": "Save",
+  "Documentation": "Documentation",
+  "noSchema": "Documentation would be available after successful query response."
+}

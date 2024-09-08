@@ -11,11 +11,29 @@
   z-index: 10;
 }
 
+.navContainer {
+    flex: 1;
+    display: flex;
+    justify-content: start;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.rightContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 .container {
   display: flex;
   align-items: center;
 }
 
 .languageSelectWrapper {
-  margin-right: 10px;
+    margin-right: 10px;
 }

@@ -2,20 +2,21 @@
 
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useForm } from 'react-hook-form';
-import NextLink from 'next/link';
-import { CircularProgress, Link } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { auth, sendPasswordReset } from '../../../firebase';
 import {
+  Box,
+  Button,
+  CircularProgress,
+  FormControl,
   FormErrorMessage,
   FormLabel,
-  FormControl,
-  Input,
-  Button,
-  Box,
   Heading,
+  Input,
+  Link,
 } from '@chakra-ui/react';
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { auth, sendPasswordReset } from '../../../../firebase';
+import { LinkInter } from '../../../../routing';
 
 export default function HookForm() {
   const {
@@ -30,7 +31,7 @@ export default function HookForm() {
 
   useEffect(() => {
     if (user && !loading) {
-      router.push('/');
+      router.push(`/`);
     }
   }, [user, loading, router]);
 
@@ -88,7 +89,7 @@ export default function HookForm() {
         <Box mt={3}>
           Don&apos;t have an account?{' '}
           <Link
-            as={NextLink}
+            as={LinkInter}
             color="blue.400"
             _hover={{ color: 'blue.500' }}
             href="/register"

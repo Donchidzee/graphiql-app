@@ -2,43 +2,65 @@
 
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, logout } from '../../../firebase';
-import { Button, Select } from '@chakra-ui/react';
-import NextLink from 'next/link';
-import { Link } from '@chakra-ui/react';
+import { Button, Link } from '@chakra-ui/react';
 import styles from './styles.module.css';
+import LanguagePicker from '@/components/LanguagesPicker';
+import { useTranslations } from 'next-intl';
+import { LinkInter } from '../../../routing';
 
 export function Header() {
   const [user, loading] = useAuthState(auth);
+  const t = useTranslations();
 
   return (
-    <>
-      <div className={styles.header}>
-        <div>La Penna</div>
-        <div className={styles.container}>
-          <div className={styles.languageSelectWrapper}>
-            <Select size="xs" defaultValue={'ru'}>
-              <option value="ru">ru</option>
-              <option value="en">en</option>
-            </Select>
-          </div>
-          {loading ? (
-            <span>Loading...</span>
-          ) : user ? (
-            <Button onClick={logout} colorScheme="teal" size="sm">
-              Sign out
-            </Button>
-          ) : (
-            <Link
-              as={NextLink}
-              color="blue.400"
-              _hover={{ color: 'blue.500' }}
-              href="/login"
-            >
-              Sign in
-            </Link>
-          )}
+    <div className={styles.header}>
+      <div className={styles.navContainer}>
+        <div className={styles.nav}>
+          <Link
+            as={LinkInter}
+            color="blue.400"
+            _hover={{ color: 'blue.500' }}
+            href={`/`}
+          >
+            Home
+          </Link>
+          <Link
+            as={LinkInter}
+            color="blue.400"
+            _hover={{ color: 'blue.500' }}
+            href={`/api/rest/GET`}
+          >
+            Rest
+          </Link>
+          <Link
+            as={LinkInter}
+            color="blue.400"
+            _hover={{ color: 'blue.500' }}
+            href={`/api/graph/GRAPHQL`}
+          >
+            GraphQL
+          </Link>
         </div>
       </div>
-    </>
+      <div className={styles.rightContainer}>
+        <LanguagePicker />
+        {loading ? (
+          <span>Loading...</span>
+        ) : user ? (
+          <Button onClick={logout} colorScheme="teal" size="sm">
+            {t('exit')}
+          </Button>
+        ) : (
+          <Link
+            as={LinkInter}
+            color="blue.400"
+            _hover={{ color: 'blue.500' }}
+            href={`/login`}
+          >
+            {t('login')}
+          </Link>
+        )}
+      </div>
+    </div>
   );
 }

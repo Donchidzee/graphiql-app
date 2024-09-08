@@ -2,20 +2,21 @@
 
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useForm } from 'react-hook-form';
-import NextLink from 'next/link';
-import { CircularProgress, Link } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { auth, logInWithEmailAndPassword } from '../../../firebase';
 import {
+  Box,
+  Button,
+  CircularProgress,
+  FormControl,
   FormErrorMessage,
   FormLabel,
-  FormControl,
-  Input,
-  Button,
-  Box,
   Heading,
+  Input,
+  Link,
 } from '@chakra-ui/react';
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { auth, registerWithEmailAndPassword } from '../../../../firebase';
+import { LinkInter } from '../../../../routing';
 
 export default function HookForm() {
   const {
@@ -30,12 +31,16 @@ export default function HookForm() {
 
   useEffect(() => {
     if (user && !loading) {
-      router.push('/');
+      router.push(`/`);
     }
   }, [user, loading, router]);
 
   function onSubmit(values) {
-    logInWithEmailAndPassword(values.email, values.password);
+    registerWithEmailAndPassword(
+      values.username,
+      values.email,
+      values.password
+    );
   }
 
   if (loading) {
@@ -54,10 +59,31 @@ export default function HookForm() {
   return (
     <>
       <Heading as="h2" size="xl">
-        Login
+        Register
       </Heading>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <FormControl isInvalid={Boolean(errors.email)} mt={4}>
+        <FormControl isInvalid={Boolean(errors.username)} mt={4}>
+          <FormLabel htmlFor="username">Username</FormLabel>
+          <Input
+            id="username"
+            placeholder="username"
+            autoComplete="on"
+            {...register('username', {
+              required: 'Username is required',
+              minLength: { value: 4, message: 'Minimum length should be 4' },
+              maxLength: {
+                value: 40,
+                message: 'Username cannot exceed 40 characters',
+              },
+            })}
+          />
+          <Box height="1.5rem">
+            <FormErrorMessage>
+              {errors.username && String(errors.username.message)}
+            </FormErrorMessage>
+          </Box>
+        </FormControl>
+        <FormControl isInvalid={Boolean(errors.email)} mt={-1}>
           <FormLabel htmlFor="email">Email</FormLabel>
           <Input
             id="email"
@@ -86,6 +112,12 @@ export default function HookForm() {
             autoComplete="on"
             {...register('password', {
               required: 'This is required',
+              pattern: {
+                value:
+                  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#\u00C0-\u017F\u0400-\u04FF\u1E00-\u1EFF]{8,}$/,
+                message:
+                  'Password must contain at least one letter, one number, and one special character',
+              },
             })}
           />
           <Box height="1.5rem">
@@ -104,27 +136,17 @@ export default function HookForm() {
           Submit
         </Button>
         <Box mt={3}>
+          Already have an account?{' '}
           <Link
-            as={NextLink}
+            as={LinkInter}
             color="blue.400"
             _hover={{ color: 'blue.500' }}
-            href="/reset"
+            href="/login"
           >
-            Forgot Password
-          </Link>
-        </Box>
-        <div>
-          Don&apos;t have an account?{' '}
-          <Link
-            as={NextLink}
-            color="blue.400"
-            _hover={{ color: 'blue.500' }}
-            href="/register"
-          >
-            Register
+            Login
           </Link>{' '}
           now.
-        </div>
+        </Box>
       </form>
     </>
   );

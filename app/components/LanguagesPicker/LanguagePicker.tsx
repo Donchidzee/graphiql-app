@@ -1,0 +1,38 @@
+import { Select } from '@chakra-ui/react';
+import styles from './styles.module.css';
+import { useLocale } from 'next-intl';
+import { usePathname, useRouter } from '../../../routing';
+import { ChangeEvent, useTransition } from 'react';
+
+const LanguagePicker = () => {
+  const activeLocale = useLocale();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const pathname = usePathname();
+
+  const handleLanguageChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const nextLocale = event.target.value as 'ru' | 'en';
+
+    startTransition(() => {
+      router.replace(pathname, { locale: nextLocale });
+    });
+  };
+
+  console.log(isPending);
+
+  return (
+    <div className={styles.languageSelectWrapper}>
+      <Select
+        size="sm"
+        value={activeLocale}
+        onChange={(e) => handleLanguageChange(e)}
+        placeholder="Select language"
+      >
+        <option value="ru">Русский</option>
+        <option value="en">English</option>
+      </Select>
+    </div>
+  );
+};
+
+export default LanguagePicker;
