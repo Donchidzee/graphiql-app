@@ -23,10 +23,13 @@ import HeadersInputs from '@/components/rest/headersInputs/HeadersInputs';
 import ResponseArea from '@/components/rest/responseArea/ResponseArea';
 import { ResponseValue } from '@/types/restTypes';
 import { saveEndpointToLS } from '@/helpers/helpers';
+import { useTranslations } from 'next-intl';
 
 // import styles from "./page.module.scss";
 
 export default function Rest() {
+  const t = useTranslations();
+
   const dispatch = useDispatch();
   const stateUrl = useSelector((state: RootState) => state.restInputs.url);
   const stateBody = useSelector((state: RootState) => state.restInputs.body);
@@ -36,7 +39,7 @@ export default function Rest() {
 
   const router = useRouter();
   const pathname = usePathname();
-  const { method, url } = useParams();
+  const { method, url, locale } = useParams();
   const searchParams = useSearchParams();
 
   const methods = useMemo(
@@ -61,16 +64,15 @@ export default function Rest() {
     const currentBody =
       url && url[1]
         ? decodeURIComponent(atob(decodeURIComponent(url[1])))
-        : undefined;
-
+        : undefined;        
     if (currentMethod === undefined) {
-      router.push('/auth/rest/GET');
+      router.push(`${locale}/api/rest/GET`);
     } else if (!methods.includes(currentMethod.toLowerCase())) {
-      router.push('/404');
+        router.push('/404');
     } else {
       setSelectedMethod(currentMethod.toLowerCase());
       if (currentUrl === undefined) {
-        router.push(`/auth/rest/${currentMethod}`);
+        router.push(`${locale}/api/rest/${currentMethod}`);
       } else {
         dispatch(changeUrl(currentUrl));
         if (currentBody) {
@@ -183,7 +185,7 @@ export default function Rest() {
         setResponseValue(responseObject);
       } catch {
         const responseObject = {
-          status: 'Could not send request',
+          status: t('responseNotOk'),
         };
         setResponseValue(responseObject);
       } finally {
@@ -204,9 +206,8 @@ export default function Rest() {
           textTransform="uppercase"
           textAlign="center"
         >
-          rest page
+          {t('restfull')}
         </Heading>
-
         <VStack spacing={25} align="stretch">
           <Stack align="center" direction="row">
             <Heading
@@ -217,16 +218,16 @@ export default function Rest() {
               bg="teal.400"
               width="100%"
             >
-              request
-            </Heading>
+            {t('request')}
+          </Heading>
             <Button
               colorScheme="teal"
               size="md"
               textTransform="uppercase"
-              width="100px"
+              width="min-content"
               onClick={handleSendRequest}
             >
-              send
+              {t('send')}
             </Button>
           </Stack>
           <Stack align="center" direction="row">
@@ -242,7 +243,7 @@ export default function Rest() {
           </Stack>
           <VStack spacing={2} align="stretch">
             <Heading as="h2" size="sm" noOfLines={1} textTransform="uppercase">
-              body
+              {t('body')}
             </Heading>
             <BodyInput />
           </VStack>
@@ -257,10 +258,10 @@ export default function Rest() {
             textTransform="uppercase"
             bg="teal.400"
           >
-            response
+            {t('response')}
             {loading && (
               <Text as="span" ml={40} fontSize="md">
-                Waiting for response...
+                {t('loading')}
               </Text>
             )}
           </Heading>

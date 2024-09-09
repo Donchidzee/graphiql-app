@@ -10,14 +10,17 @@ import {
 } from '@chakra-ui/react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { ResponseAreaProps } from '@/types/restTypes';
+import { useTranslations } from 'next-intl';
 
 const ResponseArea: React.FC<ResponseAreaProps> = ({ responseValue }) => {
+  const t = useTranslations();
+
   return (
     <Tabs width="100%">
       <TabList>
-        <Tab textTransform="uppercase">status</Tab>
-        <Tab textTransform="uppercase">body</Tab>
-        <Tab textTransform="uppercase">headers</Tab>
+        <Tab textTransform="uppercase">{t('status')}</Tab>
+        <Tab textTransform="uppercase">{t('body')}</Tab>
+        <Tab textTransform="uppercase">{t('headers')}</Tab>
       </TabList>
       <TabPanels>
         <TabPanel color="blue.600">

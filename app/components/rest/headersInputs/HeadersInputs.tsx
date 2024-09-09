@@ -19,8 +19,10 @@ import {
 } from '@chakra-ui/react';
 import { RootState } from '@/store/store';
 import { changeHeaders } from '@/store/slices/restInputsSlice';
+import { useTranslations } from 'next-intl';
 
 const HeadersInputs: React.FC = () => {
+  const t = useTranslations();
   const dispatch = useDispatch();
   const stateHeaders = useSelector(
     (state: RootState) => state.restInputs.headers
@@ -78,7 +80,7 @@ const HeadersInputs: React.FC = () => {
                 noOfLines={1}
                 textTransform="uppercase"
               >
-                headers
+                {t('headers')}
               </Heading>
             </Box>
             <AccordionIcon />
@@ -90,10 +92,10 @@ const HeadersInputs: React.FC = () => {
               colorScheme="teal"
               size="sm"
               textTransform="uppercase"
-              width="100px"
+              width="min-content"
               onClick={addHeader}
             >
-              new header
+              {t('newHeader')}
             </Button>
             {headers.map(
               (header, index) =>
@@ -101,7 +103,7 @@ const HeadersInputs: React.FC = () => {
                   <Stack key={index} align="center" direction="row">
                     <FormControl isInvalid={headerInputErrors[index]?.key}>
                       <InputGroup size="md">
-                        <InputLeftAddon>key</InputLeftAddon>
+                        <InputLeftAddon>{t('key')}</InputLeftAddon>
                         <Input
                           value={header.key}
                           onChange={handleHeadersChange(index, 'key')}
@@ -110,7 +112,7 @@ const HeadersInputs: React.FC = () => {
                     </FormControl>
                     <FormControl isInvalid={headerInputErrors[index]?.value}>
                       <InputGroup size="md">
-                        <InputLeftAddon>value</InputLeftAddon>
+                        <InputLeftAddon>{t('value')}</InputLeftAddon>
                         <Input
                           value={header.value}
                           onChange={handleHeadersChange(index, 'value')}

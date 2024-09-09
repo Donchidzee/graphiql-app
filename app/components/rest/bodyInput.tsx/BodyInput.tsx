@@ -16,8 +16,11 @@ import {
   changeUrlError,
 } from '../../../store/slices/restInputsSlice';
 import { RootState } from '../../../store/store';
+import { useTranslations } from 'next-intl';
 
 const BodyInput: React.FC = () => {
+  const t = useTranslations();
+
   const [bodyError, setBodyError] = useState(false);
   const [bodyTextValue, setBodyTextValue] = useState('');
   const [bodyJsonValue, setBodyJsonValue] = useState('');
@@ -128,7 +131,7 @@ const BodyInput: React.FC = () => {
   return (
     <Tabs width="100%" index={activeTab} onChange={handleTabChange}>
       <TabList>
-        <Tab>Text</Tab>
+        <Tab>{t('text')}</Tab>
         <Tab>JSON</Tab>
       </TabList>
 
@@ -139,7 +142,7 @@ const BodyInput: React.FC = () => {
             minHeight="120px"
             height="auto"
             value={bodyTextValue}
-            placeholder="body text"
+            placeholder={t('bodyText')}
             onChange={changeBodyText}
             onBlur={handleBodyTextChange}
           />
@@ -150,7 +153,7 @@ const BodyInput: React.FC = () => {
             minHeight="120px"
             height="100%"
             value={bodyJsonValue}
-            placeholder="body json"
+            placeholder={t('bodyJson')}
             onChange={changeBodyJson}
             onBlur={handleBodyJsonChange}
             sx={{

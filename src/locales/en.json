@@ -9,6 +9,7 @@
   "status": "Status",
   "method": "Method",
   "url": "URL",
+  "request": "Request",
   "response": "Response",
   "variables": "Variables",
   "headers": "Headers",
@@ -18,6 +19,19 @@
   "clear": "Clear",
   "copy": "Copy",
   "save": "Save",
+  "delete": "Delete",
   "Documentation": "Documentation",
-  "noSchema": "Documentation would be available after successful query response."
+  "noSchema": "Documentation would be available after successful query response.",
+  "newHeader": "New Header",
+  "newVariable": "New Variable",
+  "key": "key",
+  "value": "value",
+  "text": "Text",
+  "bodyText": "Body in text format",
+  "bodyJson": "Body in json format",
+  "restfull": "RESTfull client",
+  "history": "history",
+  "noHistory": "You have not executed any requests yet",
+  "responseNotOk": "There is a problem with request"
+
 }

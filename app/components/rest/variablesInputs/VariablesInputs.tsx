@@ -18,8 +18,11 @@ import {
 } from '@chakra-ui/react';
 import { RootState } from '@/store/store';
 import { changeHeaders } from '@/store/slices/restInputsSlice';
+import { useTranslations } from 'next-intl';
 
 const VariablesInputs: React.FC = () => {
+  const t = useTranslations();
+
   const [variables, setVariables] = useState<
     { variableIndex: number; key: string; value: string }[]
   >([]);
@@ -100,7 +103,7 @@ const VariablesInputs: React.FC = () => {
                 noOfLines={1}
                 textTransform="uppercase"
               >
-                variables
+                {t('variables')}
               </Heading>
             </Box>
             <AccordionIcon />
@@ -112,22 +115,22 @@ const VariablesInputs: React.FC = () => {
               colorScheme="teal"
               size="sm"
               textTransform="uppercase"
-              width="100px"
+              width="min-content"
               onClick={addVariable}
             >
-              new variable
+              {t('newVariable')}
             </Button>
             {variables.map((variable, index) => (
               <Stack key={index} align="center" direction="row">
                 <InputGroup size="md">
-                  <InputLeftAddon>key</InputLeftAddon>
+                  <InputLeftAddon>{t('key')}</InputLeftAddon>
                   <Input
                     value={variable.key}
                     onChange={handleVariablesChange(index, 'key')}
                   />
                 </InputGroup>
                 <InputGroup size="md">
-                  <InputLeftAddon>value</InputLeftAddon>
+                  <InputLeftAddon>{t('value')}</InputLeftAddon>
                   <Input
                     value={variable.value}
                     onChange={handleVariablesChange(index, 'value')}
@@ -141,7 +144,7 @@ const VariablesInputs: React.FC = () => {
                   textTransform="uppercase"
                   onClick={() => deleteVariable(index)}
                 >
-                  delete
+                  {t('delete')}
                 </Button>
               </Stack>
             ))}
