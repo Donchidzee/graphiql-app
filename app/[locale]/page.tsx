@@ -68,8 +68,17 @@ export default function Page() {
                 href={`/api/graph/GRAPHQL`}
                 color="blue.400"
                 _hover={{ color: 'blue.500' }}
+                mr={10}
               >
                 GraphQL
+              </Link>
+              <Link
+                as={LinkInter}
+                href={`/api/history`}
+                color="blue.400"
+                _hover={{ color: 'blue.500' }}
+              >
+                History
               </Link>
             </div>
           </>

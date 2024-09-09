@@ -3,6 +3,7 @@
 import { RootState } from '@/store/store';
 import { Box, Heading, Link, Stack, Text } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
+import { LinkInter } from '../../../../routing';
 
 export default function History() {
   const requestHistory = useSelector(
@@ -28,19 +29,25 @@ export default function History() {
         )}
         <Stack align="center" direction="row">
           <Link
-            href="/auth/rest/GET"
+            as={LinkInter}
+            href="/api/rest/GET"
             color="blue.400"
             _hover={{ color: 'blue.500' }}
           >
             REST
           </Link>
-          <Link href="/auth/graph">GRAPHGL</Link>
+          <Link 
+            as={LinkInter}
+            href="/api/graph/GRAPHQL">
+            GRAPHGL
+          </Link>
         </Stack>
       </>
       {requestHistory.length > 0 &&
         requestHistory.map((request, index) => (
           <Stack key={index} align="center" direction="row">
             <Link
+              as={LinkInter}
               isExternal
               href={request.endpoint}
               color="blue.400"
