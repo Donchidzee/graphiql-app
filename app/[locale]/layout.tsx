@@ -19,6 +19,14 @@ export default async function RootLayout({
   const messages = await getMessages();
   return (
     <html lang={locale}>
+      <head>
+        <link
+          rel="icon"
+          href="/alien.png"
+          sizes="any"
+          type="image/png"
+        />
+      </head>
       <body>
         <NextIntlClientProvider messages={messages}>
           <Providers>
