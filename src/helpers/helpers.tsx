@@ -1,7 +1,8 @@
 import { changeRequestHistory } from '@/store/slices/restInputsSlice';
 
 export const saveEndpointToLS = (pathname, searchParams, dispatch) => {
-  const endpointString = `${pathname}?${searchParams.toString()}`;
+  const newPathname = pathname.split('/').slice(3).join('/');
+  const endpointString = `${newPathname}?${searchParams.toString()}`;
 
   const lsStoredRequestHistory = localStorage.getItem('requestHistory');
   const storedRequests = lsStoredRequestHistory
@@ -10,7 +11,6 @@ export const saveEndpointToLS = (pathname, searchParams, dispatch) => {
 
   const newRequest = {
     endpoint: endpointString,
-    variables: '',
   };
   const updatedRequests = [...storedRequests, newRequest];
 

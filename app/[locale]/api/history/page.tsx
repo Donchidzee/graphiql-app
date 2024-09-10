@@ -30,7 +30,13 @@ export default function History() {
             {t('noHistory')}
           </Heading>
         )}
-        <Stack align="center" justify="center" direction="row" my={30} spacing={30}>
+        <Stack
+          align="center"
+          justify="center"
+          direction="row"
+          my={30}
+          spacing={30}
+        >
           <Link
             as={LinkInter}
             href="/api/rest/GET"
@@ -39,18 +45,18 @@ export default function History() {
           >
             REST
           </Link>
-          <Link 
+          <Link
             as={LinkInter}
             href="/api/graph/GRAPHQL"
             color="blue.400"
-            _hover={{ color: 'blue.500' }}  
+            _hover={{ color: 'blue.500' }}
           >
             GRAPHGL
           </Link>
         </Stack>
       </>
-      {requestHistory.length > 0 &&
-        (<VStack spacing={3} align="stretch">
+      {requestHistory.length > 0 && (
+        <VStack spacing={3} align="stretch">
           {requestHistory.map((request, index) => (
             <Stack key={index} align="center" direction="row">
               <Link
@@ -66,9 +72,9 @@ export default function History() {
                 <Text isTruncated>{request.endpoint}</Text>
               </Box>
             </Stack>
-          )) }
-        </VStack>)
-      }
+          ))}
+        </VStack>
+      )}
     </>
   );
 }
