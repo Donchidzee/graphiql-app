@@ -6,7 +6,8 @@
     "lint": "next lint",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --write",
-    "prepare": "husky install && chmod +x .husky/*"
+    "prepare": "husky install && chmod +x .husky/*",
+    "test": "vitest run --coverage"
   },
   "husky": {
     "hooks": {
@@ -68,17 +69,23 @@
     "sass": "^1.77.8"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.1",
     "@types/node": "22.5.0",
     "@types/react": "18.3.4",
     "@typescript-eslint/eslint-plugin": "^8.2.0",
     "@typescript-eslint/parser": "^8.2.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "@vitest/coverage-v8": "^2.1.1",
     "eslint": "8.57.0",
     "eslint-config-next": "14.2.6",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "husky": "^8.0.3",
+    "jsdom": "^25.0.0",
     "lint-staged": "^15.2.9",
     "prettier": "^3.3.3",
-    "typescript": "5.5.4"
+    "typescript": "5.5.4",
+    "vitest": "^2.1.1"
   }
 }
