@@ -26,7 +26,7 @@ const LanguagePicker = () => {
         size="sm"
         value={activeLocale}
         onChange={(e) => handleLanguageChange(e)}
-        placeholder="Select language"
+        w={100}
       >
         <option value="ru">Русский</option>
         <option value="en">English</option>

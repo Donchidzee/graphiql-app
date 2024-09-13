@@ -24,22 +24,28 @@ export function Header() {
           >
             Home
           </Link>
-          <Link
-            as={LinkInter}
-            color="blue.400"
-            _hover={{ color: 'blue.500' }}
-            href={`/api/rest/GET`}
-          >
-            Rest
-          </Link>
-          <Link
-            as={LinkInter}
-            color="blue.400"
-            _hover={{ color: 'blue.500' }}
-            href={`/api/graph/GRAPHQL`}
-          >
-            GraphQL
-          </Link>
+          {user ? (
+            <>
+              <Link
+                as={LinkInter}
+                color="blue.400"
+                _hover={{ color: 'blue.500' }}
+                href={`/api/rest/GET`}
+              >
+                Rest
+              </Link>
+              <Link
+                as={LinkInter}
+                color="blue.400"
+                _hover={{ color: 'blue.500' }}
+                href={`/api/graph/GRAPHQL`}
+              >
+                GraphQL
+              </Link>
+            </>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
       <div className={styles.rightContainer}>
