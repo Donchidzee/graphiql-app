@@ -22,7 +22,7 @@ export function Header() {
             _hover={{ color: 'blue.500' }}
             href={`/`}
           >
-            Home
+            {t('main')}
           </Link>
           {user ? (
             <>
@@ -42,6 +42,14 @@ export function Header() {
               >
                 GraphQL
               </Link>
+              <Link
+                href={`/api/history`}
+                color="blue.400"
+                _hover={{ color: 'blue.500' }}
+                as={LinkInter}
+              >
+                History
+              </Link>
             </>
           ) : (
             <></>
@@ -57,14 +65,24 @@ export function Header() {
             {t('exit')}
           </Button>
         ) : (
-          <Link
-            as={LinkInter}
-            color="blue.400"
-            _hover={{ color: 'blue.500' }}
-            href={`/login`}
-          >
-            {t('login')}
-          </Link>
+          <>
+            <Link
+              as={LinkInter}
+              color="blue.400"
+              _hover={{ color: 'blue.500' }}
+              href={`/login`}
+            >
+              {t('login')}
+            </Link>
+            <Link
+              as={LinkInter}
+              color="blue.400"
+              _hover={{ color: 'blue.500' }}
+              href={`/register`}
+            >
+              {t('register')}
+            </Link>
+          </>
         )}
       </div>
     </div>
