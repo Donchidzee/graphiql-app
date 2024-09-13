@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   useParams,
   usePathname,
@@ -22,10 +22,8 @@ import VariablesInputs from '@/components/rest/variablesInputs/VariablesInputs';
 import HeadersInputs from '@/components/rest/headersInputs/HeadersInputs';
 import ResponseArea from '@/components/rest/responseArea/ResponseArea';
 import { ResponseValue } from '@/types/restTypes';
-import { saveEndpointToLS } from '@/helpers/helpers';
+import { isBase64, saveEndpointToLS } from '@/helpers/helpers';
 import { useTranslations } from 'next-intl';
-
-// import styles from "./page.module.scss";
 
 export default function Rest() {
   const t = useTranslations();
@@ -55,32 +53,52 @@ export default function Rest() {
   const [selectedMethod, setSelectedMethod] = useState('get');
   const [responseValue, setResponseValue] = useState<ResponseValue>({});
   const [loading, setLoading] = useState(false);
+  const [allowSend, setAllowSend] = useState(true);
+  const bodyTextInputRef = useRef<HTMLTextAreaElement | null>(null);
+  const bodyJsonInputRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const handleBodyTextInputFocus = (isFocused) => {
+    setAllowSend(!isFocused);
+  };
 
   useEffect(() => {
     const currentMethod = method as string;
-    const currentUrl = url
-      ? decodeURIComponent(atob(decodeURIComponent(url[0])))
-      : undefined;
+    const currentUrl =
+      url && url[0] && isBase64(decodeURIComponent(url[0]))
+        ? decodeURIComponent(atob(decodeURIComponent(url[0])))
+        : undefined;
+
     const currentBody =
       url && url[1]
         ? decodeURIComponent(atob(decodeURIComponent(url[1])))
-        : undefined;        
+        : undefined;
     if (currentMethod === undefined) {
       router.push(`${locale}/api/rest/GET`);
     } else if (!methods.includes(currentMethod.toLowerCase())) {
-        router.push('/404');
+      router.push('/404');
     } else {
       setSelectedMethod(currentMethod.toLowerCase());
-      if (currentUrl === undefined) {
-        router.push(`${locale}/api/rest/${currentMethod}`);
-      } else {
+
+      if (currentUrl !== undefined) {
         dispatch(changeUrl(currentUrl));
-        if (currentBody) {
-          dispatch(changeBody(currentBody));
+      } else {
+        const pathArray = pathname.split('/');
+        const methodIndex = pathArray.findIndex((el) =>
+          methods.includes(el.toLowerCase())
+        );
+        if (methodIndex !== -1) {
+          pathArray.splice(methodIndex + 1, 1);
+          const newPath = `${pathArray.join('/')}?${searchParams.toString()}`;
+          router.replace(newPath);
+          dispatch(changeBody(''));
         }
       }
+
+      if (currentBody) {
+        dispatch(changeBody(currentBody));
+      }
     }
-  }, [method, router, url, methods, dispatch]);
+  }, [method, router, url, methods, dispatch, locale, pathname, searchParams]);
 
   useEffect(() => {
     const encodedNewUrl = btoa(encodeURIComponent(stateUrl));
@@ -92,7 +110,7 @@ export default function Rest() {
     );
     pathArray[methodIndex + 1] = encodedNewUrl;
     const newPath = `${pathArray.join('/')}?${searchParams.toString()}`;
-    router.replace(newPath);
+    window.history.replaceState(null, '', newPath);
   }, [stateUrl, methods, router, pathname, searchParams]);
 
   useEffect(() => {
@@ -218,14 +236,15 @@ export default function Rest() {
               bg="teal.400"
               width="100%"
             >
-            {t('request')}
-          </Heading>
+              {t('request')}
+            </Heading>
             <Button
               colorScheme="teal"
               size="md"
               textTransform="uppercase"
               width="min-content"
               onClick={handleSendRequest}
+              isDisabled={!allowSend || !stateUrl}
             >
               {t('send')}
             </Button>
@@ -245,7 +264,11 @@ export default function Rest() {
             <Heading as="h2" size="sm" noOfLines={1} textTransform="uppercase">
               {t('body')}
             </Heading>
-            <BodyInput />
+            <BodyInput
+              bodyTextInputRef={bodyTextInputRef}
+              bodyJsonInputRef={bodyJsonInputRef}
+              handleBodyTextInputFocus={handleBodyTextInputFocus}
+            />
           </VStack>
           <HeadersInputs />
           <VariablesInputs />

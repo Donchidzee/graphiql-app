@@ -15,6 +15,7 @@ import {
 
 const UrlInput: React.FC = () => {
   const [urlValue, setUrlValue] = useState('');
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
 
   const dispatch = useDispatch();
   const stateUrl = useSelector((state: RootState) => state.restInputs.url);
@@ -29,17 +30,19 @@ const UrlInput: React.FC = () => {
     dispatch(changeUrlError(false));
     const newUrl = e.target.value;
     setUrlValue(newUrl);
-    dispatch(changeUrl(newUrl));
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    const id = setTimeout(() => {
+      dispatch(changeUrl(newUrl));
+    }, 600);
+    setTimeoutId(id);
   };
   return (
     <FormControl isInvalid={stateUrlError} width="100%">
       <InputGroup size="md">
         <InputLeftAddon>url</InputLeftAddon>
-        <Input
-          value={urlValue}
-          onChange={(e) => setUrlValue(e.target.value)}
-          onBlur={handleUrlChange}
-        />
+        <Input value={urlValue} onChange={handleUrlChange} />
       </InputGroup>
     </FormControl>
   );

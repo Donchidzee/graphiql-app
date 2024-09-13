@@ -26,3 +26,9 @@ export type RequestHistory = {
   endpoint: string;
   variables: string;
 };
+
+export interface BodyInputRef {
+  bodyTextInputRef: React.RefObject<HTMLTextAreaElement>;
+  bodyJsonInputRef: React.RefObject<HTMLTextAreaElement>;
+  handleBodyTextInputFocus: (isFocused: boolean) => void;
+}

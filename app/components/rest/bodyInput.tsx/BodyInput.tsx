@@ -17,8 +17,14 @@ import {
 } from '../../../store/slices/restInputsSlice';
 import { RootState } from '../../../store/store';
 import { useTranslations } from 'next-intl';
+import { useBodyFocusAndBlurListeners } from '@/helpers/helpers';
+import { BodyInputRef } from '@/types/restTypes';
 
-const BodyInput: React.FC = () => {
+const BodyInput: React.FC<BodyInputRef> = ({
+  bodyTextInputRef,
+  bodyJsonInputRef,
+  handleBodyTextInputFocus,
+}) => {
   const t = useTranslations();
 
   const [bodyError, setBodyError] = useState(false);
@@ -50,6 +56,15 @@ const BodyInput: React.FC = () => {
       setActiveTab(initialTabIndex);
     }
   }, []);
+
+  const handleFocus = () => handleBodyTextInputFocus(true);
+  const handleBlur = () => handleBodyTextInputFocus(false);
+
+  useBodyFocusAndBlurListeners(
+    [bodyTextInputRef, bodyJsonInputRef],
+    handleFocus,
+    handleBlur
+  );
 
   const replaceVariable = useCallback(
     (str) => {
@@ -145,6 +160,7 @@ const BodyInput: React.FC = () => {
             placeholder={t('bodyText')}
             onChange={changeBodyText}
             onBlur={handleBodyTextChange}
+            ref={bodyTextInputRef}
           />
         </TabPanel>
         <TabPanel>
@@ -156,6 +172,7 @@ const BodyInput: React.FC = () => {
             placeholder={t('bodyJson')}
             onChange={changeBodyJson}
             onBlur={handleBodyJsonChange}
+            ref={bodyJsonInputRef}
             sx={{
               textDecoration: bodyError ? '#E53E3E wavy underline' : 'none',
             }}
