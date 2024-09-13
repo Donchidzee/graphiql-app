@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { locales } from './config';
 
-// Initialize i18n middleware
 export const i18nMiddleware = createMiddleware({
   locales,
   defaultLocale: 'ru',
@@ -14,7 +13,6 @@ export const config = {
 };
 
 export function middleware(request: NextRequest) {
-  // Handle i18n
   const i18nResponse = i18nMiddleware(request);
 
   const url = new URL(request.url);
@@ -28,10 +26,9 @@ export function middleware(request: NextRequest) {
 
   const authToken = request.cookies.get('authToken')?.value;
 
-  if (!authToken) {
+  if (!authToken && url.pathname.includes('/api')) {
     return NextResponse.redirect(new URL('/ru/login', request.url));
   }
 
-  // Proceed with i18n or other responses
   return i18nResponse || NextResponse.next();
 }
