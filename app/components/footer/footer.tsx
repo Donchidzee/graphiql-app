@@ -25,7 +25,7 @@ export function Footer() {
           <div className={styles.authorsList}>
             <div className={styles.authorLinkWrapper}>
               <Link as={NextLink} href="https://github.com/AigerimR" isExternal>
-                aigerimr <ExternalLinkIcon boxSize={3.5} mb={0.5} />
+                aigerimr <ExternalLinkIcon boxSize={3.5} ml={1} mt={0.9} />
               </Link>
             </div>
             <div className={styles.authorLinkWrapper}>
@@ -34,7 +34,7 @@ export function Footer() {
                 href="https://github.com/samekeekz"
                 isExternal
               >
-                samekeekz <ExternalLinkIcon boxSize={3.5} mb={0.5} />
+                samekeekz <ExternalLinkIcon boxSize={3.5} ml={1} mt={0.9} />
               </Link>
             </div>
             <div className={styles.authorLinkWrapper}>
@@ -43,7 +43,7 @@ export function Footer() {
                 href="https://github.com/Donchidzee"
                 isExternal
               >
-                donchidzee <ExternalLinkIcon boxSize={3.5} mb={0.5} />
+                donchidzee <ExternalLinkIcon boxSize={3.5} ml={1} mt={0.9} />
               </Link>
             </div>
           </div>
