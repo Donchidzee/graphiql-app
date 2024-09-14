@@ -11,7 +11,7 @@ import {
   changeUrl,
   changeUrlError,
 } from '../../../store/slices/restInputsSlice';
-import useDebounce from '@/helpers/useDebounce';
+import useDebounce from '../../../../src/helpers/useDebounce';
 
 const UrlInput: React.FC = () => {
   const [urlValue, setUrlValue] = useState('');
@@ -24,15 +24,13 @@ const UrlInput: React.FC = () => {
     (state: RootState) => state.restInputs.urlError
   );
 
-  const debouncedInput = useDebounce(urlValue, 500); // Debounce delay of 500ms
+  const debouncedInput = useDebounce(urlValue, 500);
 
   useEffect(() => {
-    // Set local state with the current URL from the global state
     setUrlValue(stateUrl);
   }, [stateUrl]);
 
   useEffect(() => {
-    // Update the debounced URL when the input value changes
     setDebouncedUrl(debouncedInput);
   }, [debouncedInput]);
 
@@ -51,7 +49,6 @@ const UrlInput: React.FC = () => {
   };
 
   const handleBlur = () => {
-    // Dispatch changeUrl only onBlur with debounced URL
     dispatch(changeUrl(debouncedUrl));
   };
 
@@ -62,7 +59,7 @@ const UrlInput: React.FC = () => {
         <Input
           value={urlValue}
           onChange={handleUrlChange}
-          onBlur={handleBlur} // Handle blur to dispatch the debounced value
+          onBlur={handleBlur}
         />
       </InputGroup>
     </FormControl>
