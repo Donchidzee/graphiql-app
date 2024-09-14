@@ -17,7 +17,7 @@ import {
 } from '../../../store/slices/restInputsSlice';
 import { RootState } from '../../../store/store';
 import { useTranslations } from 'next-intl';
-import { useBodyFocusAndBlurListeners } from '@/helpers/helpers';
+import { useBodyFocusAndBlurListeners } from '../../../../src/helpers/helpers';
 import { BodyInputRef } from '@/types/restTypes';
 
 const BodyInput: React.FC<BodyInputRef> = ({

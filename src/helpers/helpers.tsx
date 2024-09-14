@@ -1,4 +1,4 @@
-import { changeRequestHistory } from '@/store/slices/restInputsSlice';
+import { changeRequestHistory } from '../../app//store/slices/restInputsSlice';
 import { useEffect } from 'react';
 
 export const saveEndpointToLS = (pathname, searchParams, dispatch) => {

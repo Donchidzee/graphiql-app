@@ -18,7 +18,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { RootState } from '@/store/store';
-import { changeHeaders } from '@/store/slices/restInputsSlice';
+import { changeHeaders } from '../../../store/slices/restInputsSlice';
 import { useTranslations } from 'next-intl';
 
 const HeadersInputs: React.FC = () => {
