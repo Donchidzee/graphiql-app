@@ -32,5 +32,6 @@
   "restfull": "RESTfull клиент",
   "history": "история",
   "noHistory": "Вы еще не выполнили ни одного запроса",
-  "responseNotOk": "Проблема с запросом"
+  "responseNotOk": "Проблема с запросом",
+  "removeHeader": "Удалить заголовок"
 }

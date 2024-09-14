@@ -3,26 +3,33 @@ import { Textarea } from '@chakra-ui/react';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { changeBody } from '../../../store/slices/restInputsSlice';
 import gqlPrettier from 'graphql-prettier';
+import useDebounce from '@/helpers/useDebounce';
 
 const BodyInput: React.FC = () => {
   const [body, setBody] = useState<string>('');
+  const [debouncedBody, setDebouncedBody] = useState<string>('');
   const dispatch = useAppDispatch();
   const stateBody = useAppSelector((state) => state.restInputs.body);
+
+  const debouncedValue = useDebounce(body, 500);
+
+  console.log(debouncedBody);
 
   useEffect(() => {
     setBody(stateBody);
   }, [stateBody]);
 
+  useEffect(() => {
+    setDebouncedBody(debouncedValue);
+  }, [debouncedValue]);
+
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newBody = e.target.value;
-    setBody(newBody);
+    setBody(e.target.value);
   };
 
   const handleBlur = () => {
-    if (body === '') return;
     const prettifiedBody = gqlPrettier(body);
     dispatch(changeBody(prettifiedBody));
-    setBody(prettifiedBody);
   };
 
   return (
@@ -30,7 +37,7 @@ const BodyInput: React.FC = () => {
       value={body}
       height={'100%'}
       onChange={handleChange}
-      onBlur={handleBlur}
+      onBlur={handleBlur} // Optional: Handle blur to dispatch the prettified body
       placeholder="Enter your GraphQL query"
       bg="gray.800" // Dark background
       color="white" // Light text color

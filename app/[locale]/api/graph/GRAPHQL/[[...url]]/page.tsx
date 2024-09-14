@@ -10,7 +10,7 @@ import {
   Textarea,
 } from '@chakra-ui/react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import BodyInput from '@/components/graphql/BodyInput';
 import { useAppSelector } from '@/store/hooks';
 import Documentation, {
@@ -19,6 +19,7 @@ import Documentation, {
 import UrlInput from '@/components/rest/urlInput/UrlInput';
 import { useTranslations } from 'next-intl';
 import StyledTabs from '@/components/StyledTabs';
+import useDebounce from '@/helpers/useDebounce';
 
 export default function Graphql() {
   const pathname = usePathname();
@@ -34,22 +35,27 @@ export default function Graphql() {
   const [documentation, setDocumentation] = useState<Schema>();
   const [variablesJson, setVariablesJson] = useState({});
   const [documentationLoading] = useState<boolean>(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Debounce values
+  const debouncedUrl = useDebounce(stateUrl, 500);
+  const debouncedBody = useDebounce(stateBody, 500);
 
   useEffect(() => {
-    const encodedNewUrl = btoa(encodeURIComponent(stateUrl));
+    const encodedNewUrl = btoa(encodeURIComponent(debouncedUrl));
     const pathArray = pathname.split('/');
     pathArray[5] = encodedNewUrl;
     const newPath = `${pathArray.join('/')}`;
     router.replace(newPath);
-  }, [stateUrl, router, pathname]);
+  }, [debouncedUrl, router, pathname]);
 
   useEffect(() => {
-    const encodedNewBody = btoa(encodeURIComponent(stateBody));
+    const encodedNewBody = btoa(encodeURIComponent(debouncedBody));
     const pathArray = pathname.split('/');
     pathArray[6] = encodedNewBody;
     const newPath = `${pathArray.join('/')}`;
     router.replace(newPath);
-  }, [stateBody, router, pathname]);
+  }, [debouncedBody, router, pathname]);
 
   useEffect(() => {
     console.log(variablesJson);
@@ -81,14 +87,14 @@ export default function Graphql() {
 
     try {
       setIsLoading(true);
-      const queryResponse = await fetch(stateUrl, {
+      const queryResponse = await fetch(debouncedUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           ...formattedHeaders,
         },
         body: JSON.stringify({
-          query: stateBody,
+          query: debouncedBody,
           variables: variablesJson,
         }),
       });
@@ -97,7 +103,7 @@ export default function Graphql() {
       const queryResult = await queryResponse.json();
       setResponseBody(JSON.stringify(queryResult, null, 2));
 
-      const schemaResponse = await fetch(stateUrl, {
+      const schemaResponse = await fetch(debouncedUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -200,7 +206,7 @@ export default function Graphql() {
   };
 
   return (
-    <Flex direction="column" align="center" p={5}>
+    <Flex direction="column" align="center" p={5} ref={containerRef}>
       <Box
         w="full"
         maxW="1400px"
