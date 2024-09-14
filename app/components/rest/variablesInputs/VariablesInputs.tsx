@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -35,13 +35,17 @@ const VariablesInputs: React.FC = () => {
   const [headers, setHeaders] = useState<
     { headerIndex: number; key: string; value: string }[]
   >([]);
+  const prevHeadersRef = useRef(headers);
 
   useEffect(() => {
-    setHeaders(stateHeaders);
+    if (JSON.stringify(prevHeadersRef.current) !== JSON.stringify(stateHeaders)) {
+      setHeaders(stateHeaders);
     const stateVariables = stateHeaders.filter((el) => el.key === 'variables');
     const storedVariables =
       stateVariables.length !== 0 ? JSON.parse(stateVariables[0].value) : [];
     setVariables(storedVariables);
+      prevHeadersRef.current = stateHeaders;
+    }
   }, [stateHeaders]);
 
   const addVariable = () => {

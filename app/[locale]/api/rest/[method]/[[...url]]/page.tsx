@@ -13,16 +13,19 @@ import {
   changeHeaders,
   changeUrl,
   changeUrlError,
-} from '@/store/slices/restInputsSlice';
+} from '../../../../..//store/slices/restInputsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
-import UrlInput from '@/components/rest/urlInput/UrlInput';
-import BodyInput from '@/components/rest/bodyInput.tsx/BodyInput';
-import VariablesInputs from '@/components/rest/variablesInputs/VariablesInputs';
-import HeadersInputs from '@/components/rest/headersInputs/HeadersInputs';
-import ResponseArea from '@/components/rest/responseArea/ResponseArea';
-import { ResponseValue } from '@/types/restTypes';
-import { isBase64, saveEndpointToLS } from '@/helpers/helpers';
+import UrlInput from '../../../../../components/rest/urlInput/UrlInput';
+import BodyInput from '../../../../../components/rest/bodyInput.tsx/BodyInput';
+import VariablesInputs from '../../../../../components/rest/variablesInputs/VariablesInputs';
+import HeadersInputs from '../../../../../components/rest/headersInputs/HeadersInputs';
+import ResponseArea from '../../../../../components/rest/responseArea/ResponseArea';
+import { ResponseValue } from '../../../../../../src/types/restTypes';
+import {
+  isBase64,
+  saveEndpointToLS,
+} from '../../../../../../src/helpers/helpers';
 import { useTranslations } from 'next-intl';
 
 export default function Rest() {
@@ -77,8 +80,9 @@ export default function Rest() {
     } else if (!methods.includes(currentMethod.toLowerCase())) {
       router.push('/404');
     } else {
-      setSelectedMethod(currentMethod.toLowerCase());
-
+      if (selectedMethod !== currentMethod.toLowerCase()) {
+        setSelectedMethod(currentMethod.toLowerCase());
+      }
       if (currentUrl !== undefined) {
         dispatch(changeUrl(currentUrl));
       } else {

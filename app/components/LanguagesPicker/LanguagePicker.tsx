@@ -18,8 +18,6 @@ const LanguagePicker = () => {
     });
   };
 
-  console.log(isPending);
-
   return (
     <div className={styles.languageSelectWrapper}>
       <Select

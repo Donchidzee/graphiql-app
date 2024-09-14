@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -35,8 +35,13 @@ const HeadersInputs: React.FC = () => {
     headers.map(() => ({ key: false, value: false }))
   );
 
+  const prevHeadersRef = useRef(headers);
+
   useEffect(() => {
-    setHeaders(stateHeaders);
+    if (JSON.stringify(prevHeadersRef.current) !== JSON.stringify(stateHeaders)) {
+      setHeaders(stateHeaders);
+      prevHeadersRef.current = stateHeaders;
+    }
   }, [stateHeaders]);
 
   const addHeader = () => {

@@ -46,7 +46,9 @@ const BodyInput: React.FC<BodyInputRef> = ({
     const stateVariables = stateHeaders.filter((el) => el.key === 'variables');
     const storedVariables =
       stateVariables.length !== 0 ? JSON.parse(stateVariables[0].value) : [];
-    setVariables(storedVariables);
+    if (JSON.stringify(storedVariables) !== JSON.stringify(variables)) {
+      setVariables(storedVariables);
+    }
   }, [stateHeaders]);
 
   useEffect(() => {
