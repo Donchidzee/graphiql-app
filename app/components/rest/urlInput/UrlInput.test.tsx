@@ -2,10 +2,10 @@ import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { Provider } from 'react-redux';
 
 import UrlInput from './UrlInput';
-import { store } from '../../../store/store';
-import { Provider } from 'react-redux';
+import { RootState, store } from '../../../store/store';
 import { changeUrl } from '../../../store/slices/restInputsSlice';
 
 describe('URLinput', () => {
@@ -22,14 +22,19 @@ describe('URLinput', () => {
 });
 
 vi.useFakeTimers();
-
-vi.mock(import('react-redux'), async (importOriginal) => {
-  const actual = await importOriginal();
+type ReactReduxModule = {
+  useDispatch: () => typeof mockDispatch;
+  useSelector: <T>(selector: (state: RootState) => T) => T;
+  Provider: typeof Provider;
+};
+vi.mock('react-redux', async (importOriginal) => {
+  const actual = (await importOriginal()) as ReactReduxModule;
   return {
     ...actual,
     useDispatch: () => mockDispatch,
   };
 });
+
 const mockDispatch = vi.fn();
 
 describe('URLinput', () => {
