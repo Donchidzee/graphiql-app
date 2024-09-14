@@ -27,7 +27,7 @@ export function middleware(request: NextRequest) {
   const authToken = request.cookies.get('authToken')?.value;
 
   if (!authToken && url.pathname.includes('/api')) {
-    return NextResponse.redirect(new URL('/ru/login', request.url));
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
   return i18nResponse || NextResponse.next();
