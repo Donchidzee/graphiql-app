@@ -30,7 +30,7 @@ export default function Page() {
       const data = doc.docs[0].data();
       setName(data.name);
     } catch (err) {
-      console.error(err);
+      alert(err);
       alert('An error occurred while fetching user data');
     }
   }, [user]);

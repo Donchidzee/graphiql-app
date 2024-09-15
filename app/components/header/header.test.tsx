@@ -1,7 +1,6 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { Header } from './header';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ChakraProvider } from '@chakra-ui/react';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -10,6 +9,9 @@ import { useTranslations } from 'next-intl';
 import LanguagePicker from '../LanguagesPicker/LanguagePicker';
 import { LinkInter } from '../../../routing';
 import type { MockedFunction } from 'vitest';
+import type { User } from 'firebase/auth';
+import type { AnchorHTMLAttributes, ReactNode } from 'react';
+import { Header } from './header';
 
 vi.mock('react-firebase-hooks/auth', () => ({
   useAuthState: vi.fn(),
@@ -29,7 +31,12 @@ vi.mock('../LanguagesPicker/LanguagePicker', () => ({
 }));
 
 vi.mock('../../../routing', () => ({
-  LinkInter: ({ children, ...props }: any) => <a {...props}>{children}</a>,
+  LinkInter: ({
+    children,
+    ...props
+  }: AnchorHTMLAttributes<HTMLAnchorElement> & { children: ReactNode }) => (
+    <a {...props}>{children}</a>
+  ),
 }));
 
 vi.mock('./styles.module.css', () => ({
@@ -63,14 +70,20 @@ describe('Header Component', () => {
   };
 
   it('renders loading state when authentication is loading', () => {
-    mockedUseAuthState.mockReturnValue([null, true, undefined]);
+    mockedUseAuthState.mockReturnValue([null, true, undefined] as [
+      User | null,
+      boolean,
+      Error | undefined,
+    ]);
+
     renderHeader();
     expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
   it('renders authenticated navigation links and logout button when user is authenticated', () => {
-    const mockUser = { uid: 'user123' } as any;
-    mockedUseAuthState.mockReturnValue([mockUser, false, undefined]);
+    const mockUser: Partial<User> = { uid: 'user123' };
+    mockedUseAuthState.mockReturnValue([mockUser as User, false, undefined]);
+
     renderHeader();
     expect(screen.getByRole('link', { name: /main/i })).toHaveAttribute(
       'href',
@@ -93,8 +106,9 @@ describe('Header Component', () => {
   });
 
   it('calls logout function when logout button is clicked', () => {
-    const mockUser = { uid: 'user123' } as any;
-    mockedUseAuthState.mockReturnValue([mockUser, false, undefined]);
+    const mockUser: Partial<User> = { uid: 'user123' };
+    mockedUseAuthState.mockReturnValue([mockUser as User, false, undefined]);
+
     renderHeader();
     const logoutButton = screen.getByRole('button', { name: /exit/i });
     fireEvent.click(logoutButton);
@@ -102,7 +116,12 @@ describe('Header Component', () => {
   });
 
   it('renders navigation links and authentication links when user is not authenticated', () => {
-    mockedUseAuthState.mockReturnValue([null, false, undefined]);
+    mockedUseAuthState.mockReturnValue([null, false, undefined] as [
+      User | null,
+      boolean,
+      Error | undefined,
+    ]);
+
     renderHeader();
     expect(screen.getByRole('link', { name: /main/i })).toHaveAttribute(
       'href',
@@ -122,7 +141,12 @@ describe('Header Component', () => {
   });
 
   it('renders LanguagePicker component', () => {
-    mockedUseAuthState.mockReturnValue([null, false, undefined]);
+    mockedUseAuthState.mockReturnValue([null, false, undefined] as [
+      User | null,
+      boolean,
+      Error | undefined,
+    ]);
+
     renderHeader();
     expect(screen.getByTestId('language-picker')).toBeInTheDocument();
   });

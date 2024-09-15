@@ -15,7 +15,7 @@ global.atob = (input: string) => {
   try {
     return Buffer.from(input, 'base64').toString('binary');
   } catch (error) {
-    console.error('An error occurred:', error);
+    alert(error);
     throw new DOMException(
       'The string to be decoded is not correctly encoded.',
       'InvalidCharacterError'

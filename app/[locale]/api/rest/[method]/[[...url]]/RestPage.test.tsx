@@ -1,12 +1,25 @@
-import React from 'react';
-import { describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import React from 'react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { NextIntlClientProvider } from 'next-intl';
 import Rest from './page';
 import { RootState } from '@/store/store';
+
+interface Header {
+  key: string;
+  value: string;
+  headerIndex: number;
+}
+
+type MockAction =
+  | { type: 'changeBody'; payload: string }
+  | { type: 'changeUrl'; payload: string }
+  | { type: 'changeHeaders'; payload: Header[] }
+  | { type: 'changeUrlError'; payload: boolean };
 
 const enlocale = {
   test: 'This is a test',
@@ -52,11 +65,11 @@ const mockReducer = (
       url: '',
       urlError: false,
       body: '',
-      headers: []
+      headers: [],
     },
   },
-  action: any
-) => {
+  action: MockAction
+): RootState => {
   switch (action.type) {
     case 'changeBody':
       return {
@@ -89,7 +102,7 @@ const renderComponent = (
       url: '',
       body: '',
       headers: [],
-      urlError: false
+      urlError: false,
     },
   }
 ) => {
@@ -107,9 +120,11 @@ const renderComponent = (
   );
 };
 
+const pushMock = vi.fn();
+
 vi.mock('next/navigation', () => ({
   useRouter: () => ({
-    push: vi.fn(),
+    push: pushMock,
     replace: vi.fn(),
   }),
   useParams: () => ({
@@ -136,6 +151,14 @@ global.fetch = vi.fn(() =>
 ) as unknown as ReturnType<typeof vi.fn>;
 
 describe('RestPage', () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('renders correctly', () => {
     renderComponent();
 
@@ -145,16 +168,16 @@ describe('RestPage', () => {
   });
 
   it('calls handleSendRequest on button click', async () => {
-    const { getByText } = renderComponent({
+    renderComponent({
       restInputs: {
         url: 'http://google.com',
         body: '',
         headers: [],
-        urlError: false
+        urlError: false,
       },
     });
 
-    const sendButton = getByText('Send');
+    const sendButton = screen.getByText('Send');
     fireEvent.click(sendButton);
 
     await waitFor(() => {
