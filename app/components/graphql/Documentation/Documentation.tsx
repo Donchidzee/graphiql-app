@@ -66,9 +66,7 @@ const Documentation: React.FC<DocumentationProps> = ({ schema }) => {
   };
 
   if (!schema) {
-    return (
-      <Text>No schema available. Please provide a valid GraphQL schema.</Text>
-    );
+    return <Text>{t('noSchema')}</Text>;
   }
 
   const queryType = schema.types.find((type) => type.name === 'Query');
