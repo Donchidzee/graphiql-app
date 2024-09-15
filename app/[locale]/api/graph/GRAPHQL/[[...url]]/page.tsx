@@ -1,13 +1,13 @@
 'use client';
 
 import { Box, Flex, Heading, Stack } from '@chakra-ui/react';
-import GraphqlEditor from '@/components/graphql/GraphqlEditor';
-import SdlInput from '@/components/graphql/SdlInput';
-import useDebounce from '@/helpers/useDebounce';
+import GraphqlEditor from '../../../../../components/graphql/GraphqlEditor/GraphqlEditor';
+import SdlInput from '../../../../../components/graphql/SdlInput';
+import useDebounce from '../../../../../../src/helpers/useDebounce';
 import { useState, useEffect } from 'react';
-import useAuthCheck from '@/hooks/useAuthCheck';
+import useAuthCheck from '../../../../../hooks/useAuthCheck';
 import { usePathname, useRouter } from 'next/navigation';
-import UrlInput from '@/components/graphql/urlInput/UrlInput';
+import UrlInput from '../../../../../components/graphql/urlInput/UrlInput';
 
 type HeadersObject = Record<string, string>;
 

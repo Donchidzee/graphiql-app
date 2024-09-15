@@ -1,56 +1,30 @@
 import React from 'react';
-import { describe, expect, it, vi } from 'vitest';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { Provider } from 'react-redux';
-
+import { describe, expect, test, vi } from 'vitest';
 import UrlInput from './UrlInput';
-import { RootState, store } from '../../../store/store';
-import { changeUrl } from '../../../store/slices/restInputsSlice';
 
-describe('URLinput', () => {
-  it('render url component', () => {
+const mockSetUrlValue = vi.fn();
+
+describe('UrlInput Component', () => {
+  test('renders with initial URL value', () => {
     render(
-      <Provider store={store}>
-        <UrlInput />
-      </Provider>
+      <UrlInput urlValue="http://example.com" setUrlValue={mockSetUrlValue} />
     );
 
-    const inputElement = screen.getByText(/url/i);
-    expect(inputElement).toBeInTheDocument();
+    const input = screen.getByRole('textbox') as HTMLInputElement;
+    expect(input).toBeInTheDocument();
+    expect(input.value).toBe('http://example.com');
   });
-});
 
-vi.useFakeTimers();
-type ReactReduxModule = {
-  useDispatch: () => typeof mockDispatch;
-  useSelector: <T>(selector: (state: RootState) => T) => T;
-  Provider: typeof Provider;
-};
-vi.mock('react-redux', async (importOriginal) => {
-  const actual = (await importOriginal()) as ReactReduxModule;
-  return {
-    ...actual,
-    useDispatch: () => mockDispatch,
-  };
-});
-
-const mockDispatch = vi.fn();
-
-describe('URLinput', () => {
-  it('dispatches changeUrl action on input change', () => {
+  test('calls setUrlValue on input change', () => {
     render(
-      <Provider store={store}>
-        <UrlInput />
-      </Provider>
+      <UrlInput urlValue="http://example.com" setUrlValue={mockSetUrlValue} />
     );
 
-    const inputElement = screen.getByRole('textbox');
+    const input = screen.getByRole('textbox') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: 'http://newurl.com' } });
 
-    fireEvent.change(inputElement, { target: { value: 'http://google.com' } });
-    act(() => {
-      vi.advanceTimersByTime(600);
-    });
-    expect(mockDispatch).toHaveBeenCalledWith(changeUrl('http://google.com'));
+    expect(mockSetUrlValue).toHaveBeenCalledWith('http://newurl.com');
   });
 });

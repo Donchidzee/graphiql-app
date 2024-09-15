@@ -17,8 +17,6 @@ export type Header = {
 export type inputsState = {
   url: string;
   urlError: boolean;
-  sdlUrl: string;
-  sdlUrlError: boolean;
   body: string;
   headers: Header[];
 };

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import GraphiQL from 'graphiql';
 import 'graphiql/graphiql.min.css';
 import { buildClientSchema, getIntrospectionQuery } from 'graphql';
-import { saveGraphqlRequestToLS } from '@/helpers/graphqlRequestHistory';
+import { saveGraphqlRequestToLS } from '../../../../src/helpers/graphqlRequestHistory';
 import { usePathname } from 'next/navigation';
 
 const defaultQuery = `
