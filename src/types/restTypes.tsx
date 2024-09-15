@@ -21,7 +21,6 @@ export type inputsState = {
   sdlUrlError: boolean;
   body: string;
   headers: Header[];
-  RequestHistory: RequestHistory[];
 };
 
 export type RequestHistory = {

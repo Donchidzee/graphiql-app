@@ -1,25 +1,40 @@
 'use client';
 
-import { RootState } from '@/store/store';
-import { Box, Heading, Stack, Text, VStack, HStack } from '@chakra-ui/react';
-import { useSelector } from 'react-redux';
+import { Box, Heading, Stack, Text, VStack, Grid, HStack } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
 import useAuthCheck from '@/hooks/useAuthCheck';
 import { useEffect, useState } from 'react';
 import { LinkInter } from '../../../../routing';
 import { Link } from '@chakra-ui/next-js';
+import { RequestHistory } from '@/types/restTypes';
 
 export default function History() {
   const t = useTranslations();
 
   useAuthCheck();
+  const [requestHistory, setRequestHistory] = useState<RequestHistory[]>([]);
 
-  const requestHistory = useSelector(
-    (state: RootState) => state.restInputs.RequestHistory
-  );
+  const fetchRequestHistory = () => {
+    const history = localStorage.getItem('requestHistory');
+    setRequestHistory(history ? JSON.parse(history) : []);
+  };
 
-  console.log(requestHistory);
+  useEffect(() => {
+    fetchRequestHistory();
 
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'requestHistory') {
+        fetchRequestHistory();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+  
   const [graphqlHistory, setGraphqlHistory] = useState([]);
 
   useEffect(() => {
@@ -53,8 +68,15 @@ export default function History() {
 
       <HStack spacing={10} align="start" justify="center" my={10}>
         <VStack spacing={4} align="start" flex={1}>
-          <Heading as="h3" size="lg" textAlign="center">
-            REST Requests
+          <Heading as="h3" size="lg" textAlign="center" mx={'auto'}>
+            <Link
+                as={LinkInter}
+                href="/api/rest/GET"
+                color="teal"
+                _hover={{ color: 'teal.500' }}                
+              >
+                REST
+              </Link>
           </Heading>
           {requestHistory.length > 0 &&
             requestHistory.map((request, index) => (
@@ -68,7 +90,7 @@ export default function History() {
                 >
                   {t('request')} #{index + 1}
                 </Link>
-                <Box maxWidth="500px">
+                <Box maxWidth="200px">
                   <Text isTruncated>{request.endpoint || 'N/A'}</Text>
                 </Box>
               </Stack>
@@ -76,8 +98,15 @@ export default function History() {
         </VStack>
 
         <VStack spacing={4} align="start" flex={1}>
-          <Heading as="h3" size="lg" textAlign="center">
-            GraphQL Requests
+          <Heading as="h3" size="lg" textAlign="center"mx={'auto'}>
+           <Link
+              as={LinkInter}
+              href="/api/graph/GRAPHQL"
+              color="teal"
+              _hover={{ color: 'teal.500' }}
+            >
+              GRAPHGL
+            </Link>
           </Heading>
           {graphqlHistory.length > 0 &&
             graphqlHistory.map((request, index) => (
@@ -91,7 +120,7 @@ export default function History() {
                 >
                   {t('request')} #{index + 1}
                 </Link>
-                <Box maxWidth="500px">
+                <Box maxWidth="200px">
                   <Text isTruncated>{request.endpoint || 'N/A'}</Text>
                 </Box>
               </Stack>

@@ -53,7 +53,8 @@ const mockReducer = (
       urlError: false,
       body: '',
       headers: [],
-      RequestHistory: [],
+      sdlUrl: '',
+      sdlUrlError: false
     },
   },
   action: any
@@ -91,7 +92,8 @@ const renderComponent = (
       body: '',
       headers: [],
       urlError: false,
-      RequestHistory: [],
+      sdlUrl: '',
+      sdlUrlError: false 
     },
   }
 ) => {
@@ -153,7 +155,8 @@ describe('RestPage', () => {
         body: '',
         headers: [],
         urlError: false,
-        RequestHistory: [],
+        sdlUrl: '',
+        sdlUrlError: false
       },
     });
 

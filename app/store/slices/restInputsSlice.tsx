@@ -9,12 +9,7 @@ const initialState: inputsState = {
   urlError: false,
   sdlUrlError: false,
   body: '',
-  headers: [],
-  RequestHistory: isBrowser
-    ? localStorage.getItem('requestHistory')
-      ? JSON.parse(localStorage.getItem('requestHistory')!)
-      : []
-    : [],
+  headers: []
 };
 
 export const restInputsSlice = createSlice({
@@ -25,23 +20,20 @@ export const restInputsSlice = createSlice({
       state.url = action.payload;
     },
     changeSdlUrl: (state, action: PayloadAction<string>) => {
-      state.sdlUrl = action.payload; // Reducer for SDL URL
+      state.sdlUrl = action.payload;
     },
     changeUrlError: (state, action: PayloadAction<boolean>) => {
       state.urlError = action.payload;
     },
     changeSdlUrlError: (state, action: PayloadAction<boolean>) => {
-      state.sdlUrlError = action.payload; // SDL URL error
+      state.sdlUrlError = action.payload;
     },
     changeBody: (state, action: PayloadAction<string>) => {
       state.body = action.payload;
     },
     changeHeaders: (state, action: PayloadAction<Header[]>) => {
       state.headers = action.payload;
-    },
-    changeRequestHistory: (state, action: PayloadAction<RequestHistory[]>) => {
-      state.RequestHistory = [...action.payload];
-    },
+    }
   },
 });
 
@@ -52,7 +44,6 @@ export const {
   changeSdlUrlError,
   changeBody,
   changeHeaders,
-  changeRequestHistory,
 } = restInputsSlice.actions;
 
 export default restInputsSlice.reducer;

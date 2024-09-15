@@ -1,4 +1,3 @@
-import { changeRequestHistory } from '../../app//store/slices/restInputsSlice';
 import { useEffect } from 'react';
 
 export const saveEndpointToLS = (pathname, searchParams, dispatch) => {
@@ -16,7 +15,6 @@ export const saveEndpointToLS = (pathname, searchParams, dispatch) => {
   const updatedRequests = [...storedRequests, newRequest];
 
   localStorage.setItem('requestHistory', JSON.stringify(updatedRequests));
-  dispatch(changeRequestHistory(updatedRequests));
 };
 
 export const useBodyFocusAndBlurListeners = (refs, handleFocus, handleBlur) => {
