@@ -113,7 +113,17 @@ export default function Rest() {
         dispatch(changeBody(currentBody));
       }
     }
-  }, [method, router, url, methods, dispatch, locale, pathname, searchParams]);
+  }, [
+    method,
+    router,
+    url,
+    methods,
+    dispatch,
+    locale,
+    pathname,
+    searchParams,
+    selectedMethod,
+  ]);
 
   useEffect(() => {
     const encodedNewUrl = btoa(encodeURIComponent(stateUrl));

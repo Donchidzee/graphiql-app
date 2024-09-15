@@ -111,6 +111,7 @@ const renderComponent = (
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({
+    push: vi.fn(),
     replace: vi.fn(),
   }),
   useParams: () => ({

@@ -49,7 +49,7 @@ const BodyInput: React.FC<BodyInputRef> = ({
     if (JSON.stringify(storedVariables) !== JSON.stringify(variables)) {
       setVariables(storedVariables);
     }
-  }, [stateHeaders]);
+  }, [stateHeaders, variables]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
