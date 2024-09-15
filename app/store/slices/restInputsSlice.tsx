@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { inputsState, Header, RequestHistory } from '@/types/restTypes';
-
-const isBrowser = typeof window !== 'undefined';
+import { inputsState, Header } from '@/types/restTypes';
 
 const initialState: inputsState = {
   url: '',
@@ -9,7 +7,7 @@ const initialState: inputsState = {
   urlError: false,
   sdlUrlError: false,
   body: '',
-  headers: []
+  headers: [],
 };
 
 export const restInputsSlice = createSlice({
@@ -33,7 +31,7 @@ export const restInputsSlice = createSlice({
     },
     changeHeaders: (state, action: PayloadAction<Header[]>) => {
       state.headers = action.payload;
-    }
+    },
   },
 });
 

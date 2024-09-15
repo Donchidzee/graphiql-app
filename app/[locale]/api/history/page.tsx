@@ -1,9 +1,9 @@
 'use client';
 
-import { Box, Heading, Stack, Text, VStack, Grid, HStack } from '@chakra-ui/react';
+import { Box, Heading, Stack, Text, VStack, HStack } from '@chakra-ui/react';
 import { useTranslations } from 'next-intl';
-import useAuthCheck from '@/hooks/useAuthCheck';
-import { useEffect, useState } from 'react';
+import useAuthCheck from '../../../hooks/useAuthCheck';
+import React, { useEffect, useState } from 'react';
 import { LinkInter } from '../../../../routing';
 import { Link } from '@chakra-ui/next-js';
 import { RequestHistory } from '@/types/restTypes';
@@ -29,12 +29,12 @@ export default function History() {
     };
 
     window.addEventListener('storage', handleStorageChange);
-    
+
     return () => {
       window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
-  
+
   const [graphqlHistory, setGraphqlHistory] = useState([]);
 
   useEffect(() => {
@@ -70,13 +70,13 @@ export default function History() {
         <VStack spacing={4} align="start" flex={1}>
           <Heading as="h3" size="lg" textAlign="center" mx={'auto'}>
             <Link
-                as={LinkInter}
-                href="/api/rest/GET"
-                color="teal"
-                _hover={{ color: 'teal.500' }}                
-              >
-                REST
-              </Link>
+              as={LinkInter}
+              href="/api/rest/GET"
+              color="teal"
+              _hover={{ color: 'teal.500' }}
+            >
+              REST
+            </Link>
           </Heading>
           {requestHistory.length > 0 &&
             requestHistory.map((request, index) => (
@@ -98,8 +98,8 @@ export default function History() {
         </VStack>
 
         <VStack spacing={4} align="start" flex={1}>
-          <Heading as="h3" size="lg" textAlign="center"mx={'auto'}>
-           <Link
+          <Heading as="h3" size="lg" textAlign="center" mx={'auto'}>
+            <Link
               as={LinkInter}
               href="/api/graph/GRAPHQL"
               color="teal"

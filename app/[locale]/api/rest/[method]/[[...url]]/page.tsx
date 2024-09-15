@@ -192,7 +192,7 @@ export default function Rest() {
 
   const handleSendRequest = async () => {
     if (stateUrl) {
-      saveEndpointToLS(pathname, searchParams, dispatch);
+      saveEndpointToLS(pathname, searchParams);
       setLoading(true);
       const responseHeaders = stateHeaders.reduce((acc, obj) => {
         if (obj.key !== 'variables') {

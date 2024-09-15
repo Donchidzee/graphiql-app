@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-export const saveEndpointToLS = (pathname, searchParams, dispatch) => {
+export const saveEndpointToLS = (pathname, searchParams) => {
   const newPathname = pathname.split('/').slice(3).join('/');
   const endpointString = `${newPathname}?${searchParams.toString()}`;
 
