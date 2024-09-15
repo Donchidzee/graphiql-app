@@ -1,5 +1,5 @@
 'use client';
-
+import React from 'react';
 import { Box, Flex, Heading, Stack } from '@chakra-ui/react';
 import GraphqlEditor from '../../../../../components/graphql/GraphqlEditor/GraphqlEditor';
 import SdlInput from '../../../../../components/graphql/SdlInput';

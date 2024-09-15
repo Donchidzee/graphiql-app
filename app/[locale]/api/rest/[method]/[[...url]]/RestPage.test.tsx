@@ -52,9 +52,7 @@ const mockReducer = (
       url: '',
       urlError: false,
       body: '',
-      headers: [],
-      sdlUrl: '',
-      sdlUrlError: false
+      headers: []
     },
   },
   action: any
@@ -91,9 +89,7 @@ const renderComponent = (
       url: '',
       body: '',
       headers: [],
-      urlError: false,
-      sdlUrl: '',
-      sdlUrlError: false 
+      urlError: false
     },
   }
 ) => {
@@ -154,9 +150,7 @@ describe('RestPage', () => {
         url: 'http://google.com',
         body: '',
         headers: [],
-        urlError: false,
-        sdlUrl: '',
-        sdlUrlError: false
+        urlError: false
       },
     });
 
