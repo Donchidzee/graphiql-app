@@ -20,8 +20,11 @@ import UrlInput from '@/components/rest/urlInput/UrlInput';
 import { useTranslations } from 'next-intl';
 import StyledTabs from '@/components/StyledTabs';
 import useDebounce from '@/helpers/useDebounce';
+import useAuthCheck from '@/hooks/useAuthCheck';
 
 export default function Graphql() {
+  useAuthCheck();
+
   const pathname = usePathname();
   const router = useRouter();
   const stateUrl = useAppSelector((state) => state.restInputs.url);

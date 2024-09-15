@@ -43,7 +43,7 @@ const logInWithEmailAndPassword = async (email: string, password: string) => {
 
     const token = await user.getIdToken();
 
-    setCookie('authToken', token, 1);
+    setCookie('token', token, 1);
   } catch (err) {
     console.error('Error during login:', err);
     alert(err.message);
@@ -67,7 +67,7 @@ const registerWithEmailAndPassword = async (
     });
 
     const token = await user.getIdToken();
-    setCookie('authToken', token, 1);
+    setCookie('token', token, 1);
   } catch (err) {
     console.error('Error during registration:', err);
     alert(err.message);
@@ -87,7 +87,7 @@ const sendPasswordReset = async (email: string) => {
 const logout = async () => {
   try {
     await signOut(auth);
-    eraseCookie('authToken');
+    eraseCookie('token');
   } catch (err) {
     console.error('Error signing out:', err);
     alert('Error signing out. Please try again.');

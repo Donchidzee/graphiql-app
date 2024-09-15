@@ -7,7 +7,7 @@ import { ChangeEvent, useTransition } from 'react';
 const LanguagePicker = () => {
   const activeLocale = useLocale();
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const pathname = usePathname();
 
   const handleLanguageChange = (event: ChangeEvent<HTMLSelectElement>) => {

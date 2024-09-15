@@ -24,9 +24,9 @@ export function middleware(request: NextRequest) {
     return i18nResponse || NextResponse.next();
   }
 
-  const authToken = request.cookies.get('authToken')?.value;
+  const token = request.cookies.get('token')?.value;
 
-  if (!authToken && url.pathname.includes('/api')) {
+  if (!token && url.pathname.includes('/api')) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 

@@ -5,9 +5,12 @@ import { Box, Heading, Link, Stack, Text, VStack } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
 import { LinkInter } from '../../../../routing';
 import { useTranslations } from 'next-intl';
+import useAuthCheck from '@/hooks/useAuthCheck';
 
 export default function History() {
   const t = useTranslations();
+
+  useAuthCheck();
 
   const requestHistory = useSelector(
     (state: RootState) => state.restInputs.RequestHistory

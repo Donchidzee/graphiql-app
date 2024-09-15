@@ -72,7 +72,7 @@ const BodyInput: React.FC<BodyInputRef> = ({
     (str) => {
       const firstChar = str.charAt(0) === '{' ? '{' : '';
       const restOfString = firstChar ? str.slice(1) : str;
-    
+
       const replacedString = restOfString.replace(
         /"{{(.*?)}}"|{{(.*?)}}/g,
         (_, quotedKey, unquotedKey) => {

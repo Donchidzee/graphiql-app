@@ -7,7 +7,15 @@ import {
   useRouter,
   useSearchParams,
 } from 'next/navigation';
-import { Button, Heading, Select, Stack, VStack, Text, Box } from '@chakra-ui/react';
+import {
+  Button,
+  Heading,
+  Select,
+  Stack,
+  VStack,
+  Text,
+  Box,
+} from '@chakra-ui/react';
 import {
   changeBody,
   changeHeaders,
@@ -27,9 +35,12 @@ import {
   saveEndpointToLS,
 } from '../../../../../../src/helpers/helpers';
 import { useTranslations } from 'next-intl';
+import useAuthCheck from '../../../../../hooks/useAuthCheck';
 
 export default function Rest() {
   const t = useTranslations();
+
+  useAuthCheck();
 
   const dispatch = useDispatch();
   const stateUrl = useSelector((state: RootState) => state.restInputs.url);
@@ -220,12 +231,7 @@ export default function Rest() {
 
   return (
     <>
-      <VStack 
-        spacing={50} 
-        align="stretch"    
-        maxW="1400px"
-        mx={'auto'}
-      >
+      <VStack spacing={50} align="stretch" maxW="1400px" mx={'auto'}>
         <Heading
           as="h1"
           size="xl"
@@ -295,7 +301,12 @@ export default function Rest() {
             boxShadow="md"
           >
             <VStack spacing={2} align="stretch">
-              <Heading as="h2" size="sm" noOfLines={1} textTransform="uppercase">
+              <Heading
+                as="h2"
+                size="sm"
+                noOfLines={1}
+                textTransform="uppercase"
+              >
                 {t('body')}
               </Heading>
               <BodyInput
