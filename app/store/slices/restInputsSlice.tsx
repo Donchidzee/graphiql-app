@@ -5,9 +5,9 @@ const isBrowser = typeof window !== 'undefined';
 
 const initialState: inputsState = {
   url: '',
-  sdlUrl: '', // New SDL URL state
+  sdlUrl: '',
   urlError: false,
-  sdlUrlError: false, // SDL URL error state
+  sdlUrlError: false,
   body: '',
   headers: [],
   RequestHistory: isBrowser
