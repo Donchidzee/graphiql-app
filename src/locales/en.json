@@ -31,7 +31,7 @@
   "bodyText": "Body in text format",
   "bodyJson": "Body in json format",
   "restfull": "RESTfull client",
-  "history": "history",
+  "history": "History",
   "noHistory": "You have not executed any requests yet",
   "responseNotOk": "There is a problem with request",
   "removeHeader": "Remove Header",
@@ -55,5 +55,9 @@
   "username": "Username",
   "alreadyHaveAccount": "Already have an account?",
   "reset": "Reset password",
-  "resetButton": "Send password reset email"
+  "resetButton": "Send password reset email",
+  "addHeader": "Add Header",
+  "enter": "Enter your GraphQL query here",
+  "statusCode": "HTTP Status Code",
+  "responseBody": "Response Body (Read only)"
 }

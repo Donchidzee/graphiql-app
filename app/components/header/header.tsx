@@ -52,7 +52,7 @@ export function Header() {
                 _hover={{ color: '#1b202b' }}
                 as={LinkInter}
               >
-                History
+                {t('history')}
               </Link>
             </>
           ) : (

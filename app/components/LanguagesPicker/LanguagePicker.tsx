@@ -25,6 +25,7 @@ const LanguagePicker = () => {
         value={activeLocale}
         onChange={(e) => handleLanguageChange(e)}
         w={100}
+        disabled={isPending}
       >
         <option value="ru">Русский</option>
         <option value="en">English</option>

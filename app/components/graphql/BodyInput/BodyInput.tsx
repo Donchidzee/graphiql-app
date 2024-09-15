@@ -4,13 +4,14 @@ import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { changeBody } from '../../../store/slices/restInputsSlice';
 import gqlPrettier from 'graphql-prettier';
 import useDebounce from '@/helpers/useDebounce';
+import { useTranslations } from 'next-intl';
 
 const BodyInput: React.FC = () => {
   const [body, setBody] = useState<string>('');
   const [debouncedBody, setDebouncedBody] = useState<string>('');
   const dispatch = useAppDispatch();
   const stateBody = useAppSelector((state) => state.restInputs.body);
-
+  const t = useTranslations();
   const debouncedValue = useDebounce(body, 500);
 
   console.log(debouncedBody);
@@ -28,6 +29,7 @@ const BodyInput: React.FC = () => {
   };
 
   const handleBlur = () => {
+    if (body === '') return;
     const prettifiedBody = gqlPrettier(body);
     dispatch(changeBody(prettifiedBody));
   };
@@ -38,7 +40,7 @@ const BodyInput: React.FC = () => {
       height={'100%'}
       onChange={handleChange}
       onBlur={handleBlur} // Optional: Handle blur to dispatch the prettified body
-      placeholder="Enter your GraphQL query"
+      placeholder={t('enter')}
       bg="gray.800" // Dark background
       color="white" // Light text color
       fontFamily="'Source Code Pro', monospace" // Monospace font for code

@@ -30,7 +30,7 @@
   "bodyText": "тело в формате текста",
   "bodyJson": "тело в формате json",
   "restfull": "RESTfull клиент",
-  "history": "история",
+  "history": "История",
   "noHistory": "Вы еще не выполнили ни одного запроса",
   "responseNotOk": "Проблема с запросом",
   "removeHeader": "Удалить заголовок",
@@ -54,5 +54,9 @@
   "username": "Имя пользователя",
   "alreadyHaveAccount": "Уже есть аккаунт?",
   "reset": "Восстановить пароль",
-  "resetButton": "Отправить сообщение"
+  "resetButton": "Отправить сообщение",
+  "addHeader": "Добавить заголовок",
+  "enter": "Введите ваш запрос GraphQL здесь",
+  "statusCode": "HTTP статус код",
+  "responseBody": "Тело ответа (только для чтения)"
 }

@@ -1,10 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Header, inputsState, RequestHistory } from '@/types/restTypes';
+import { inputsState, Header, RequestHistory } from '@/types/restTypes';
+
 const isBrowser = typeof window !== 'undefined';
 
 const initialState: inputsState = {
   url: '',
+  sdlUrl: '',
   urlError: false,
+  sdlUrlError: false,
   body: '',
   headers: [],
   RequestHistory: isBrowser
@@ -21,8 +24,14 @@ export const restInputsSlice = createSlice({
     changeUrl: (state, action: PayloadAction<string>) => {
       state.url = action.payload;
     },
+    changeSdlUrl: (state, action: PayloadAction<string>) => {
+      state.sdlUrl = action.payload; // Reducer for SDL URL
+    },
     changeUrlError: (state, action: PayloadAction<boolean>) => {
       state.urlError = action.payload;
+    },
+    changeSdlUrlError: (state, action: PayloadAction<boolean>) => {
+      state.sdlUrlError = action.payload; // SDL URL error
     },
     changeBody: (state, action: PayloadAction<string>) => {
       state.body = action.payload;
@@ -38,7 +47,9 @@ export const restInputsSlice = createSlice({
 
 export const {
   changeUrl,
+  changeSdlUrl,
   changeUrlError,
+  changeSdlUrlError,
   changeBody,
   changeHeaders,
   changeRequestHistory,

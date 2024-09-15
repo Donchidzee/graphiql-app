@@ -89,7 +89,7 @@ export default function Page() {
                     color="blue.400"
                     _hover={{ color: 'blue.500' }}
                   >
-                    History
+                    {t('history')}
                   </Link>
                 </div>
               </CardBody>
