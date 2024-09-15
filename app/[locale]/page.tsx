@@ -1,7 +1,14 @@
 'use client';
 
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { Box, CircularProgress, Link } from '@chakra-ui/react';
+import {
+  Box,
+  CircularProgress,
+  Link,
+  Card,
+  CardBody,
+  Text,
+} from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import styles from './styles.module.css';
@@ -52,60 +59,112 @@ export default function Page() {
       <div className={styles.page}>
         {user ? (
           <>
-            <h1>{`Welcome back, ${name}!`}</h1>
-            <div className={styles.container}>
-              <Link
-                as={LinkInter}
-                href={`/api/rest/GET`}
-                color="blue.400"
-                _hover={{ color: 'blue.500' }}
-                mr={10}
-              >
-                Rest
-              </Link>
-              <Link
-                as={LinkInter}
-                href={`/api/graph/GRAPHQL`}
-                color="blue.400"
-                _hover={{ color: 'blue.500' }}
-                mr={10}
-              >
-                GraphQL
-              </Link>
-              <Link
-                as={LinkInter}
-                href={`/api/history`}
-                color="blue.400"
-                _hover={{ color: 'blue.500' }}
-              >
-                History
-              </Link>
-            </div>
+            <Card>
+              <CardBody>
+                <Text>
+                  <h1>{`${t('welcomeBack')}, ${name}!`}</h1>
+                </Text>
+                <div className={styles.container}>
+                  <Link
+                    as={LinkInter}
+                    href={`/api/rest/GET`}
+                    color="blue.400"
+                    _hover={{ color: 'blue.500' }}
+                    mr={10}
+                  >
+                    Rest
+                  </Link>
+                  <Link
+                    as={LinkInter}
+                    href={`/api/graph/GRAPHQL`}
+                    color="blue.400"
+                    _hover={{ color: 'blue.500' }}
+                    mr={10}
+                  >
+                    GraphQL
+                  </Link>
+                  <Link
+                    as={LinkInter}
+                    href={`/api/history`}
+                    color="blue.400"
+                    _hover={{ color: 'blue.500' }}
+                  >
+                    History
+                  </Link>
+                </div>
+              </CardBody>
+            </Card>
           </>
         ) : (
           <>
-            <h1>Welcome!</h1>
-            <div className={styles.container}>
-              <Link
-                as={LinkInter}
-                href={`/login`}
-                color="blue.400"
-                _hover={{ color: 'blue.500' }}
-                mr={10}
-              >
-                {t('login')}
-              </Link>
-              <Link
-                as={LinkInter}
-                href={`/register`}
-                color="blue.400"
-                _hover={{ color: 'blue.500' }}
-              >
-                {t('register')}
-              </Link>
-            </div>
+            <Card>
+              <CardBody>
+                <Text>
+                  <h1>{t('welcome')}!</h1>
+                </Text>
+                <div className={styles.container}>
+                  <Link
+                    as={LinkInter}
+                    href={`/login`}
+                    color="blue.400"
+                    _hover={{ color: 'blue.500' }}
+                    mr={10}
+                  >
+                    {t('login')}
+                  </Link>
+                  <Link
+                    as={LinkInter}
+                    href={`/register`}
+                    color="blue.400"
+                    _hover={{ color: 'blue.500' }}
+                  >
+                    {t('register')}
+                  </Link>
+                </div>
+              </CardBody>
+            </Card>
           </>
         )}
+        <Card mt={5}>
+          <CardBody>
+            <Text>{t('overview')}!</Text>
+          </CardBody>
+        </Card>
+        <Card mt={5}>
+          <CardBody>
+            <Text mb={4}>{t('ourApp')}.</Text>
+            <Text ml={3}>{t('postman')}.</Text>
+            <Text ml={3}>{t('graphQl')}.</Text>
+          </CardBody>
+        </Card>
+        <Card mt={5}>
+          <CardBody>
+            <Text>{t('meetOurTeam')}!</Text>
+            <Text>{t('ourTeam')}.</Text>
+          </CardBody>
+        </Card>
+        <Card mt={5}>
+          <CardBody>
+            {user ? (
+              <Text>{t('clickAny')}.</Text>
+            ) : (
+              <>
+                <Box display={'flex'}>
+                  <Link
+                    as={LinkInter}
+                    href={`/login`}
+                    color="blue.400"
+                    _hover={{ color: 'blue.500' }}
+                    mr={1}
+                  >
+                    {t('login')}
+                  </Link>
+                  <Text>{t('toStartExploring')}.</Text>
+                </Box>
+              </>
+            )}
+          </CardBody>
+        </Card>
       </div>
     </>
   );

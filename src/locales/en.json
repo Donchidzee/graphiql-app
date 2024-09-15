@@ -34,5 +34,15 @@
   "history": "history",
   "noHistory": "You have not executed any requests yet",
   "responseNotOk": "There is a problem with request",
-  "removeHeader": "Remove Header"
+  "removeHeader": "Remove Header",
+  "welcome": "Welcome",
+  "welcomeBack": "Welcome back",
+  "overview": "Here's a Quick Overview",
+  "ourApp": "Our app combines lightweight versions of Postman and GraphiQL",
+  "postman": "- Postman is a powerful platform for using and building APIs",
+  "graphQl": "- GraphiQL is a playground and IDE for GraphQL requests",
+  "meetOurTeam": "Meet Our Team",
+  "ourTeam": "Our team consists of three developers and one mentor: Aigerim, Samat, Daniyar, and Mentor Rakhymbek",
+  "clickAny": "Click any link to start exploring our application",
+  "toStartExploring": "to start exploring our application"
 }

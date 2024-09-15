@@ -3,14 +3,14 @@
   padding: 20px;
   display: flex;
   align-items: center;
-  background-color: #f5f4ee;
+  background-color: #bdc3c7;
 }
 
 .year {
   font-size: 24px;
   margin-right: 30px;
   margin-left: 10px;
-  color: #333; /* Adjust color if needed */
+  color: #333;
 }
 
 .authorsList {
@@ -22,24 +22,23 @@
   padding: 6px 15px;
   border: 1px solid rgb(58, 58, 58);
   border-radius: 10px;
-  background-color: #fff; /* Background color of the button */
-  transition: all 0.3s ease; /* Smooth transition for hover effects */
+  transition: all 0.3s ease;
 }
 
 .authorLinkWrapper:hover {
-  background-color: rgb(58, 58, 58); /* Darker background on hover */
-  color: #fff; /* Text color on hover */
-  transform: scale(1.05); /* Slightly enlarge the button */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+  background-color: rgb(58, 58, 58);
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .authorLinkWrapper a {
   display: flex;
   align-items: center;
-  text-decoration: none; /* Remove underline from links */
-  color: rgb(58, 58, 58); /* Link color */
+  text-decoration: none;
+  color: rgb(58, 58, 58);
 }
 
 .authorLinkWrapper:hover a {
-  color: #fff; /* Change link color on hover */
+  color: #fff;
 }

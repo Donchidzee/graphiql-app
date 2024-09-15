@@ -7,26 +7,26 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #f5f4ee;
+  background-color: #bdc3c7;
   z-index: 10;
 }
 
 .navContainer {
-    flex: 1;
-    display: flex;
-    justify-content: flex-start;
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
 }
 
 .nav {
-    display: flex;
-    align-items: center;
-    gap: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .rightContainer {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .container {
@@ -35,5 +35,5 @@
 }
 
 .languageSelectWrapper {
-    margin-right: 10px;
+  margin-right: 10px;
 }

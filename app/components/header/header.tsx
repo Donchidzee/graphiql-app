@@ -18,8 +18,9 @@ export function Header() {
         <div className={styles.nav}>
           <Link
             as={LinkInter}
-            color="blue.400"
-            _hover={{ color: 'blue.500' }}
+            color="white"
+            fontWeight={600}
+            _hover={{ color: '#1b202b' }}
             href={`/`}
           >
             {t('main')}
@@ -28,24 +29,27 @@ export function Header() {
             <>
               <Link
                 as={LinkInter}
-                color="blue.400"
-                _hover={{ color: 'blue.500' }}
+                color="white"
+                fontWeight={600}
+                _hover={{ color: '#1b202b' }}
                 href={`/api/rest/GET`}
               >
                 Rest
               </Link>
               <Link
                 as={LinkInter}
-                color="blue.400"
-                _hover={{ color: 'blue.500' }}
+                color="white"
+                fontWeight={600}
+                _hover={{ color: '#1b202b' }}
                 href={`/api/graph/GRAPHQL`}
               >
                 GraphQL
               </Link>
               <Link
                 href={`/api/history`}
-                color="blue.400"
-                _hover={{ color: 'blue.500' }}
+                color="white"
+                fontWeight={600}
+                _hover={{ color: '#1b202b' }}
                 as={LinkInter}
               >
                 History
@@ -61,23 +65,25 @@ export function Header() {
         {loading ? (
           <span>Loading...</span>
         ) : user ? (
-          <Button onClick={logout} colorScheme="teal" size="sm">
+          <Button onClick={logout} backgroundColor={'#1b202b'} size="sm">
             {t('exit')}
           </Button>
         ) : (
           <>
             <Link
               as={LinkInter}
-              color="blue.400"
-              _hover={{ color: 'blue.500' }}
+              color="white"
+              fontWeight={600}
+              _hover={{ color: '#1b202b' }}
               href={`/login`}
             >
               {t('login')}
             </Link>
             <Link
               as={LinkInter}
-              color="blue.400"
-              _hover={{ color: 'blue.500' }}
+              color="white"
+              fontWeight={600}
+              _hover={{ color: '#1b202b' }}
               href={`/register`}
             >
               {t('register')}
