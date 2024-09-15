@@ -7,7 +7,7 @@ import {
   useRouter,
   useSearchParams,
 } from 'next/navigation';
-import { Button, Heading, Select, Stack, VStack, Text } from '@chakra-ui/react';
+import { Button, Heading, Select, Stack, VStack, Text, Box } from '@chakra-ui/react';
 import {
   changeBody,
   changeHeaders,
@@ -220,7 +220,12 @@ export default function Rest() {
 
   return (
     <>
-      <VStack spacing={50} align="stretch">
+      <VStack 
+        spacing={50} 
+        align="stretch"    
+        maxW="1400px"
+        mx={'auto'}
+      >
         <Heading
           as="h1"
           size="xl"
@@ -237,13 +242,17 @@ export default function Rest() {
               size="lg"
               noOfLines={1}
               textTransform="uppercase"
-              bg="teal.400"
               width="100%"
+              bg={'whiteAlpha.300'}
+              borderWidth="1px"
+              borderRadius="lg"
+              borderColor={'transparent'}
+              pl={5}
             >
               {t('request')}
             </Heading>
             <Button
-              colorScheme="teal"
+              colorScheme="gray"
               size="md"
               textTransform="uppercase"
               width="min-content"
@@ -253,27 +262,49 @@ export default function Rest() {
               {t('send')}
             </Button>
           </Stack>
-          <Stack align="center" direction="row">
-            <Select
-              value={selectedMethod}
-              textTransform="uppercase"
-              width="200px"
-              onChange={changeMethod}
-            >
-              {methodOptions}
-            </Select>
-            <UrlInput />
-          </Stack>
-          <VStack spacing={2} align="stretch">
-            <Heading as="h2" size="sm" noOfLines={1} textTransform="uppercase">
-              {t('body')}
-            </Heading>
-            <BodyInput
-              bodyTextInputRef={bodyTextInputRef}
-              bodyJsonInputRef={bodyJsonInputRef}
-              handleBodyTextInputFocus={handleBodyTextInputFocus}
-            />
-          </VStack>
+          <Box
+            w="full"
+            maxW="1400px"
+            borderWidth="1px"
+            borderRadius="lg"
+            borderColor={'gray.500'}
+            overflow="hidden"
+            p={5}
+            boxShadow="md"
+          >
+            <Stack align="center" direction="row">
+              <Select
+                value={selectedMethod}
+                textTransform="uppercase"
+                width="200px"
+                onChange={changeMethod}
+              >
+                {methodOptions}
+              </Select>
+              <UrlInput />
+            </Stack>
+          </Box>
+          <Box
+            w="full"
+            maxW="1400px"
+            borderWidth="1px"
+            borderRadius="lg"
+            borderColor={'gray.500'}
+            overflow="hidden"
+            p={5}
+            boxShadow="md"
+          >
+            <VStack spacing={2} align="stretch">
+              <Heading as="h2" size="sm" noOfLines={1} textTransform="uppercase">
+                {t('body')}
+              </Heading>
+              <BodyInput
+                bodyTextInputRef={bodyTextInputRef}
+                bodyJsonInputRef={bodyJsonInputRef}
+                handleBodyTextInputFocus={handleBodyTextInputFocus}
+              />
+            </VStack>
+          </Box>
           <HeadersInputs />
           <VariablesInputs />
         </VStack>
@@ -283,7 +314,11 @@ export default function Rest() {
             size="lg"
             noOfLines={1}
             textTransform="uppercase"
-            bg="teal.400"
+            bg={'whiteAlpha.300'}
+            borderWidth="1px"
+            borderRadius="lg"
+            borderColor={'transparent'}
+            pl={5}
           >
             {t('response')}
             {loading && (

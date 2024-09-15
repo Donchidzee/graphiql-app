@@ -74,6 +74,16 @@ const HeadersInputs: React.FC = () => {
     };
 
   return (
+    <Box
+    w="full"
+    maxW="1400px"
+    borderWidth="1px"
+    borderRadius="lg"
+    borderColor={'gray.500'}
+    overflow="hidden"
+    p={5}
+    boxShadow="md"
+  >
     <Accordion defaultIndex={[0]} allowToggle>
       <AccordionItem>
         <h2>
@@ -94,11 +104,12 @@ const HeadersInputs: React.FC = () => {
         <AccordionPanel pb={8}>
           <VStack spacing={2} align="stretch">
             <Button
-              colorScheme="teal"
+              colorScheme="gray"
               size="sm"
               textTransform="uppercase"
               width="min-content"
               onClick={addHeader}
+   
             >
               {t('newHeader')}
             </Button>
@@ -131,6 +142,7 @@ const HeadersInputs: React.FC = () => {
         </AccordionPanel>
       </AccordionItem>
     </Accordion>
+  </Box>
   );
 };
 

@@ -70,7 +70,10 @@ const BodyInput: React.FC<BodyInputRef> = ({
 
   const replaceVariable = useCallback(
     (str) => {
-      return str.replace(
+      const firstChar = str.charAt(0) === '{' ? '{' : '';
+      const restOfString = firstChar ? str.slice(1) : str;
+    
+      const replacedString = restOfString.replace(
         /"{{(.*?)}}"|{{(.*?)}}/g,
         (_, quotedKey, unquotedKey) => {
           const key = quotedKey || unquotedKey;
@@ -78,6 +81,7 @@ const BodyInput: React.FC<BodyInputRef> = ({
           return variable ? `"{{${key}}}"` : key;
         }
       );
+      return firstChar + replacedString;
     },
     [variables]
   );
@@ -148,12 +152,12 @@ const BodyInput: React.FC<BodyInputRef> = ({
   return (
     <Tabs width="100%" index={activeTab} onChange={handleTabChange}>
       <TabList>
-        <Tab>{t('text')}</Tab>
-        <Tab>JSON</Tab>
+        <Tab color={'teal'}>{t('text')}</Tab>
+        <Tab color={'teal'}>JSON</Tab>
       </TabList>
 
       <TabPanels>
-        <TabPanel>
+        <TabPanel px={0}>
           <Textarea
             as={TextareaAutosize}
             minHeight="120px"
@@ -163,9 +167,18 @@ const BodyInput: React.FC<BodyInputRef> = ({
             onChange={changeBodyText}
             onBlur={handleBodyTextChange}
             ref={bodyTextInputRef}
+            bg={'gray.800'}
+            color={'white'}
+            fontFamily="'Source Code Pro', monospace"
+            fontSize="sm"
+            p={4}
+            borderRadius="md"
+            borderColor="gray.600"
+            borderWidth="1px"
+            _focus={{ borderColor: 'blue.500' }}
           />
         </TabPanel>
-        <TabPanel>
+        <TabPanel px={0}>
           <Textarea
             as={TextareaAutosize}
             minHeight="120px"
@@ -178,6 +191,15 @@ const BodyInput: React.FC<BodyInputRef> = ({
             sx={{
               textDecoration: bodyError ? '#E53E3E wavy underline' : 'none',
             }}
+            bg={'gray.800'}
+            color={'white'}
+            fontFamily="'Source Code Pro', monospace"
+            fontSize="sm"
+            p={4}
+            borderRadius="md"
+            borderColor="gray.600"
+            borderWidth="1px"
+            _focus={{ borderColor: 'blue.500' }}
           />
         </TabPanel>
       </TabPanels>
