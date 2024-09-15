@@ -17,8 +17,11 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth, registerWithEmailAndPassword } from '../../../../firebase';
 import { LinkInter } from '../../../../routing';
+import { useTranslations } from 'next-intl';
 
 export default function HookForm() {
+  const t = useTranslations();
+
   const {
     handleSubmit,
     register,
@@ -59,11 +62,11 @@ export default function HookForm() {
   return (
     <>
       <Heading as="h2" size="xl">
-        Register
+        {t('register')}
       </Heading>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControl isInvalid={Boolean(errors.username)} mt={4}>
-          <FormLabel htmlFor="username">Username</FormLabel>
+          <FormLabel htmlFor="username">{t('username')}</FormLabel>
           <Input
             id="username"
             placeholder="username"
@@ -84,10 +87,10 @@ export default function HookForm() {
           </Box>
         </FormControl>
         <FormControl isInvalid={Boolean(errors.email)} mt={-1}>
-          <FormLabel htmlFor="email">Email</FormLabel>
+          <FormLabel htmlFor="email">{t('email')}</FormLabel>
           <Input
             id="email"
-            placeholder="email"
+            placeholder="example@gmail.com"
             autoComplete="on"
             {...register('email', {
               required: 'Email is required',
@@ -104,7 +107,7 @@ export default function HookForm() {
           </Box>
         </FormControl>
         <FormControl isInvalid={Boolean(errors.password)} mt={-1}>
-          <FormLabel htmlFor="password">Password</FormLabel>
+          <FormLabel htmlFor="password">{t('password')}</FormLabel>
           <Input
             id="password"
             type="password"
@@ -133,19 +136,19 @@ export default function HookForm() {
           isLoading={isSubmitting}
           type="submit"
         >
-          Submit
+          {t('submit')}
         </Button>
         <Box mt={3}>
-          Already have an account?{' '}
+          {t('alreadyHaveAccount')}{' '}
           <Link
             as={LinkInter}
             color="blue.400"
             _hover={{ color: 'blue.500' }}
             href="/login"
           >
-            Login
+            {t('login')}
           </Link>{' '}
-          now.
+          {t('now')}.
         </Box>
       </form>
     </>

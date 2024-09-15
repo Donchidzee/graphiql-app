@@ -17,8 +17,11 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth, sendPasswordReset } from '../../../../firebase';
 import { LinkInter } from '../../../../routing';
+import { useTranslations } from 'next-intl';
 
 export default function HookForm() {
+  const t = useTranslations();
+
   const {
     handleSubmit,
     register,
@@ -55,14 +58,14 @@ export default function HookForm() {
   return (
     <>
       <Heading as="h2" size="xl">
-        Reset password
+        {t('reset')}
       </Heading>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControl isInvalid={Boolean(errors.email)} mt={4}>
-          <FormLabel htmlFor="email">Email</FormLabel>
+          <FormLabel htmlFor="email">{t('email')}</FormLabel>
           <Input
             id="email"
-            placeholder="email"
+            placeholder="example@gmail.com"
             {...register('email', {
               required: 'Email is required',
               pattern: {
@@ -84,19 +87,19 @@ export default function HookForm() {
           isLoading={isSubmitting}
           type="submit"
         >
-          Send password reset email
+          {t('resetButton')}
         </Button>
         <Box mt={3}>
-          Don&apos;t have an account?{' '}
+          {t('noAccount')}{' '}
           <Link
             as={LinkInter}
             color="blue.400"
             _hover={{ color: 'blue.500' }}
             href="/register"
           >
-            Register
+            {t('signUp')}
           </Link>{' '}
-          now.
+          {t('now')}.
         </Box>
       </form>
     </>

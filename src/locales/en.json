@@ -45,10 +45,15 @@
   "ourTeam": "Our team consists of three developers and one mentor: Aigerim, Samat, Daniyar, and Mentor Rakhymbek",
   "clickAny": "Click any link to start exploring our application",
   "toStartExploring": "to start exploring our application",
-  "emailLabel": "Email",
+  "email": "Email",
   "password": "Password",
   "submit": "Submit",
   "forgotPassword": "Forgot Password",
   "noAccount": "Don't have an account?",
-  "now": "now"
+  "signUp": "Sign up",
+  "now": "now",
+  "username": "Username",
+  "alreadyHaveAccount": "Already have an account?",
+  "reset": "Reset password",
+  "resetButton": "Send password reset email"
 }

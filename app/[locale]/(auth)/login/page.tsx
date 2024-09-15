@@ -62,7 +62,7 @@ export default function HookForm() {
       </Heading>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControl isInvalid={Boolean(errors.email)} mt={4}>
-          <FormLabel htmlFor="email">{t('emailLabel')}</FormLabel>
+          <FormLabel htmlFor="email">{t('email')}</FormLabel>
           <Input
             id="email"
             placeholder="example@gmail.com"
@@ -125,7 +125,7 @@ export default function HookForm() {
             _hover={{ color: 'blue.500' }}
             href="/register"
           >
-            {t('register')}
+            {t('signUp')}
           </Link>{' '}
           {t('now')}.
         </div>
