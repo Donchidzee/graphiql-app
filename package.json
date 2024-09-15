@@ -1,0 +1,95 @@
+{
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "lint:fix": "eslint . --fix",
+    "prettier": "prettier --write",
+    "prepare": "husky install && chmod +x .husky/*",
+    "test": "vitest run --coverage"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "npm run lint:fix",
+      "npm run prettier"
+    ],
+    "*.ts": [
+      "npm run lint:fix",
+      "npm run prettier"
+    ],
+    "*.jsx": [
+      "npm run lint:fix",
+      "npm run prettier"
+    ],
+    "*.tsx": [
+      "npm run lint:fix",
+      "npm run prettier"
+    ]
+  },
+  "dependencies": {
+    "@chakra-ui/icons": "^2.1.1",
+    "@chakra-ui/next-js": "^2.2.0",
+    "@chakra-ui/react": "^2.8.2",
+    "@codemirror/basic-setup": "^0.20.0",
+    "@codemirror/lang-javascript": "^6.2.2",
+    "@codemirror/lang-json": "^6.0.1",
+    "@codemirror/lint": "^6.8.1",
+    "@codemirror/state": "^6.4.1",
+    "@codemirror/theme-one-dark": "^6.1.2",
+    "@codemirror/view": "^6.33.0",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@reduxjs/toolkit": "^2.2.7",
+    "@uiw/codemirror-themes": "^4.23.0",
+    "@uiw/codemirror-themes-all": "^4.23.0",
+    "@uiw/react-codemirror": "^4.23.2",
+    "@uiw/react-json-view": "^2.0.0-alpha.26",
+    "codemirror": "^5.65.17",
+    "codemirror-graphql": "^2.1.1",
+    "firebase": "^10.13.0",
+    "framer-motion": "^11.3.29",
+    "graphiql": "^3.7.1",
+    "graphql": "^16.9.0",
+    "graphql-prettier": "^1.0.6",
+    "graphql-tag": "^2.12.6",
+    "graphql-ws": "^5.16.0",
+    "next": "^14.2.6",
+    "next-intl": "^3.19.1",
+    "react": "^18.3.1",
+    "react-codemirror2": "^8.0.0",
+    "react-cookie": "^7.2.0",
+    "react-dom": "^18.3.1",
+    "react-firebase-hooks": "^5.1.1",
+    "react-hook-form": "^7.53.0",
+    "react-redux": "^9.1.2",
+    "react-textarea-autosize": "^8.5.3",
+    "sass": "^1.77.8"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/node": "22.5.0",
+    "@types/react": "18.3.4",
+    "@typescript-eslint/eslint-plugin": "^8.2.0",
+    "@typescript-eslint/parser": "^8.2.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "@vitest/coverage-v8": "^2.1.1",
+    "eslint": "8.57.0",
+    "eslint-config-next": "14.2.6",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "husky": "^8.0.3",
+    "jsdom": "^25.0.0",
+    "lint-staged": "^15.2.9",
+    "prettier": "^3.3.3",
+    "typescript": "5.5.4",
+    "vitest": "^2.1.1"
+  }
+}
