@@ -1,10 +1,11 @@
 'use client';
 
+import React from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, logout } from '../../../firebase';
 import { Button, Link } from '@chakra-ui/react';
 import styles from './styles.module.css';
-import LanguagePicker from '@/components/LanguagesPicker';
+import LanguagePicker from '../LanguagesPicker/LanguagePicker';
 import { useTranslations } from 'next-intl';
 import { LinkInter } from '../../../routing';
 

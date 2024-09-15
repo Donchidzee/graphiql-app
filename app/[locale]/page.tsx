@@ -8,6 +8,7 @@ import {
   Card,
   CardBody,
   Text,
+  Heading,
 } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
@@ -61,9 +62,9 @@ export default function Page() {
           <>
             <Card>
               <CardBody>
-                <Text>
-                  <h1>{`${t('welcomeBack')}, ${name}!`}</h1>
-                </Text>
+                <Heading as="h2" size="md">
+                  {`${t('welcomeBack')}, ${name}!`}
+                </Heading>
                 <div className={styles.container}>
                   <Link
                     as={LinkInter}
@@ -99,15 +100,16 @@ export default function Page() {
           <>
             <Card>
               <CardBody>
-                <Text>
-                  <h1>{t('welcome')}!</h1>
-                </Text>
+                <Heading as="h2" size="md">
+                  {t('welcome')}!
+                </Heading>
                 <div className={styles.container}>
                   <Link
                     as={LinkInter}
                     href={`/login`}
                     color="blue.400"
                     _hover={{ color: 'blue.500' }}
+                    data-testid="login-link-top"
                     mr={10}
                   >
                     {t('login')}
@@ -155,6 +157,7 @@ export default function Page() {
                     href={`/login`}
                     color="blue.400"
                     _hover={{ color: 'blue.500' }}
+                    data-testid="login-link-bottom"
                     mr={1}
                   >
                     {t('login')}

@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { Box, Link } from '@chakra-ui/react';
 import Image from 'next/image';
 import styles from './styles.module.css';
