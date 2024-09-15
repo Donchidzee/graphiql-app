@@ -17,8 +17,11 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth, logInWithEmailAndPassword } from '../../../../firebase';
 import { LinkInter } from '../../../../routing';
+import { useTranslations } from 'next-intl';
 
 export default function HookForm() {
+  const t = useTranslations();
+
   const {
     handleSubmit,
     register,
@@ -55,14 +58,14 @@ export default function HookForm() {
   return (
     <>
       <Heading as="h2" size="xl">
-        Login
+        {t('login')}
       </Heading>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControl isInvalid={Boolean(errors.email)} mt={4}>
-          <FormLabel htmlFor="email">Email</FormLabel>
+          <FormLabel htmlFor="email">{t('emailLabel')}</FormLabel>
           <Input
             id="email"
-            placeholder="email"
+            placeholder="example@gmail.com"
             autoComplete="on"
             {...register('email', {
               required: 'Email is required',
@@ -79,7 +82,7 @@ export default function HookForm() {
           </Box>
         </FormControl>
         <FormControl isInvalid={Boolean(errors.password)} mt={-1}>
-          <FormLabel htmlFor="password">Password</FormLabel>
+          <FormLabel htmlFor="password">{t('password')}</FormLabel>
           <Input
             id="password"
             type="password"
@@ -102,7 +105,7 @@ export default function HookForm() {
           isLoading={isSubmitting}
           type="submit"
         >
-          Submit
+          {t('submit')}
         </Button>
         <Box mt={3}>
           <Link
@@ -111,20 +114,20 @@ export default function HookForm() {
             _hover={{ color: 'blue.500' }}
             href="/reset"
           >
-            Forgot Password
+            {t('forgotPassword')}
           </Link>
         </Box>
         <div>
-          Don&apos;t have an account?{' '}
+          {t('noAccount')}{' '}
           <Link
             as={LinkInter}
             color="blue.400"
             _hover={{ color: 'blue.500' }}
             href="/register"
           >
-            Register
+            {t('register')}
           </Link>{' '}
-          now.
+          {t('now')}.
         </div>
       </form>
     </>
