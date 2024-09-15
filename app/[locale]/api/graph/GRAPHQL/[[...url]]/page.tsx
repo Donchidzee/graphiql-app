@@ -71,7 +71,7 @@ export default function Graphql() {
       try {
         headersObj = JSON.parse(debouncedHeaders);
       } catch (error) {
-        console.warn('Invalid headers JSON, using empty headers', error);
+        alert(error.message);
       }
 
       if (!headersObj['Content-Type']) {

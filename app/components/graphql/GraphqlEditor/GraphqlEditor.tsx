@@ -57,7 +57,7 @@ const GraphiQLEditor = ({
       const parsedHeaders: HeadersObject = JSON.parse(headers);
       headersObj = { ...headersObj, ...parsedHeaders };
     } catch (error) {
-      console.warn('Invalid headers JSON, using default headers only', error);
+      alert(error.message);
     }
 
     const activeUrl = url || defaultUrl;

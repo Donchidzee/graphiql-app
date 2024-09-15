@@ -45,7 +45,6 @@ const logInWithEmailAndPassword = async (email: string, password: string) => {
 
     setCookie('token', token, 1);
   } catch (err) {
-    console.error('Error during login:', err);
     alert(err.message);
   }
 };
@@ -69,7 +68,6 @@ const registerWithEmailAndPassword = async (
     const token = await user.getIdToken();
     setCookie('token', token, 1);
   } catch (err) {
-    console.error('Error during registration:', err);
     alert(err.message);
   }
 };
@@ -79,7 +77,6 @@ const sendPasswordReset = async (email: string) => {
     await sendPasswordResetEmail(auth, email);
     alert('Password reset link sent!');
   } catch (err) {
-    console.error('Error sending password reset email:', err);
     alert(err.message);
   }
 };
@@ -89,7 +86,7 @@ const logout = async () => {
     await signOut(auth);
     eraseCookie('token');
   } catch (err) {
-    console.error('Error signing out:', err);
+    alert(err);
     alert('Error signing out. Please try again.');
   }
 };

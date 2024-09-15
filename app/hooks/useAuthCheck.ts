@@ -41,8 +41,8 @@ const useAuthCheck = (): boolean | null => {
       } else {
         setIsAuthenticated(true);
       }
-    } catch (error: unknown) {
-      console.log(error);
+    } catch (error) {
+      alert(error.message);
       setIsAuthenticated(false);
       router.push('/');
     }
