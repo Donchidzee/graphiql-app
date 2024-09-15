@@ -38,12 +38,16 @@ const VariablesInputs: React.FC = () => {
   const prevHeadersRef = useRef(headers);
 
   useEffect(() => {
-    if (JSON.stringify(prevHeadersRef.current) !== JSON.stringify(stateHeaders)) {
+    if (
+      JSON.stringify(prevHeadersRef.current) !== JSON.stringify(stateHeaders)
+    ) {
       setHeaders(stateHeaders);
-    const stateVariables = stateHeaders.filter((el) => el.key === 'variables');
-    const storedVariables =
-      stateVariables.length !== 0 ? JSON.parse(stateVariables[0].value) : [];
-    setVariables(storedVariables);
+      const stateVariables = stateHeaders.filter(
+        (el) => el.key === 'variables'
+      );
+      const storedVariables =
+        stateVariables.length !== 0 ? JSON.parse(stateVariables[0].value) : [];
+      setVariables(storedVariables);
       prevHeadersRef.current = stateHeaders;
     }
   }, [stateHeaders]);
@@ -97,76 +101,76 @@ const VariablesInputs: React.FC = () => {
 
   return (
     <Box
-    w="full"
-    maxW="1400px"
-    borderWidth="1px"
-    borderRadius="lg"
-    borderColor={'gray.500'}
-    overflow="hidden"
-    p={5}
-    boxShadow="md"
-  >
-    <Accordion defaultIndex={[0]} allowToggle>
-      <AccordionItem>
-        <h2>
-          <AccordionButton>
-            <Box as="span" flex="1" textAlign="left">
-              <Heading
-                as="h2"
-                size="sm"
-                noOfLines={1}
-                textTransform="uppercase"
-              >
-                {t('variables')}
-              </Heading>
-            </Box>
-            <AccordionIcon />
-          </AccordionButton>
-        </h2>
-        <AccordionPanel pb={8}>
-          <VStack spacing={2} align="stretch">
-            <Button
-              colorScheme="gray"
-              size="sm"
-              textTransform="uppercase"
-              width="min-content"
-              onClick={addVariable}
-            >
-              {t('newVariable')}
-            </Button>
-            {variables.map((variable, index) => (
-              <Stack key={index} align="center" direction="row">
-                <InputGroup size="md">
-                  <InputLeftAddon>{t('key')}</InputLeftAddon>
-                  <Input
-                    value={variable.key}
-                    onChange={handleVariablesChange(index, 'key')}
-                  />
-                </InputGroup>
-                <InputGroup size="md">
-                  <InputLeftAddon>{t('value')}</InputLeftAddon>
-                  <Input
-                    value={variable.value}
-                    onChange={handleVariablesChange(index, 'value')}
-                  />
-                </InputGroup>
-                <Button
-                  colorScheme="gray"
+      w="full"
+      maxW="1400px"
+      borderWidth="1px"
+      borderRadius="lg"
+      borderColor={'gray.500'}
+      overflow="hidden"
+      p={5}
+      boxShadow="md"
+    >
+      <Accordion defaultIndex={[0]} allowToggle>
+        <AccordionItem>
+          <h2>
+            <AccordionButton>
+              <Box as="span" flex="1" textAlign="left">
+                <Heading
+                  as="h2"
                   size="sm"
-                  width="max-content"
-                  flex="none"
+                  noOfLines={1}
                   textTransform="uppercase"
-                  onClick={() => deleteVariable(index)}
                 >
-                  {t('delete')}
-                </Button>
-              </Stack>
-            ))}
-          </VStack>
-        </AccordionPanel>
-      </AccordionItem>
-    </Accordion>
-  </Box>
+                  {t('variables')}
+                </Heading>
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={8}>
+            <VStack spacing={2} align="stretch">
+              <Button
+                colorScheme="gray"
+                size="sm"
+                textTransform="uppercase"
+                width="min-content"
+                onClick={addVariable}
+              >
+                {t('newVariable')}
+              </Button>
+              {variables.map((variable, index) => (
+                <Stack key={index} align="center" direction="row">
+                  <InputGroup size="md">
+                    <InputLeftAddon>{t('key')}</InputLeftAddon>
+                    <Input
+                      value={variable.key}
+                      onChange={handleVariablesChange(index, 'key')}
+                    />
+                  </InputGroup>
+                  <InputGroup size="md">
+                    <InputLeftAddon>{t('value')}</InputLeftAddon>
+                    <Input
+                      value={variable.value}
+                      onChange={handleVariablesChange(index, 'value')}
+                    />
+                  </InputGroup>
+                  <Button
+                    colorScheme="gray"
+                    size="sm"
+                    width="max-content"
+                    flex="none"
+                    textTransform="uppercase"
+                    onClick={() => deleteVariable(index)}
+                  >
+                    {t('delete')}
+                  </Button>
+                </Stack>
+              ))}
+            </VStack>
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
+    </Box>
   );
 };
 

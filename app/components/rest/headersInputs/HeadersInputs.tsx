@@ -38,7 +38,9 @@ const HeadersInputs: React.FC = () => {
   const prevHeadersRef = useRef(headers);
 
   useEffect(() => {
-    if (JSON.stringify(prevHeadersRef.current) !== JSON.stringify(stateHeaders)) {
+    if (
+      JSON.stringify(prevHeadersRef.current) !== JSON.stringify(stateHeaders)
+    ) {
       setHeaders(stateHeaders);
       prevHeadersRef.current = stateHeaders;
     }
@@ -75,74 +77,73 @@ const HeadersInputs: React.FC = () => {
 
   return (
     <Box
-    w="full"
-    maxW="1400px"
-    borderWidth="1px"
-    borderRadius="lg"
-    borderColor={'gray.500'}
-    overflow="hidden"
-    p={5}
-    boxShadow="md"
-  >
-    <Accordion defaultIndex={[0]} allowToggle>
-      <AccordionItem>
-        <h2>
-          <AccordionButton>
-            <Box as="span" flex="1" textAlign="left">
-              <Heading
-                as="h2"
+      w="full"
+      maxW="1400px"
+      borderWidth="1px"
+      borderRadius="lg"
+      borderColor={'gray.500'}
+      overflow="hidden"
+      p={5}
+      boxShadow="md"
+    >
+      <Accordion defaultIndex={[0]} allowToggle>
+        <AccordionItem>
+          <h2>
+            <AccordionButton>
+              <Box as="span" flex="1" textAlign="left">
+                <Heading
+                  as="h2"
+                  size="sm"
+                  noOfLines={1}
+                  textTransform="uppercase"
+                >
+                  {t('headers')}
+                </Heading>
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={8}>
+            <VStack spacing={2} align="stretch">
+              <Button
+                colorScheme="gray"
                 size="sm"
-                noOfLines={1}
                 textTransform="uppercase"
+                width="min-content"
+                onClick={addHeader}
               >
-                {t('headers')}
-              </Heading>
-            </Box>
-            <AccordionIcon />
-          </AccordionButton>
-        </h2>
-        <AccordionPanel pb={8}>
-          <VStack spacing={2} align="stretch">
-            <Button
-              colorScheme="gray"
-              size="sm"
-              textTransform="uppercase"
-              width="min-content"
-              onClick={addHeader}
-   
-            >
-              {t('newHeader')}
-            </Button>
-            {headers.map(
-              (header, index) =>
-                header.key !== 'variables' && (
-                  <Stack key={index} align="center" direction="row">
-                    <FormControl isInvalid={headerInputErrors[index]?.key}>
-                      <InputGroup size="md">
-                        <InputLeftAddon>{t('key')}</InputLeftAddon>
-                        <Input
-                          value={header.key}
-                          onChange={handleHeadersChange(index, 'key')}
-                        />
-                      </InputGroup>
-                    </FormControl>
-                    <FormControl isInvalid={headerInputErrors[index]?.value}>
-                      <InputGroup size="md">
-                        <InputLeftAddon>{t('value')}</InputLeftAddon>
-                        <Input
-                          value={header.value}
-                          onChange={handleHeadersChange(index, 'value')}
-                        />
-                      </InputGroup>
-                    </FormControl>
-                  </Stack>
-                )
-            )}
-          </VStack>
-        </AccordionPanel>
-      </AccordionItem>
-    </Accordion>
-  </Box>
+                {t('newHeader')}
+              </Button>
+              {headers.map(
+                (header, index) =>
+                  header.key !== 'variables' && (
+                    <Stack key={index} align="center" direction="row">
+                      <FormControl isInvalid={headerInputErrors[index]?.key}>
+                        <InputGroup size="md">
+                          <InputLeftAddon>{t('key')}</InputLeftAddon>
+                          <Input
+                            value={header.key}
+                            onChange={handleHeadersChange(index, 'key')}
+                          />
+                        </InputGroup>
+                      </FormControl>
+                      <FormControl isInvalid={headerInputErrors[index]?.value}>
+                        <InputGroup size="md">
+                          <InputLeftAddon>{t('value')}</InputLeftAddon>
+                          <Input
+                            value={header.value}
+                            onChange={handleHeadersChange(index, 'value')}
+                          />
+                        </InputGroup>
+                      </FormControl>
+                    </Stack>
+                  )
+              )}
+            </VStack>
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
+    </Box>
   );
 };
 
